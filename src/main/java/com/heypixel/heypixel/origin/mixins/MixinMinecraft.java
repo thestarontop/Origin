@@ -30,6 +30,5 @@ public class MixinMinecraft  {
     private void startUseItem(CallbackInfo ci) {
         if (Origin.getInstance().getModuleManager().getModule("FastPlace").isEnabled())
             rightClickDelay = 0;
-
     }
 }
