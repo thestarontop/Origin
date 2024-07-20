@@ -1,8 +1,10 @@
 package com.heypixel.heypixel.origin.main.modules.misc;
 
+import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.Render2DEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +34,8 @@ public class MidClick extends Module {
                         friend.remove(player);
                     }
                 }else{
-                    mc.player.sendMessage(Component.nullToEmpty("操你妈，对着人才能加好友"),mc.player.getUUID());
+                    //mc.player.sendMessage(Component.nullToEmpty("You should select humans to add friends"),mc.player.getUUID());
+                    ChatManager.sendHotBarChat(ChatFormatting.RED + "You should select humans to add friends");
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.heypixel.heypixel.origin.main.modules.client;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.Render2DEvent;
-import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.modules.ModuleManager;
 import com.heypixel.heypixel.origin.main.utils.RenderUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,14 +12,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SimpleHUD extends Module {
-    public SimpleHUD(){super("SimpleHUD","bzd",Category.CLIENT);}
+public class HUD extends Module {
+    public HUD(){super("SimpleHUD","bzd",Category.CLIENT);}
     SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm");
 
     @EventTarget
     public void onRender2D(Render2DEvent event) {
-        mc.font.drawShadow(new PoseStack(), "Origin", 6, 1, RenderUtils.getRainbowOpaque(0.9f));
-        mc.font.drawShadow(new PoseStack(), "("+HOUR_FORMAT.format(new Date(System.currentTimeMillis()))+")",35 , 1.3f, -1);
+        mc.font.drawShadow(new PoseStack(), "Origin", 4, 1, RenderUtils.getRainbowOpaque(0.9f));
+        mc.font.drawShadow(new PoseStack(), "("+HOUR_FORMAT.format(new Date(System.currentTimeMillis()))+")",31 , 1.3f, -1);
         List<String> enabled = new ArrayList<>();
         for (Module module : ModuleManager.modules) {
             if (module.isEnabled()) {

@@ -4,7 +4,9 @@ import com.heypixel.heypixel.origin.main.modules.client.*;
 import com.heypixel.heypixel.origin.main.modules.exploit.*;
 import com.heypixel.heypixel.origin.main.modules.misc.*;
 import com.heypixel.heypixel.origin.main.modules.movement.*;
+import com.heypixel.heypixel.origin.main.modules.player.AutoReport;
 import com.heypixel.heypixel.origin.main.modules.player.AutoTool;
+import com.heypixel.heypixel.origin.main.modules.player.FastPlace;
 import com.heypixel.heypixel.origin.main.modules.render.*;
 import com.heypixel.heypixel.origin.main.modules.world.*;
 import com.heypixel.heypixel.origin.main.modules.combat.*;
@@ -51,7 +53,7 @@ public class ModuleManager {
         addHack(new Velocity());
         addHack(new Xray());
         addHack(new Blink());
-        addHack(new SimpleHUD());
+        addHack(new HUD());
         addHack(new MobAura());
         addHack(new Teams());
         addHack(new Rotation());
@@ -77,6 +79,8 @@ public class ModuleManager {
         addHack(new SafeWalk());
         addHack(new MidClick());
         addHack(new ThrowAbleAura());
+        addHack(new FastPlace());
+        addHack(new AutoReport());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
