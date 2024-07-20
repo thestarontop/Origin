@@ -24,17 +24,15 @@ public class ThrowAbleAura extends Module {
                 if (!(entity instanceof Player)) continue;
 
                 if (mc.player.distanceTo(entity) >= 3.21 && mc.player.distanceTo(entity) <= 7.0){
-                    for (int i = 0;i<8;i++){
+                    for (int i = 0;i<=8;i++){
                         if (mc.player.inventoryMenu.getSlot(i+36).getItem().getItem() instanceof SnowballItem){
-                            if (RotationUtils.targetRotation == null){
-                                PacketUtils.sendPacketNoEvent(new ServerboundSetCarriedItemPacket(i));
+                                mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
                                 Rotation rotation = RotationUtils.lockView(entity.getBoundingBox(),false,false,true,false,4).getRotation();
                                 RotationUtils.setTargetRotation(rotation);
-                                PacketUtils.sendPacketNoEvent(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
-                                PacketUtils.sendPacketNoEvent(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
+                                mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
+                                mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
                                 timer.reset();
                                 break;
-                            }
                         }
                     }
                 }
