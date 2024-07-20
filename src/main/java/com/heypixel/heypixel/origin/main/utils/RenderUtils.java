@@ -120,6 +120,7 @@ public class RenderUtils extends MinecraftInstance{
         int color = Color.HSBtoRGB(hue, count, 1);
         return color;
     }
+
     public static void renderPlayerHitbox(PoseStack poseStack, Entity player, float partialTicks, MultiBufferSource bufferSource) {
         poseStack.pushPose();
         try {

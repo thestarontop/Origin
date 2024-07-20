@@ -76,6 +76,7 @@ public class ModuleManager {
         addHack(new Speed());
         addHack(new SafeWalk());
         addHack(new MidClick());
+        addHack(new ThrowAbleAura());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

@@ -15,10 +15,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.util.Mth;
@@ -41,23 +38,28 @@ public class ESP extends Module {
     @EventTarget
     public void onRender3D(Render3DEvent event){
         for (Entity entity : mc.level.entitiesForRendering()) {
-            if (!(entity instanceof Player)) return;
-
-            PoseStack poseStack = event.getPoseStack();
-            EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
-            double camX = dispatcher.camera.getPosition().x();
-            double camY = dispatcher.camera.getPosition().y();
-            double camZ = dispatcher.camera.getPosition().z();
-            AABB boundingBox = entity.getBoundingBox().move(-camX, -camY, -camZ);
-
-            MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-            VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lines());
-
-            RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
-            LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox.minX, boundingBox.minY, boundingBox.minZ,
-                    boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0F, 0.0F, 0.0F, 1.0F);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            bufferSource.endBatch(RenderType.lines());
+            if(entity.getId() != mc.player.getId() && entity instanceof Player) {
+                PoseStack poseStack = event.getPoseStack();
+                EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
+                double camX = dispatcher.camera.getPosition().x();
+                double camY = dispatcher.camera.getPosition().y();
+                double camZ = dispatcher.camera.getPosition().z();
+                AABB boundingBox = entity.getBoundingBox().move(-camX, -camY, -camZ);
+                RenderSystem.disableDepthTest();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+                VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.LINES);
+                poseStack.pushPose();
+                RenderSystem.setShaderColor(0.5F, 0F, 0.5F, 1.0F); // 设置颜色为红色
+                LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox.minX, boundingBox.minY, boundingBox.minZ,
+                        boundingBox.maxX, boundingBox.maxY+10000, boundingBox.maxZ, 1.0F, 0.0F, 0.0F, 1.0F);
+                poseStack.popPose();
+                bufferSource.endBatch();
+                RenderSystem.disableBlend();
+                RenderSystem.enableDepthTest();
+            }
         }
     }
 
