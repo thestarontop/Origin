@@ -19,10 +19,7 @@ public abstract class MixinGameRenderer {
 
     @Inject(method = "renderLevel",at=@At(value="FIELD",target= "Lnet/minecraft/client/renderer/GameRenderer;renderHand:Z"))
     public void renderLevel(float g, long l, PoseStack arg, CallbackInfo ci) {
-        var newPoseStack = new PoseStack();
-        Matrix4f matrix4f2 = arg.last().pose();
-        newPoseStack.last().pose().load(matrix4f2);
-        Origin.getInstance().getEventManager().call(new Render3DEvent(matrix4f2, this.getMainCamera(), g));
+        Origin.getInstance().getEventManager().call(new Render3DEvent(arg, g));
     }
     @Inject(method = "render",at=@At(value = "INVOKE",target = "Lnet/minecraft/client/gui/Gui;render(Lcom/mojang/blaze3d/vertex/PoseStack;F)V"))
     public void onRender(float g, long l, boolean bl, CallbackInfo ci){

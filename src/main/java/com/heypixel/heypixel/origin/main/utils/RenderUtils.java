@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.Timer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
@@ -157,6 +158,20 @@ public class RenderUtils extends MinecraftInstance{
     private static void addLine(VertexConsumer buffer, PoseStack poseStack, double startX, double startY, double startZ, double endX, double endY, double endZ, float red, float green, float blue, float alpha) {
         buffer.vertex(poseStack.last().pose(), (float) startX, (float) startY, (float) startZ).color(red, green, blue, alpha).normal(0, 1, 0).endVertex();
         buffer.vertex(poseStack.last().pose(), (float) endX, (float) endY, (float) endZ).color(red, green, blue, alpha).normal(0, 1, 0).endVertex();
+    }
+    public static void renderEntityBoundingBox(PoseStack poseStack, Entity entity, float partialTicks) {
+        AABB boundingBox = entity.getBoundingBox();
+        LevelRenderer.renderLineBox(
+                poseStack,
+                Tesselator.getInstance().getBuilder(),
+                boundingBox.minX - entity.getX(),
+                boundingBox.minY - entity.getY(),
+                boundingBox.minZ - entity.getZ(),
+                boundingBox.maxX - entity.getX(),
+                boundingBox.maxY - entity.getY(),
+                boundingBox.maxZ - entity.getZ(),
+                1.0f, 1.0f, 1.0f, 1.0f
+        );
     }
 
 }
