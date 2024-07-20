@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "package": "com.heypixel.heypixel.origin.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "mixins": [
+    "MixinBlock",
+    "MixinConnection",
+    "MixinEntity",
+    "MixinLivingEntity",
+    "MixinPlayer",
+    "MixinServerboundMovePlayerPacket"
+  ],
+  "client": [
+    "MixinEntityRenderer",
+    "MixinGameRenderer",
+    "MixinItemInHandRenderer",
+    "MixinKeyboardHandler",
+    "MixinKeyboardInput",
+    "MixinLevelRenderer",
+    "MixinLivingEntityRenderer",
+    "MixinLocalPlayer",
+    "MixinMinecraft",
+    "MixinMultiPlayerGameMode"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
