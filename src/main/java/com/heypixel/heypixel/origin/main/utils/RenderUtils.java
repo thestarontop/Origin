@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -172,6 +173,40 @@ public class RenderUtils extends MinecraftInstance{
                 boundingBox.maxZ - entity.getZ(),
                 1.0f, 1.0f, 1.0f, 1.0f
         );
+    }
+    public static void renderEntityRectangle(PoseStack poseStack, Entity entity, Entity cameraEntity, float partialTicks) {
+        Vec3 entityPos = entity.getPosition(partialTicks);
+        Vec3 cameraPos = cameraEntity.getPosition(partialTicks);
+        double dx = entityPos.x - cameraPos.x;
+        double dy = entityPos.y - cameraPos.y;
+        double dz = entityPos.z - cameraPos.z;
+
+        poseStack.pushPose();
+        poseStack.translate(dx, dy, dz);
+
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+
+        Tesselator tesselator = Tesselator.getInstance();
+        var buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        // Define rectangle coordinates
+        float width = 1.0f;
+        float height = 2.0f;
+
+        buffer.vertex(poseStack.last().pose(), -width / 2, height, 0).color(1.0f, 0.0f, 0.0f, 1.0f).endVertex();
+        buffer.vertex(poseStack.last().pose(), width / 2, height, 0).color(1.0f, 0.0f, 0.0f, 1.0f).endVertex();
+        buffer.vertex(poseStack.last().pose(), width / 2, 0, 0).color(1.0f, 0.0f, 0.0f, 1.0f).endVertex();
+        buffer.vertex(poseStack.last().pose(), -width / 2, 0, 0).color(1.0f, 0.0f, 0.0f, 1.0f).endVertex();
+
+        tesselator.end();
+
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+        poseStack.popPose();
     }
 
 }
