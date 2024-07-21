@@ -53,8 +53,10 @@ public class Blink extends Module {
     @EventTarget
     public void onRender2D(Render2DEvent event){
         int deltaX = 70+tick/4;
-        Screen.fill(new PoseStack(),70, 50, Math.min(deltaX, 170),70, new Color(255,255,255,255).getRGB());
-        Screen.fill(new PoseStack(),70, 50,170,70, new Color(160,160,160,120).getRGB());
+        if (Origin.getInstance().getModuleManager().getModule("HUD").isEnabled()) {
+            Screen.fill(new PoseStack(),70, 50, Math.min(deltaX, 170),70, new Color(255,255,255,255).getRGB());
+            Screen.fill(new PoseStack(),70, 50,170,70, new Color(160,160,160,120).getRGB());
+        }
     }
     public void blink(){
         try {

@@ -6,19 +6,15 @@
 package com.heypixel.heypixel.origin.main.utils;
 
 
+import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
-import com.heypixel.heypixel.origin.main.event.events.StrafeEvent;
 import com.heypixel.heypixel.origin.main.event.events.TickEvent;
-import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.mixins.MixinServerboundMovePlayerPacket;
-import com.mojang.math.Vector3d;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -27,14 +23,13 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-
 import java.util.Random;
 
-import static java.lang.Math.*;
+import static java.lang.Math.atan2;
+import static java.lang.Math.sqrt;
 
 public class RotationUtils extends MinecraftInstance{
     public RotationUtils() {
