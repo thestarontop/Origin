@@ -36,8 +36,6 @@ import java.util.List;
 public class NoSlow extends Module {
     public NoSlow(){super("NoSlow","Thanks to CCBlueX",Category.MOVEMENT);}
     private boolean shouldnoslow = true;
-
-
     @EventTarget
     public void onPacket(PacketEvent event){
         if(event.getPacket() instanceof ClientboundContainerSetSlotPacket){
