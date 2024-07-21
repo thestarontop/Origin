@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 public class HUD extends Module {
-    public HUD(){super("SimpleHUD","bzd",Category.CLIENT);}
+    public HUD(){super("HUD","bzd",Category.CLIENT);}
     SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm");
 
     @EventTarget

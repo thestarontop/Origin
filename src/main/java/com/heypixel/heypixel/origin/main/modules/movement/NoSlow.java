@@ -1,5 +1,6 @@
 package com.heypixel.heypixel.origin.main.modules.movement;
 
+import com.google.common.collect.Lists;
 import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
@@ -9,55 +10,33 @@ import com.heypixel.heypixel.origin.main.event.events.SlowDownEvent;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.utils.PacketUtils;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.util.profiling.jfr.event.PacketReceivedEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.EnchantedGoldenAppleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.lwjgl.system.CallbackI;
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class NoSlow extends Module {
     public NoSlow(){super("NoSlow","Thanks to CCBlueX",Category.MOVEMENT);}
     private boolean shouldnoslow = true;
 
-    ItemStack itemstack = null;
-    int item = 36;
-    @EventTarget
-    public void onMotion(MotionEvent event){
-        if (mc.player.isUsingItem() && event.getPre()){
-            var hand = mc.player.getUsedItemHand();
-
-            if (hand == InteractionHand.MAIN_HAND) {
-                for (int i = 36; i < 45; i++) {
-                    itemstack = mc.player.getInventory().getItem(i);
-                    if (!itemstack.isEmpty() &&   itemstack != null && itemstack.getItem() != Items.AIR && itemstack.getCount() > 1) {
-                        item = i;
-                        break;
-                    }
-                }
-
-
-                if(itemstack != null) {
-                    mc.player.connection.send(new ServerboundContainerClickPacket(0, 0, item, 0, ClickType.SWAP, itemstack, Int2ObjectMaps.emptyMap()));
-                }
-            }else{
-                shouldnoslow = false;
-            }
-        }
-        if (!mc.player.isUsingItem()){
-            shouldnoslow = false;
-        }
-    }
 
     @EventTarget
     public void onPacket(PacketEvent event){
@@ -65,10 +44,35 @@ public class NoSlow extends Module {
             shouldnoslow = true;
         }
         if(event.getPacket() instanceof ServerboundUseItemPacket){
+            for (int i = 0; i <= 45;i++){
+                if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR){
+                    NonNullList<Slot> nonnulllist = mc.player.containerMenu.slots;
+                    int b = nonnulllist.size();
+                    List<ItemStack> list = Lists.newArrayListWithCapacity(i);
+
+                    for (Slot slot : nonnulllist) {
+                        list.add(slot.getItem().copy());
+                    }
+                    Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap<>();
+
+                    for(int j = 0; j < b; ++j) {
+                        ItemStack itemstack = list.get(j);
+                        ItemStack itemstack1 = nonnulllist.get(j).getItem();
+                        if (!ItemStack.matches(itemstack, itemstack1)) {
+                            int2objectmap.put(j, itemstack1.copy());
+                        }
+                    }
+                    mc.getConnection().send(new ServerboundContainerClickPacket(0,i,i,0,ClickType.PICKUP,new ItemStack(Items.BEDROCK),int2objectmap));
+                    break;
+                }
+            }
             shouldnoslow = false;
         }
         if(event.getPacket() instanceof ServerboundPlayerActionPacket && ((ServerboundPlayerActionPacket) event.getPacket()).getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){
             shouldnoslow = false;
+        }
+        if (event.getPacket() instanceof ServerboundInteractPacket && (!shouldnoslow && mc.player.isUsingItem())){
+            event.cancelEvent();
         }
     }
 
