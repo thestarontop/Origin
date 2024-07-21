@@ -48,8 +48,7 @@ public class NoSlow extends Module {
 
 
                 if(itemstack != null) {
-                    mc.player.connection.send(new ServerboundContainerClickPacket(0, 0, item, 1, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
-                    mc.player.connection.send(new ServerboundContainerClickPacket(1, 0, item, 0, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
+                    mc.player.connection.send(new ServerboundContainerClickPacket(0, 0, item, 0, ClickType.SWAP, itemstack, Int2ObjectMaps.emptyMap()));
                 }
             }else{
                 shouldnoslow = false;
