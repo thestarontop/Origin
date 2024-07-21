@@ -11,9 +11,6 @@ public class SilentStrafeFix extends Module {
 
     @EventTarget
     public void onMovementInput(MovementInputEvent event){
-        if (RotationUtils.targetRotation == null){
-            return;
-        }
         final float forward = event.getForward();
         final float strafe = event.getStrafe();
 

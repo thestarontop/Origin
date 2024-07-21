@@ -17,7 +17,7 @@ public class MixinMinecraft  {
 
     @Shadow private int rightClickDelay;
 
-    @Inject(method = "runTick",at=@At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", ordinal = 0))
+    @Inject(method = "runTick",at=@At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", shift = At.Shift.BEFORE))
     private void runtick(boolean bl ,CallbackInfo ci){
         TickEvent event = new TickEvent();
         Origin.getInstance().getEventManager().call(event);
@@ -27,7 +27,7 @@ public class MixinMinecraft  {
         WorldEvent event = new WorldEvent();
         Origin.getInstance().getEventManager().call(event);
     }
-    @Inject(method = "startUseItem",at = @At(value = "FIELD",target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I"))
+    @Inject(method = "startUseItem",at = @At(value = "FIELD",target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I",shift = At.Shift.AFTER))
     private void startUseItem(CallbackInfo ci) {
         if (Origin.getInstance().getModuleManager().getModule("FastPlace").isEnabled())
             this.rightClickDelay = 0;

@@ -547,7 +547,7 @@ public class RotationUtils extends MinecraftInstance{
                 || rotation.getPitch() > 90 || rotation.getPitch() < -90)
             return;
 
-
+        Rotation.fixedSensitivity(rotation,mc.options.sensitivity);
         targetRotation = rotation;
         RotationUtils.keepLength = keepLength;
     }

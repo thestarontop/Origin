@@ -9,7 +9,7 @@ package com.heypixel.heypixel.origin.main.utils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class Rotation{
+public class Rotation extends MinecraftInstance{
 
     private float yaw;
     private float pitch;
@@ -39,10 +39,11 @@ public class Rotation{
      * Set rotations to [player]
      */
     public void toPlayer(Player player) {
-        if (Float.isNaN(yaw) || Float.isNaN(pitch))
+        if (Float.isNaN(yaw) || Float.isNaN(pitch)) {
             return;
+        }
 
-
+        fixedSensitivity(this, mc.options.sensitivity);
 
         player.setYRot(yaw);
         player.setXRot(pitch);
@@ -53,7 +54,23 @@ public class Rotation{
      *
      * @se
      */
+    public static void fixedSensitivity(Rotation rotation, double sensitivity) {
+        double f = sensitivity * 0.6F + 0.2F;
+        double gcd = f * f * f * 1.2F;
 
+        // get previous rotation
+        Rotation previousRotation = RotationUtils.serverRotation;
+
+        // fix yaw
+        float deltaYaw = rotation.getYaw() - previousRotation.getYaw();
+        deltaYaw -= deltaYaw % gcd;
+        rotation.setYaw(previousRotation.getYaw() + deltaYaw);
+
+        // fix pitch
+        float deltaPitch = rotation.getPitch() - previousRotation.getPitch();
+        deltaPitch -= deltaPitch % gcd;
+        rotation.setPitch(previousRotation.getPitch() + deltaPitch);
+    }
 
     /**
      * Apply strafe to player
@@ -139,6 +156,7 @@ public class Rotation{
             player.setMotionZ(player.getMotionZ() + calcForward * yawCos + calcStrafe * yawSin);
         }
     }*/
+
 
     public static class VecRotation {
         private final Vec3 vec;

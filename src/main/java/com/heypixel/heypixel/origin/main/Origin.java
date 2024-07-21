@@ -53,5 +53,4 @@ public class Origin extends MinecraftInstance {
     public  ModuleManager getModuleManager() {
         return moduleManager;
     }
-
 }
