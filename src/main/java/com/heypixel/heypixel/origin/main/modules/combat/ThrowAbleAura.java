@@ -30,7 +30,7 @@ public class ThrowAbleAura extends Module {
                         if (mc.player.inventoryMenu.getSlot(i+36).getItem().getItem() == Items.SNOWBALL){
                                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
                                 Rotation rotation = RotationUtils.searchCenter(entity.getBoundingBox(),false,false,true,false,7).getRotation();
-                                RotationUtils.setTargetRotation(rotation);
+                                RotationUtils.setTargetRotation(rotation,1);
                                 mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
                                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
                                 ticks = 0;

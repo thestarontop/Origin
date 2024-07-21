@@ -14,8 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public class MixinMinecraft  {
-    @Shadow
-    public int rightClickDelay;
+
+    @Shadow private int rightClickDelay;
+
     @Inject(method = "runTick",at=@At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", ordinal = 0))
     private void runtick(boolean bl ,CallbackInfo ci){
         TickEvent event = new TickEvent();
