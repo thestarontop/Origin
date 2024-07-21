@@ -4,13 +4,12 @@ import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.utils.RotationUtils;
-import net.minecraft.client.player.Input;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class Speed extends Module {
-    public Speed(){super("Speed","bzd",Category.MOVEMENT);}
+public class EntitySpeed extends Module {
+    public EntitySpeed(){super("EntitySpeed","bzd",Category.MOVEMENT);}
     @EventTarget
     public void onUpdate(UpdateEvent event){
         if (mc.player.input.forwardImpulse == 0.0f && mc.player.input.leftImpulse == 0.0f) { return;}

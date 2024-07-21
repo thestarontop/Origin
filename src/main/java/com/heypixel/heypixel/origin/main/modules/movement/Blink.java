@@ -18,7 +18,7 @@ import java.awt.*;
 import java.util.LinkedList;
 
 public class Blink extends Module {
-    public Blink(){super("Blink","bzd", Module.Category.COMBAT);}
+    public Blink(){super("Blink","bzd", Module.Category.MOVEMENT);}
     private int tick;
     LinkedList<Packet<?>> packets = new LinkedList<>();
     private boolean disablelogger = true;

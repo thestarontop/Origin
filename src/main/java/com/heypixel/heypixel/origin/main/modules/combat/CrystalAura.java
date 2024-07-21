@@ -48,6 +48,7 @@ public class CrystalAura extends Module {
                         }
                     });
                 }
+                blockslist.sort((s1, s2) -> Integer.compare((int) entity.distanceToSqr(new Vec3(s1.getX(), s1.getY() ,s1.getZ())), (int) entity.distanceToSqr(s2.getX(),s2.getY(),s2.getZ())));
             }
             if (entity instanceof EndCrystal && entity.distanceTo(mc.player) <= 3.2){
                 Rotation rotation = RotationUtils.lockView(entity.getBoundingBox(),false,false,false,false,4F).getRotation();
