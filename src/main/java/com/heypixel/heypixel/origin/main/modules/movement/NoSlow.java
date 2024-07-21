@@ -1,35 +1,19 @@
 package com.heypixel.heypixel.origin.main.modules.movement;
 
 import com.google.common.collect.Lists;
-import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
-import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
-import com.heypixel.heypixel.origin.main.event.events.MotionEvent;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.SlowDownEvent;
-import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
-import com.heypixel.heypixel.origin.main.utils.PacketUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.util.profiling.jfr.event.PacketReceivedEvent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.EnchantedGoldenAppleItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.lwjgl.system.CallbackI;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 
