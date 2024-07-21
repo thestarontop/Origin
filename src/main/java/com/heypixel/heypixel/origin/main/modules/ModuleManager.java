@@ -75,7 +75,7 @@ public class ModuleManager {
         addHack(new AntiBot());
         addHack(new Stuck());
         addHack(new Sneak());
-        addHack(new Speed());
+        addHack(new EntitySpeed());
         addHack(new SafeWalk());
         addHack(new MidClick());
         addHack(new ThrowableAura());

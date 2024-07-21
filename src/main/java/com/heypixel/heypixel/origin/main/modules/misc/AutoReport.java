@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AutoReport extends Module {
-    public AutoReport(){super("AutoL","bzd", Module.Category.COMBAT);}
+    public AutoReport(){super("AutoReport","bzd", Module.Category.COMBAT);}
     boolean isReportUI;
 
     @EventTarget
