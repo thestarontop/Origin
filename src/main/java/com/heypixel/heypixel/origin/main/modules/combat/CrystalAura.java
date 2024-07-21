@@ -83,4 +83,5 @@ public class CrystalAura extends Module {
             placedblocklist.clear();
         }
     }
+
 }

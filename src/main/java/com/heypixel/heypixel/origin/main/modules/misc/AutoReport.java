@@ -1,4 +1,4 @@
-package com.heypixel.heypixel.origin.main.modules.player;
+package com.heypixel.heypixel.origin.main.modules.misc;
 
 import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;

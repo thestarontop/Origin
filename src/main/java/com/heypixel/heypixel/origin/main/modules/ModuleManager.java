@@ -4,7 +4,7 @@ import com.heypixel.heypixel.origin.main.modules.client.*;
 import com.heypixel.heypixel.origin.main.modules.exploit.*;
 import com.heypixel.heypixel.origin.main.modules.misc.*;
 import com.heypixel.heypixel.origin.main.modules.movement.*;
-import com.heypixel.heypixel.origin.main.modules.player.AutoReport;
+import com.heypixel.heypixel.origin.main.modules.misc.AutoReport;
 import com.heypixel.heypixel.origin.main.modules.player.AutoTool;
 import com.heypixel.heypixel.origin.main.modules.player.FastPlace;
 import com.heypixel.heypixel.origin.main.modules.render.*;
