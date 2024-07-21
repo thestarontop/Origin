@@ -21,7 +21,7 @@ public class Origin extends MinecraftInstance {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String NAME = "Origin_Client";
     private static Origin instance;
-    public static final String VERSION = "b11";
+    public static final String VERSION = "R1.0";
     public static ModuleManager moduleManager;
     public static ChatManager chatManager;
     public static BindManager bindManager;

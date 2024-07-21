@@ -1,60 +1,68 @@
 package com.heypixel.heypixel.origin.main.modules.movement;
 
-import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
-import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.MotionEvent;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.SlowDownEvent;
-import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
-import com.heypixel.heypixel.origin.main.utils.PacketUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.LinkedList;
-
 
 public class NoSlow extends Module {
-    public NoSlow(){super("NoSlow","bzd",Category.MOVEMENT);}
-    private boolean shouldnoslow;
-    private LinkedList<Packet<?>> packets = new LinkedList<>();
+    public NoSlow(){super("NoSlow","Thanks to CCBlueX",Category.MOVEMENT);}
+    private boolean shouldnoslow = true;
+
+    ItemStack itemstack = null;
+    int item = 36;
     @EventTarget
-    public void onPacket(PacketEvent event){
-        if (event.getPacket() instanceof ServerboundUseItemPacket packet){
-            shouldnoslow = false;
-            mc.getConnection().send(new ServerboundChatPacket("/report"));
-        }
-        if (event.getPacket() instanceof ClientboundOpenScreenPacket packet){
-            shouldnoslow = true;
-            event.cancelEvent();
-        }
-        if (event.getPacket() instanceof ServerboundPlayerActionPacket packet){
-            if (packet.getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){
-                if (shouldnoslow && !packets.isEmpty()){
-                    try {
-                        while (!packets.isEmpty()){
-                            PacketUtils.sendPacketNoEvent(packets.get(0));
-                            packets.remove(0);
-                        }
-                    }catch (Error e){
-                        e.printStackTrace();
+    public void onMotion(MotionEvent event){
+        if (mc.player.isUsingItem() && event.getPre()){
+            var hand = mc.player.getUsedItemHand();
+
+            if (hand == InteractionHand.MAIN_HAND) {
+                var slot = mc.player.getInventory().selected;
+
+
+                for (int i = 36; i < 45; i++) {
+                    itemstack = mc.player.getInventory().getItem(i);
+                    if (!itemstack.isEmpty() && itemstack.getItem() != Items.AIR && itemstack.getCount() > 1) {
+                        item = i;
+                        break;
                     }
                 }
+                if(itemstack != null) {
+                    mc.player.connection.send(new ServerboundContainerClickPacket(0, 0, item, 1, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
+                    mc.player.connection.send(new ServerboundContainerClickPacket(1, 0, item, 0, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
+                }
+            }else{
                 shouldnoslow = false;
             }
         }
-        if (event.getPacket() instanceof ServerboundPongPacket packet){
-            packets.add(packet);
+        if (!mc.player.isUsingItem()){
+            shouldnoslow = false;
+        }
+    }
+
+    @EventTarget
+    public void onPacket(PacketEvent event){
+        if(event.getPacket() instanceof ClientboundContainerSetSlotPacket){
+            shouldnoslow = true;
+        }
+        if(event.getPacket() instanceof ServerboundUseItemPacket){
+            shouldnoslow = false;
+            mc.player.connection.send(new ServerboundContainerClickPacket(1, 0, item, 0, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
+        }
+        if(event.getPacket() instanceof ServerboundPlayerActionPacket && ((ServerboundPlayerActionPacket) event.getPacket()).getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){
+            shouldnoslow = false;
+            mc.player.connection.send(new ServerboundContainerClickPacket(1, 0, item, 0, ClickType.PICKUP, itemstack, Int2ObjectMaps.emptyMap()));
         }
     }
 
@@ -64,5 +72,5 @@ public class NoSlow extends Module {
             event.setMovementStrafe(1F);
             event.setMovementForward(1F);
         }
-    }   
+    }
 }
