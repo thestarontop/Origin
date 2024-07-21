@@ -30,6 +30,6 @@ public class MixinMinecraft  {
     @Inject(method = "startUseItem",at = @At(value = "FIELD",target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I"))
     private void startUseItem(CallbackInfo ci) {
         if (Origin.getInstance().getModuleManager().getModule("FastPlace").isEnabled())
-            rightClickDelay = 0;
+            this.rightClickDelay = 0;
     }
 }

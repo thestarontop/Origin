@@ -78,7 +78,7 @@ public class ModuleManager {
         addHack(new Speed());
         addHack(new SafeWalk());
         addHack(new MidClick());
-        addHack(new ThrowAbleAura());
+        addHack(new ThrowableAura());
         addHack(new FastPlace());
         addHack(new AutoReport());
     }
