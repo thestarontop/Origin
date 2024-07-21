@@ -21,8 +21,7 @@ import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glGetBoolean;
+import static org.lwjgl.opengl.GL11.*;
 
 public class RenderUtils extends MinecraftInstance{
     private static final Map<Integer, Boolean> glCapMap = new HashMap<>();
@@ -161,7 +160,7 @@ public class RenderUtils extends MinecraftInstance{
         buffer.vertex(poseStack.last().pose(), (float) startX, (float) startY, (float) startZ).color(red, green, blue, alpha).normal(0, 1, 0).endVertex();
         buffer.vertex(poseStack.last().pose(), (float) endX, (float) endY, (float) endZ).color(red, green, blue, alpha).normal(0, 1, 0).endVertex();
     }
-    public static void renderEntityBoundingBox(PoseStack poseStack, Entity entity, float partialTicks) {
+    public static void renderEntityBoundingBox(PoseStack poseStack, Entity entity) {
         AABB boundingBox = entity.getBoundingBox();
         LevelRenderer.renderLineBox(
                 poseStack,
