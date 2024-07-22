@@ -74,7 +74,7 @@ public class NameTags extends Module {
                 color = new Color(39, 250, 31, 255).getRGB();
             }
 
-            mc.font.drawInBatch(playerName + ((Player) player).getHealth() + "§c❤", 0, 0, color, true, poseStack.last().pose(), buffer, true, 0, packedLight);
+            mc.font.drawInBatch(playerName +"§a"+ ((Player) player).getHealth() + "§c❤", 0, 0, color, true, poseStack.last().pose(), buffer, true, 0, packedLight);
         }
         // Pop the current state off the stack
         poseStack.popPose();

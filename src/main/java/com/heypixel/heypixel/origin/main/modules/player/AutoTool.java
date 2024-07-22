@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class AutoTool extends Module {
@@ -22,20 +23,23 @@ public class AutoTool extends Module {
 
     @EventTarget
     public void onUpdate(UpdateEvent event){
+        if (!mc.mouseHandler.isLeftPressed()) return;
         var bestspeed = 0;
         int bestSlot = -1;
         BlockState block;
-        HitResult hitResult = mc.hitResult;
-        block = mc.level.getBlockState(new BlockPos(hitResult.getLocation()));
-        for (int i=0;i<9;i++){
-            ItemStack item = mc.player.inventoryMenu.getSlot(i+36).getItem();
-            var speed = item.getDestroySpeed(block);
-            if (speed > bestspeed){
-                bestspeed = (int)speed;
-                bestSlot = i;
-            }
-            if(bestSlot != -1 && i != mc.player.getInventory().selected){
-                mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
+        if (mc.hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult hitResult = (BlockHitResult) mc.hitResult;
+            block = mc.level.getBlockState(hitResult.getBlockPos());
+            for (int i = 0; i <= 8; i++) {
+                ItemStack item = mc.player.inventoryMenu.getSlot(i + 36).getItem();
+                var speed = item.getDestroySpeed(block);
+                if (speed > bestspeed) {
+                    bestspeed = (int) speed;
+                    bestSlot = i;
+                }
+                if (bestSlot != -1 && i != mc.player.getInventory().selected) {
+                    mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
+                }
             }
         }
     }
