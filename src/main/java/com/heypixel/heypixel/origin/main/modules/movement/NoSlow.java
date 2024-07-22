@@ -6,6 +6,7 @@ import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.SlowDownEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.*;
@@ -26,28 +27,7 @@ public class NoSlow extends Module {
             shouldnoslow = true;
         }
         if(event.getPacket() instanceof ServerboundUseItemPacket){
-            for (int i = 0; i <= 45;i++){
-                if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR){
-                    NonNullList<Slot> nonnulllist = mc.player.containerMenu.slots;
-                    int b = nonnulllist.size();
-                    List<ItemStack> list = Lists.newArrayListWithCapacity(i);
-
-                    for (Slot slot : nonnulllist) {
-                        list.add(slot.getItem().copy());
-                    }
-                    Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap<>();
-
-                    for(int j = 0; j < b; ++j) {
-                        ItemStack itemstack = list.get(j);
-                        ItemStack itemstack1 = nonnulllist.get(j).getItem();
-                        if (!ItemStack.matches(itemstack, itemstack1)) {
-                            int2objectmap.put(j, itemstack1.copy());
-                        }
-                    }
-                    mc.getConnection().send(new ServerboundContainerClickPacket(0,i,i,0,ClickType.PICKUP,new ItemStack(Items.BEDROCK),int2objectmap));
-                    break;
-                }
-            }
+            mc.getConnection().send(new ServerboundContainerClickPacket(0,-11,mc.player.getInventory().selected+36,mc.player.getInventory().selected,ClickType.SWAP,mc.player.inventoryMenu.getSlot(mc.player.getInventory().selected+36).getItem(), Int2ObjectMaps.emptyMap()));
             shouldnoslow = false;
         }
         if(event.getPacket() instanceof ServerboundPlayerActionPacket && ((ServerboundPlayerActionPacket) event.getPacket()).getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){

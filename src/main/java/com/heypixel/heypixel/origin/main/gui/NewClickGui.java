@@ -1,11 +1,14 @@
 package com.heypixel.heypixel.origin.main.gui;
 
 
+import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.modules.ModuleManager;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +52,13 @@ public class NewClickGui extends Screen {
                             }
 
                         currY += 15f;
+                        }
+                        if(mouseButton == 1) {
+                            if (ClickUtils.isInRect((float) x, (float) y, xOffset + 3f, currY, xOffset + 67f, currY + 15f)) {
+                                ChatManager.sendHotBarChat(ChatFormatting.BLUE + module.getName() + "： "+module.getDescription());
+                                break;
+                            }
+                            currY += 15f;
                         }
                     }
                 }

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -29,7 +30,11 @@ public class NameTags extends Module {
 
     @EventTarget
     public void onRenderNamePlate(RenderNamePlateEvent event){
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(1f, -1000000F);
         this.renderPlayerName(event.getEntity(), event.getPosestack(),event.getBufferSource(),15728880);
+        GL11.glPolygonOffset(1f, 1000000F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
     }
 
 

@@ -18,7 +18,7 @@ public class AntiFireBall extends Module {
 
         Iterable<Entity> entitiylist = mc.level.entitiesForRendering();
         for (Entity entity:entitiylist){
-            if(entity instanceof Fireball && entity.distanceTo(mc.player) <= 7){
+            if(entity instanceof Fireball && entity.distanceTo(mc.player) <= 5){
                 mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));
                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
             }
