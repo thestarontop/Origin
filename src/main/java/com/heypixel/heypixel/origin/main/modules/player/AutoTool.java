@@ -22,9 +22,9 @@ public class AutoTool extends Module {
     public static int currentslot;
 
     @EventTarget
-    public void onUpdate(UpdateEvent event){
+    public void onRender2D(Render2DEvent event){
         if (!mc.mouseHandler.isLeftPressed()) return;
-        var bestspeed = 0;
+        var bestspeed = 0.0;
         int bestSlot = -1;
         BlockState block;
         if (mc.hitResult.getType() == HitResult.Type.BLOCK) {
@@ -34,7 +34,7 @@ public class AutoTool extends Module {
                 ItemStack item = mc.player.inventoryMenu.getSlot(i + 36).getItem();
                 var speed = item.getDestroySpeed(block);
                 if (speed > bestspeed) {
-                    bestspeed = (int) speed;
+                    bestspeed = speed;
                     bestSlot = i;
                 }
                 if (bestSlot != -1 && i != mc.player.getInventory().selected) {
