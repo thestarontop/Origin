@@ -19,7 +19,7 @@ public class HUD extends Module {
     @EventTarget
     public void onRender2D(Render2DEvent event) {
         mc.font.drawShadow(new PoseStack(), "Origin", 4, 1, RenderUtils.getRainbowOpaque(0.9f));
-        mc.font.drawShadow(new PoseStack(), "("+HOUR_FORMAT.format(new Date(System.currentTimeMillis()))+")",31 , 1.3f, -1);
+        mc.font.drawShadow(new PoseStack(), "("+HOUR_FORMAT.format(new Date(System.currentTimeMillis()))+")",32 , 1.3f, -1);
         List<String> enabled = new ArrayList<>();
         for (Module module : ModuleManager.modules) {
             if (module.isEnabled()) {
