@@ -6,6 +6,7 @@ import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.utils.RotationUtils;
 import net.minecraft.client.Options;
 import net.minecraft.client.player.Input;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
@@ -23,10 +24,11 @@ public class Sprint extends Module {
     public static boolean canSprint() {
         return (mc.player.input.forwardImpulse >= 0.8F
                 && !mc.player.horizontalCollision
-                && (mc.player.getFoodData().getFoodLevel() > 6 || mc.player.getAbilities().flying)
+                && (mc.player.getFoodData().getFoodLevel() > 6)
                 && !mc.player.hasEffect(MobEffects.BLINDNESS)
                  &&   !(Math.abs(Mth.wrapDegrees(mc.player.getYRot()) - Mth.wrapDegrees(RotationUtils.serverRotation.getYaw())) > 90));
     }
+
 
 
 }

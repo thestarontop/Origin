@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ import java.util.List;
 
 
 public class NoSlow extends Module {
-    public NoSlow(){super("NoSlow","Thanks to CCBlueX",Category.MOVEMENT);}
+    public NoSlow(){super("NoSlow","bzd",Category.MOVEMENT);}
     private boolean shouldnoslow = true;
     @EventTarget
     public void onPacket(PacketEvent event){
@@ -27,7 +28,6 @@ public class NoSlow extends Module {
             shouldnoslow = true;
         }
         if(event.getPacket() instanceof ServerboundUseItemPacket){
-            mc.getConnection().send(new ServerboundContainerClickPacket(0,-11,mc.player.getInventory().selected+36,mc.player.getInventory().selected,ClickType.SWAP,mc.player.inventoryMenu.getSlot(mc.player.getInventory().selected+36).getItem(), Int2ObjectMaps.emptyMap()));
             shouldnoslow = false;
         }
         if(event.getPacket() instanceof ServerboundPlayerActionPacket && ((ServerboundPlayerActionPacket) event.getPacket()).getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){

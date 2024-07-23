@@ -247,7 +247,7 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
 
 
         if (!this.isSprinting() && (!this.isInWater() || this.isUnderWater()) && this.hasEnoughImpulseToStartSprinting() && flag4 && (!this.isUsingItem() || false) && !this.hasEffect(MobEffects.BLINDNESS) && this.minecraft.options.keySprint.isDown()) {
-            this.setSprinting(true);
+            this.setSprinting(Sprint.canSprint());
         }
 
         boolean flag7;
