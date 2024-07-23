@@ -37,7 +37,7 @@ public class CrystalAura extends Module {
                     blockslist.clear();
                 }else {
                     blocks.forEach((key, value) -> {
-                        if ((value == Blocks.BEDROCK || value == Blocks.OBSIDIAN)) {
+                        if ((value == Blocks.BEDROCK || value == Blocks.OBSIDIAN) && key.getY() <= entity.getY()) {
                             if (!blockslist.contains(key)) {
                                 blockslist.add(key);
                             }
