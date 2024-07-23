@@ -5,13 +5,17 @@ import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.events.ClickBlockEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -48,6 +52,8 @@ public abstract class MixinMultiPlayerGameMode {
     @Shadow private ItemStack destroyingItem;
 
     @Shadow private float destroyTicks;
+
+    @Shadow protected abstract void ensureHasSentCarriedItem();
 
     @Inject(method = "attack",at=@At(value = "INVOKE",target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;ensureHasSentCarriedItem()V"))
     public void attack(Player arg, Entity arg2, CallbackInfo ci) {
@@ -105,6 +111,64 @@ public abstract class MixinMultiPlayerGameMode {
             }
 
             return true;
+        }
+    }
+    /**
+     * @author starontop
+     * @reason bzd
+     */
+    @Overwrite
+    public boolean continueDestroyBlock(BlockPos arg, Direction arg2) {
+        this.ensureHasSentCarriedItem();
+        if (this.destroyDelay > 0) {
+            --this.destroyDelay;
+            return true;
+        } else {
+            BlockState blockstate;
+            if (this.localPlayerMode.isCreative() && this.minecraft.level.getWorldBorder().isWithinBounds(arg)) {
+                this.destroyDelay = 5;
+                blockstate = this.minecraft.level.getBlockState(arg);
+                this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, arg, blockstate, 1.0F);
+                this.sendBlockAction(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, arg, arg2);
+                if (!ForgeHooks.onLeftClickBlock(this.minecraft.player, arg, arg2).isCanceled()) {
+                    this.destroyBlock(arg);
+                }
+
+                return true;
+            } else if (this.sameDestroyTarget(arg)) {
+                blockstate = this.minecraft.level.getBlockState(arg);
+                if (blockstate.isAir()) {
+                    this.isDestroying = false;
+                    return false;
+                } else {
+                    this.destroyProgress += blockstate.getDestroyProgress(this.minecraft.player, this.minecraft.player.level, arg);
+                    if (this.destroyTicks % 4.0F == 0.0F) {
+                        SoundType soundtype = blockstate.getSoundType(this.minecraft.level, arg, this.minecraft.player);
+                        this.minecraft.getSoundManager().play(new SimpleSoundInstance(soundtype.getHitSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 8.0F, soundtype.getPitch() * 0.5F, arg));
+                    }
+
+                    ++this.destroyTicks;
+                    this.minecraft.getTutorial().onDestroyBlock(this.minecraft.level, arg, blockstate, Mth.clamp(this.destroyProgress, 0.0F, 1.0F));
+                    Origin.getInstance().getEventManager().call(new ClickBlockEvent(arg));
+                    if (ForgeHooks.onLeftClickBlock(this.minecraft.player, arg, arg2).getUseItem() == Event.Result.DENY) {
+                        return true;
+                    } else {
+                        if (this.destroyProgress >= 1.0F) {
+                            this.isDestroying = false;
+                            this.sendBlockAction(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, arg, arg2);
+                            this.destroyBlock(arg);
+                            this.destroyProgress = 0.0F;
+                            this.destroyTicks = 0.0F;
+                            this.destroyDelay = 5;
+                        }
+
+                        this.minecraft.level.destroyBlockProgress(this.minecraft.player.getId(), this.destroyBlockPos, (int)(this.destroyProgress * 10.0F) - 1);
+                        return true;
+                    }
+                }
+            } else {
+                return this.startDestroyBlock(arg, arg2);
+            }
         }
     }
 }
