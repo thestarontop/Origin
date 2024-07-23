@@ -3,6 +3,7 @@ package com.heypixel.heypixel.origin.main.modules.player;
 import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
+import com.heypixel.heypixel.origin.main.event.events.ClickBlockEvent;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.Render2DEvent;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
@@ -22,14 +23,11 @@ public class AutoTool extends Module {
     public static int currentslot;
 
     @EventTarget
-    public void onRender2D(Render2DEvent event){
-        if (!mc.mouseHandler.isLeftPressed()) return;
+    public void onClickBlock(ClickBlockEvent event){
         var bestspeed = 0.0;
         int bestSlot = -1;
         BlockState block;
-        if (mc.hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult hitResult = (BlockHitResult) mc.hitResult;
-            block = mc.level.getBlockState(hitResult.getBlockPos());
+            block = mc.level.getBlockState(event.getBlockpos());
             for (int i = 0; i <= 8; i++) {
                 ItemStack item = mc.player.inventoryMenu.getSlot(i + 36).getItem();
                 var speed = item.getDestroySpeed(block);
@@ -41,7 +39,6 @@ public class AutoTool extends Module {
                     mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
                 }
             }
-        }
     }
     @EventTarget
     public void onPacket(PacketEvent event){
