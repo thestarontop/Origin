@@ -23,15 +23,15 @@ public class Xray extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         if (mc.level == null || mc.player == null) return;
-                        var BlockMap = BlockUtils.searchBlocks(4);
-                BlockMap.forEach((key, value) -> {
-                    if(value != Blocks.AIR && value != Blocks.GRASS_BLOCK && value != Blocks.DIRT) {
-                        if(!visitedPositions.contains(key)) {
-                            mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, key, Direction.DOWN));
-                            visitedPositions.add(key);
-                        }
-                    }
-                });
+        var BlockMap = BlockUtils.searchBlocks(4);
+        BlockMap.forEach((key, value) -> {
+            if(value != Blocks.AIR && value != Blocks.GRASS_BLOCK && value != Blocks.DIRT) {
+                if(!visitedPositions.contains(key)) {
+                    mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, key, Direction.DOWN));
+                    visitedPositions.add(key);
+                }
+            }
+        });
     }
     @Override
     public void onEnable() {

@@ -25,7 +25,7 @@ public class Velocity extends Module {
     public Velocity() {
         super("Velocity","bzd",Module.Category.COMBAT);
     }
-private boolean a = false;
+    private boolean a = false;
 
 
     @EventTarget

@@ -41,11 +41,6 @@ public class KillAura extends Module {
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
     private int ticks = 0;
 
-
-
-
-
-
     /**
      * Update event
      */
