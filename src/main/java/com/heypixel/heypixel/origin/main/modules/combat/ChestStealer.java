@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -19,43 +20,77 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ChestStealer extends Module {
     public ChestStealer(){super("ChestStealer","bzd",Category.COMBAT);}
 
-    private int delay = 0;
-    boolean hasItem=true;
+    private int windowid = 0;
+    private boolean hasWindow = false;
+    private int ticks = 0;
     private List<Item> blackItemList = List.of(Items.DIAMOND_SHOVEL,Items.STONE_SHOVEL,Items.IRON_SHOVEL,Items.GOLDEN_SHOVEL,Items.NETHERITE_SHOVEL,Items.COBWEB,Items.EGG,Items.BOOK,Items.CHEST,Items.FISHING_ROD,Items.LAVA_BUCKET,Items.CROSSBOW,Items.EXPERIENCE_BOTTLE,Items.WATER_BUCKET,Items.SADDLE,Items.FLINT,Items.FLINT_AND_STEEL,Items.COMPASS);
     @EventTarget
-    public void onUpdate(UpdateEvent event){
-            hasItem = false;
-            delay ++;
+    public void onPacket(PacketEvent event){
+        if (event.getPacket() instanceof ClientboundOpenScreenPacket packet){
+            hasWindow = true;
+            windowid = packet.getContainerId();
+        }
+        if (event.getPacket() instanceof ClientboundContainerSetContentPacket packet){
+            if (packet.getContainerId() != windowid) return;
 
-            if (delay >= 1){
-                if (mc.screen instanceof ContainerScreen container){
-                    for (ItemStack item : container.getMenu().getItems()){
-                        if (item.getItem() != Items.AIR){
-                            hasItem = true;
-                        }
-                    }
-                    if (mc.player !=null && !hasItem){
-                        mc.player.closeContainer();
-                    }
-                    for (Slot slot : container.getMenu().slots){
-                        if (slot.getItem().getItem() != Items.AIR){
-                            if (blackItemList.contains(slot.getItem().getItem())){
-                                mc.getConnection().send(new ServerboundContainerClickPacket(container.getMenu().containerId, slot.getSlotIndex() -10, slot.getSlotIndex(), 1, ClickType.THROW, slot.getItem(), Int2ObjectMaps.emptyMap()));
-                                mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-                            }else {
-                                mc.getConnection().send(new ServerboundContainerClickPacket(container.getMenu().containerId, slot.getSlotIndex() - 10, slot.getSlotIndex(), 0, ClickType.QUICK_MOVE, slot.getItem(), Int2ObjectMaps.emptyMap()));
-                            }
-                            delay = 0;
-                            return;
-                        }
-                    }
+            //powered by mojang
+            AbstractContainerMenu abstractcontainermenu = mc.player.containerMenu;
+            NonNullList<Slot> nonnulllist = abstractcontainermenu.slots;
+            int i = nonnulllist.size();
+            List<ItemStack> list = Lists.newArrayListWithCapacity(i);
+            Iterator var10 = nonnulllist.iterator();
+
+            while(var10.hasNext()) {
+                Slot slot = (Slot)var10.next();
+                list.add(slot.getItem().copy());
+            }
+
+            Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
+
+            for(int j = 0; j < i; ++j) {
+                ItemStack itemstack = list.get(j);
+                ItemStack itemstack1 = nonnulllist.get(j).getItem();
+                if (!ItemStack.matches(itemstack, itemstack1)) {
+                    int2objectmap.put(j, itemstack1.copy());
                 }
             }
+
+            if (packet.getItems().size() == 63){
+                for (int index = 0;index <=26;index++) {
+                    if (packet.getItems().get(index).getItem() == Items.AIR || blackItemList.contains(packet.getItems().get(index).getItem())) continue;
+                    mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(),index,index,1,ClickType.QUICK_MOVE,packet.getItems().get(index),int2objectmap));
+                }
+            }
+            if (packet.getItems().size() == 39){
+                for (int index = 0;index <=2;index++) {
+                    if (packet.getItems().get(index).getItem() == Items.AIR || blackItemList.contains(packet.getItems().get(index).getItem())) continue;
+                    mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(),index,index,1,ClickType.QUICK_MOVE,packet.getItems().get(index),int2objectmap));
+                }
+            }
+            if (packet.getItems().size() == 41){
+                for (int index = 0;index <=2;index++) {
+                    if (packet.getItems().get(index).getItem() == Items.AIR || blackItemList.contains(packet.getItems().get(index).getItem())) continue;
+                    mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(),index,index,1,ClickType.QUICK_MOVE,packet.getItems().get(index),int2objectmap));
+                }
+            }
+        }
+    }
+    @EventTarget
+    public void onUpdate(UpdateEvent event){
+        if (hasWindow){
+            ticks ++;
+            if (ticks == 3){
+                mc.player.closeContainer();
+                hasWindow = false;
+                ticks = 0;
+            }
+        }
     }
  }
 

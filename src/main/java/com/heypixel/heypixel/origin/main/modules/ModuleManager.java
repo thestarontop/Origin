@@ -52,13 +52,13 @@ public class ModuleManager {
         addHack(new Disabler());
         addHack(new Velocity());
         addHack(new Xray());
-        addHack(new Blink());
         addHack(new HUD());
         addHack(new MobAura());
         addHack(new Teams());
         addHack(new Rotation());
         addHack(new StrafeFix());
         addHack(new NoPush());
+        addHack(new Blink());
         addHack(new NoInvClose());
         addHack(new ChestStealer());
         addHack(new InvManager());

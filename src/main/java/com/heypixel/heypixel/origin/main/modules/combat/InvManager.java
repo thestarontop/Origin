@@ -47,7 +47,10 @@ public class InvManager extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
             i++;
-                ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
+            if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR){
+                i++;
+            }
+            ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
         if (i > 8) {
             if (itemStack.getItem() instanceof ArmorItem armorItem) {
                 ItemStack headarmor = mc.player.inventoryMenu.getSlot(5).getItem();

@@ -2,6 +2,7 @@ package com.heypixel.heypixel.origin.main.modules.misc;
 
 import com.heypixel.heypixel.origin.main.Commonds.ChatManager;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
+import com.heypixel.heypixel.origin.main.event.events.AttackEvent;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.utils.PacketUtils;
@@ -17,39 +18,28 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AutoReport extends Module {
-    public AutoReport(){super("AutoReport","bzd", Module.Category.COMBAT);}
-    boolean isReportUI;
-
+    public AutoReport(){super("AutoReport","bzd", Module.Category.MISC);}
+    boolean reported;
+    LinkedList<String> reportedlist = new LinkedList<>();
+    @EventTarget
+    public void onAttack(AttackEvent event){
+        if (!reportedlist.contains(event.getEntity().getDisplayName().getString())){
+            mc.getConnection().send(new ServerboundChatPacket("/report "+event.getEntity().getDisplayName().getString()));
+            reported = true;
+        }
+    }
     @EventTarget
     public void onPacket(PacketEvent event){
-
-        Packet packet = event.getPacket();
-
-        if (packet instanceof ClientboundChatPacket){
-
-            String selfName = mc.player.getDisplayName().getString();
-            String msg = ((ClientboundChatPacket) packet).getMessage().getString();
-            Matcher matcher = Pattern.compile("^(.*?) 被").matcher(msg);
-            String player = matcher.group(1);
-
-            if (matcher.find() && !selfName.contains(player)){
-                PacketUtils.sendPacketNoEvent(new ServerboundChatPacket("/report " + player + " Hacker"));
-                isReportUI = true;
-                ChatManager.sendHotBarChat(ChatFormatting.GREEN + "Has reported player >" + player + "<");
-            }
-
-        }
-        if (packet instanceof ClientboundOpenScreenPacket){
-            if (isReportUI) {
-                event.cancelEvent();
-                PacketUtils.sendPacketNoEvent(new ServerboundContainerClickPacket(((ClientboundOpenScreenPacket) packet).getContainerId(), -114514, 0, 0, ClickType.PICKUP, new ItemStack(Items.AIR), Int2ObjectMaps.emptyMap()));
-                isReportUI = false;
+        if (event.getPacket() instanceof ClientboundOpenScreenPacket packet){
+            if (reported){
+                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(),-14,0,0, ClickType.PICKUP,new ItemStack(Items.AIR),Int2ObjectMaps.emptyMap()));
+                reported = false;
             }
         }
-
     }
 }

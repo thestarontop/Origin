@@ -76,6 +76,7 @@ public class CrystalAura extends Module {
             }
             }
             mc.gameMode.useItemOn(mc.player,mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(rotation.getVec(),Direction.DOWN,block,true));
+            mc.player.swing(InteractionHand.MAIN_HAND);
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             placedblocklist.add(block);
             break;

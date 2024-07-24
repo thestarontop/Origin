@@ -142,7 +142,7 @@ public class KillAura extends Module {
     private static void attackEntity(Entity entity) {
         Origin.getInstance().getEventManager().call(new AttackEvent(entity));
         mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));
-        mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+        mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
     private static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {

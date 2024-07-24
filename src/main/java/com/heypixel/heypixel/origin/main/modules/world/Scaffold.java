@@ -84,8 +84,8 @@ public class Scaffold extends Module {
                 }
                 InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(rotation.getVec(), RotationUtils.getPlacementDirection(), block, true));
                 if ((result == InteractionResult.SUCCESS)) {
-                    mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-                    mc.level.setBlockAndUpdate(block,mc.level.getBlockState(block));
+                    mc.player.swing(InteractionHand.MAIN_HAND);
+                    mc.level.setBlock(block,mc.level.getBlockState(block),Block.UPDATE_CLIENTS);
                 }
                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             }

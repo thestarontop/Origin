@@ -89,7 +89,7 @@ public class MobAura extends Module {
 
 
                         if(mc.player.getY() - entity.getY() >= 0.25)
-                            boundingBox = boundingBox.expandTowards(0.0,0.35,0.0);
+                            boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
 
 
                         Rotation rotation = RotationUtils.lockView(boundingBox,false,false,true,false,4F).getRotation();
@@ -136,7 +136,7 @@ public class MobAura extends Module {
     private static void attackEntity(Entity entity) {
         Origin.getInstance().getEventManager().call(new AttackEvent(entity));
         mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));
-        mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+        mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
     private static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {

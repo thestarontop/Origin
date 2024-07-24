@@ -13,6 +13,7 @@ public class SafeWalk extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
         mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.PRESS_SHIFT_KEY));
+        mc.player.input.forwardImpulse = 1f;
     }
     @Override
     public void onDisable(){
