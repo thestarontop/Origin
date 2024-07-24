@@ -34,19 +34,29 @@ public class Velocity extends Module {
             for (Entity entity : entitylist) {
             if (mc.player.hurtTime == 9) {
             if ((entity instanceof Player && mc.player.distanceTo(
-            entity) <= 3.1 && entity.getId() != mc.player.getId()
+            entity) <= 3.2 && entity.getId() != mc.player.getId()
             )) {
-
-            for (var i = 0;i<5;i++){
+            if (KillAura.target != null){
+                entity = KillAura.target;
+            }
+            for (int i = 0;i<5;i++){
             if (!mc.player.isSprinting() && !a) {
             mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
             a = true;
             }
 
+                var boundingBox = entity.getBoundingBox().expandTowards(0.0,1.0,0.0);
 
-            Rotation rotation =
-            RotationUtils.toRotation(RotationUtils.getCenter(entity.getBoundingBox().expandTowards(0.0, 1.0, 0.0)), false);
-                    RotationUtils.setTargetRotation(rotation);
+
+                if(mc.player.getY() - entity.getY() <= 0.25)
+                    boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
+
+
+                if(mc.player.getY() - entity.getY() >= 0.25)
+                    boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
+
+                Rotation rotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F).getRotation();
+                RotationUtils.setTargetRotation(rotation);
 
 
             mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));

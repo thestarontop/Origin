@@ -211,7 +211,6 @@ public class InvManager extends Module {
                     mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                 }
                 if (i == 45) {
-                    mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     i = 4;
                 }
 

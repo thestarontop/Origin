@@ -40,6 +40,7 @@ public class KillAura extends Module {
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
     private int ticks = 0;
+    public static Entity target;
 
     /**
      * Update event
@@ -100,7 +101,7 @@ public class KillAura extends Module {
                         if(mc.player.getY() - entity.getY() >= 0.25)
                             boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
 
-
+                        target = entity;
                         Rotation rotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F).getRotation();
                         RotationUtils.setTargetRotation(rotation);
                         if(ticks >= delay) {
@@ -120,7 +121,7 @@ public class KillAura extends Module {
         if(AttackedEntities.size() >= CanReachEntities.size()){
             AttackedEntities.clear();
         }
-
+    target = null;
     }
 
 
