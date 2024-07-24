@@ -20,6 +20,7 @@ public class NoWeb extends Module {
             if(value == Blocks.COBWEB) {
                 mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, key, Direction.DOWN));
                 mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK, key, Direction.DOWN));
+                mc.level.setBlock(key,mc.level.getBlockState(new BlockPos(0,114514,0)), 4);
             }
         });
         water2.forEach((key, value) -> {
