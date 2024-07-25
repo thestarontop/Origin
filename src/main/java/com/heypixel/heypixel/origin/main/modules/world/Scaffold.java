@@ -37,7 +37,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.heypixel.heypixel.origin.main.utils.BlockUtils.isReplaceable;
+import static com.heypixel.heypixel.origin.main.utils.BlockUtils.*;
 
 public class Scaffold extends Module {
     public Scaffold() {
@@ -63,7 +63,7 @@ public class Scaffold extends Module {
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR) {
                     if (key.getY() <= mc.player.getY()) {
-                        double currentDistance = mc.player.position().distanceTo(new Vec3(key.getX(), key.getY(), key.getZ()));
+                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(key.getX(), key.getY(), key.getZ()));
                         if (currentDistance < closestDistance.get()) {
                             closestDistance.set(currentDistance);
                             closestBlockPos.set(key);
@@ -85,11 +85,10 @@ public class Scaffold extends Module {
                 InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(rotation.getVec(), RotationUtils.getPlacementDirection(), block, true));
                 if ((result == InteractionResult.SUCCESS)) {
                     mc.player.swing(InteractionHand.MAIN_HAND);
-                    mc.level.setBlock(block,mc.level.getBlockState(block),4);
                 }
+                mc.level.setBlock(block,mc.level.getBlockState(block),4);
                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             }
-
 
     }
 

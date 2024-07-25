@@ -53,9 +53,9 @@ public class ESP extends Module {
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
                 MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
-                VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.LINES);
+                VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.LINE_STRIP);
                 poseStack.pushPose();
-                RenderSystem.setShaderColor(0.5F, 0F, 0.5F, 1.0F); // 设置颜色为红色
+                RenderSystem.setShaderColor(1F, 1F, 1F, 1.0F);
                 LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox.minX, boundingBox.minY, boundingBox.minZ,
                         boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0F, 0.0F, 0.0F, 1.0F);
                 poseStack.popPose();

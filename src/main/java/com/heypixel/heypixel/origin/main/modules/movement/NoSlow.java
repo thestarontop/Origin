@@ -53,6 +53,7 @@ public class NoSlow extends Module {
                     }
                 }
                 mc.getConnection().send(new ServerboundContainerClickPacket(0,-1,mc.player.getInventory().selected+36,0,ClickType.PICKUP,mc.player.getInventory().getSelected(),int2objectmap));
+                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                 mc.getConnection().send(new ServerboundContainerClickPacket(0,-1,mc.player.getInventory().selected+36,0,ClickType.PICKUP,mc.player.getInventory().getSelected(),int2objectmap));
                 mc.getConnection().send(new ServerboundContainerClosePacket(0));
             }

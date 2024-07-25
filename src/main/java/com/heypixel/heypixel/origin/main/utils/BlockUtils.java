@@ -25,7 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class BlockUtils {
+public class BlockUtils extends MinecraftInstance{
     public static Map<BlockPos, Block> searchBlocks(int radius) {
         Map<BlockPos, Block> blocks = new HashMap<>();
 
@@ -138,4 +138,5 @@ public class BlockUtils {
         }
         return false;
     }
+
 }

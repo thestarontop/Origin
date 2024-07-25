@@ -57,6 +57,7 @@ public class ModuleManager {
         addHack(new Teams());
         addHack(new Rotation());
         addHack(new StrafeFix());
+        addHack(new NoSlow());
         addHack(new NoPush());
         addHack(new Blink());
         addHack(new NoInvClose());
@@ -68,7 +69,6 @@ public class ModuleManager {
         addHack(new Scaffold());
         addHack(new SilentStrafeFix());
         addHack(new Chams());
-        addHack(new NoSlow());
         addHack(new BoatJump());
         addHack(new CrystalAura());
         addHack(new AutoTool());
@@ -81,7 +81,6 @@ public class ModuleManager {
         addHack(new ThrowableAura());
         addHack(new FastPlace());
         addHack(new AutoReport());
-        addHack(new NoWeb());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
