@@ -47,7 +47,7 @@ public class InvManager extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
             i++;
-            if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR){
+            if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i != 45){
                 i++;
             }
             ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
