@@ -12,6 +12,7 @@ import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.TickEvent;
 import com.heypixel.heypixel.origin.mixins.MixinServerboundMovePlayerPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -620,17 +621,29 @@ public class RotationUtils extends MinecraftInstance{
         return mc.player.getDirection();
     }
     public static float movingYaw() {
-        return (float) (direction() * 180f / Math.PI);
+        return (float) (getMovementDirectionOfInput(mc.player.getYRot()) * 180f / Math.PI);
     }
-    public static double direction() {
-        var rotationYaw = mc.player.getYRot();
-        if (mc.player.input.forwardImpulse < 0f) rotationYaw += 180f;
+    public static double getMovementDirectionOfInput(double facingYaw){
+        var actualYaw = facingYaw;
         var forward = 1f;
-        if (mc.player.input.forwardImpulse < 0f) forward = -0.5f; else if (mc.player.input.forwardImpulse > 0f) forward = 0.5f;
-        if (mc.player.input.leftImpulse > 0f) rotationYaw -= 90f * forward;
-        if (mc.player.input.leftImpulse < 0f) rotationYaw += 90f * forward;
 
-        return Math.toRadians(rotationYaw);
+        // Check if client-user tries to walk backwards (+180 to turn around)
+        if (mc.player.input.down) {
+            actualYaw += 180f;
+            forward = -0.5f;
+        } else if (mc.player.input.up) {
+            forward = 0.5f;
+        }
+
+        // Check which direction the client-user tries to walk sideways
+        if (mc.player.input.left) {
+            actualYaw -= 90f * forward;
+        }
+        if (mc.player.input.right) {
+            actualYaw += 90f * forward;
+        }
+
+        return actualYaw;
     }
 
 

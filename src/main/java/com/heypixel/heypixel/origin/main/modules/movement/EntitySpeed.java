@@ -4,6 +4,7 @@ import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.utils.RotationUtils;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -23,7 +24,7 @@ public class EntitySpeed extends Module {
         }
 
         // Grim gives 0.08 leniency per entity which is customizable by speed.
-        var yaw = RotationUtils.movingYaw();
+        var yaw = Math.toRadians(RotationUtils.getMovementDirectionOfInput(RotationUtils.serverRotation.getYaw()));
         var boost = 0.08 * collisions;
 
         mc.player.setDeltaMovement(mc.player.getDeltaMovement().add(-Math.sin(yaw) * boost, 0.0, Math.cos(yaw) * boost));
@@ -32,6 +33,24 @@ public class EntitySpeed extends Module {
     return entity != mc.player && entity instanceof LivingEntity && !(entity instanceof ArmorStand);
     }
 
+    private double getMoveYaw(){
+        var moveYaw =RotationUtils.serverRotation.getYaw();
+        if (mc.player.input.forwardImpulse != 0F && mc.player.input.leftImpulse == 0F) {
+            moveYaw += mc.player.input.forwardImpulse > 0 ? 0 : 180;
+        } 
+        if (mc.player.input.forwardImpulse != 0F && mc.player.input.leftImpulse != 0F) {
+            if (mc.player.input.forwardImpulse > 0) {
+                moveYaw += mc.player.input.leftImpulse > 0 ? -45 : 45;
+            } else {
+                moveYaw -= mc.player.input.leftImpulse > 0 ? -45 : 45;
+            }
+            moveYaw += mc.player.input.forwardImpulse > 0 ? 0 : 180;
+        } 
+        if (mc.player.input.forwardImpulse == 0F && mc.player.input.leftImpulse != 0F) {
+            moveYaw += mc.player.input.leftImpulse > 0 ? -90 : 90;
+        }
+        return moveYaw;
+    }
 
 
 }
