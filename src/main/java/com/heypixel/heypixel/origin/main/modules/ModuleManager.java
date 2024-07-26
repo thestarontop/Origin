@@ -82,6 +82,7 @@ public class ModuleManager {
         addHack(new FastPlace());
         addHack(new AutoReport());
         addHack(new AntiBlind());
+        addHack(new LowFire());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
