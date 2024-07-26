@@ -33,24 +33,5 @@ public class EntitySpeed extends Module {
     return entity != mc.player && entity instanceof LivingEntity && !(entity instanceof ArmorStand);
     }
 
-    private double getMoveYaw(){
-        var moveYaw =RotationUtils.serverRotation.getYaw();
-        if (mc.player.input.forwardImpulse != 0F && mc.player.input.leftImpulse == 0F) {
-            moveYaw += mc.player.input.forwardImpulse > 0 ? 0 : 180;
-        } 
-        if (mc.player.input.forwardImpulse != 0F && mc.player.input.leftImpulse != 0F) {
-            if (mc.player.input.forwardImpulse > 0) {
-                moveYaw += mc.player.input.leftImpulse > 0 ? -45 : 45;
-            } else {
-                moveYaw -= mc.player.input.leftImpulse > 0 ? -45 : 45;
-            }
-            moveYaw += mc.player.input.forwardImpulse > 0 ? 0 : 180;
-        } 
-        if (mc.player.input.forwardImpulse == 0F && mc.player.input.leftImpulse != 0F) {
-            moveYaw += mc.player.input.leftImpulse > 0 ? -90 : 90;
-        }
-        return moveYaw;
-    }
-
 
 }

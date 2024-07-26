@@ -81,6 +81,7 @@ public class ModuleManager {
         addHack(new ThrowableAura());
         addHack(new FastPlace());
         addHack(new AutoReport());
+        addHack(new AntiBlind());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

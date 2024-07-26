@@ -21,7 +21,8 @@
     "MixinLivingEntityRenderer",
     "MixinLocalPlayer",
     "MixinMinecraft",
-    "MixinMultiPlayerGameMode"
+    "MixinMultiPlayerGameMode",
+    "MixinScreenEffectRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

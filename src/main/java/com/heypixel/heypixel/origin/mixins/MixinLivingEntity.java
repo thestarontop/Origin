@@ -6,6 +6,8 @@ import com.heypixel.heypixel.origin.main.modules.ModuleManager;
 import com.heypixel.heypixel.origin.main.Origin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity{
@@ -68,6 +71,12 @@ public abstract class MixinLivingEntity extends Entity{
         }
         this.hasImpulse = true;
         ForgeHooks.onLivingJump((LivingEntity) Minecraft.getInstance().level.getEntity(getId()));
+    }
+    @Inject(method = "hasEffect",at=@At("HEAD"),cancellable = true)
+    private void hasEffect(MobEffect arg, CallbackInfoReturnable<Boolean> cir){
+        Module AntiBlind = Origin.getInstance().getModuleManager().getModule("antiblind");
+        if ((arg == MobEffects.CONFUSION || arg == MobEffects.BLINDNESS) && AntiBlind.isEnabled())
+            cir.setReturnValue(false);
     }
 
 }
