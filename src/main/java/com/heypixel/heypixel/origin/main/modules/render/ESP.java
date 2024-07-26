@@ -18,6 +18,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -57,7 +58,7 @@ public class ESP extends Module {
                 poseStack.pushPose();
                 RenderSystem.setShaderColor(1F, 1F, 1F, 1.0F);
                 LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox.minX, boundingBox.minY, boundingBox.minZ,
-                        boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0F, 0.0F, 0.0F, 1.0F);
+                        boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0F, 1.0F, 1.0F, 1.0F);
                 poseStack.popPose();
                 bufferSource.endBatch();
                 RenderSystem.disableBlend();

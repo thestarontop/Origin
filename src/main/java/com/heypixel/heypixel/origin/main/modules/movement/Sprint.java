@@ -26,7 +26,7 @@ public class Sprint extends Module {
                 && !mc.player.horizontalCollision
                 && (mc.player.getFoodData().getFoodLevel() > 6)
                 && !mc.player.hasEffect(MobEffects.BLINDNESS)
-                 &&   !(Math.abs(Mth.wrapDegrees(mc.player.getYRot()) - Mth.wrapDegrees(RotationUtils.serverRotation.getYaw())) > 90));
+                 &&   !(Math.abs(Mth.wrapDegrees(mc.player.getYRot()) - Mth.wrapDegrees(RotationUtils.serverRotation.getYaw())) > 60));
     }
 
 

@@ -64,12 +64,7 @@ public class NoSlow extends Module {
     }
     @EventTarget
     public void onPacket(PacketEvent event){
-        /*if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
-            if (packet.getContainerId() == 0 && packet.getSlot() - 36 == mc.player.getInventory().selected) {
-                shouldnoslow = true;
-            }
-        }
-        if(event.getPacket() instanceof ServerboundUseItemPacket){
+        /*if(event.getPacket() instanceof ServerboundUseItemPacket){
             shouldnoslow = false;
         }
         if(event.getPacket() instanceof ServerboundPlayerActionPacket && ((ServerboundPlayerActionPacket) event.getPacket()).getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){

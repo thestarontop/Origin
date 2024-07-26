@@ -85,7 +85,7 @@ public class ChestStealer extends Module {
     public void onUpdate(UpdateEvent event){
         if (hasWindow){
             ticks ++;
-            if (ticks == 3){
+            if (ticks == 5){
                 mc.player.closeContainer();
                 hasWindow = false;
                 ticks = 0;

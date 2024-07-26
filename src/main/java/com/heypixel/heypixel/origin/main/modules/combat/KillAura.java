@@ -1,11 +1,13 @@
 package com.heypixel.heypixel.origin.main.modules.combat;
 
+import com.heypixel.heypixel.origin.main.event.events.JumpEvent;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.AttackEvent;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
 import com.heypixel.heypixel.origin.main.modules.misc.MidClick;
 import com.heypixel.heypixel.origin.main.modules.misc.Teams;
+import com.heypixel.heypixel.origin.main.modules.movement.Sprint;
 import com.heypixel.heypixel.origin.main.utils.Rotation;
 import com.heypixel.heypixel.origin.main.utils.RotationUtils;
 import com.heypixel.heypixel.origin.main.Origin;
@@ -42,9 +44,12 @@ public class KillAura extends Module {
     private int ticks = 0;
     public static Entity target;
 
-    /**
-     * Update event
-     */
+    @EventTarget
+    public void onJump(JumpEvent event){
+        if (!Sprint.canSprint()){
+            mc.player.setSprinting(false);
+        }
+    }
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         int delay = 2;

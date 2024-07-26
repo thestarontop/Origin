@@ -17,7 +17,7 @@ public class SuperKnockBack extends Module {
     @EventTarget
     public void onAttack(AttackEvent event) {
         if (mc.level == null || mc.player == null || event.getEntity() == null)return;
-        if (!mc.player.isSprinting()) {
+        if (!sprinting) {
             needstop = true;
             mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
         }
