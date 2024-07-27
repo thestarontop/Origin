@@ -19,9 +19,11 @@ public class ESP extends Module {
     public void onRender3D(Render3DEvent event) {
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity.getId() != mc.player.getId() && entity instanceof Player) {
-                RenderUtils.renderBoundingBox(event.getPoseStack(), entity, 1F, 1F, 1F);
-            } else if (entity instanceof Player && MidClick.isFriend((Player) entity)) {
-                RenderUtils.renderBoundingBox(event.getPoseStack(), entity, 0.1f, 1f, 0.1f);
+                if (MidClick.isFriend((Player) entity)) {
+                    RenderUtils.renderBoundingBox(event.getPoseStack(), entity, 0.1F, 1F, 0.1F);
+                }else{
+                    RenderUtils.renderBoundingBox(event.getPoseStack(), entity, 1F, 1F, 1F);
+                }
             }
         }
     }
