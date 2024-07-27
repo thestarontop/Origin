@@ -46,10 +46,12 @@ public class InvManager extends Module {
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
+        if (mc.options.keyUp.isDown() || mc.options.keyDown.isDown() || mc.options.keyJump.isDown() || mc.options.keyRight.isDown() || mc.options.keyLeft.isDown())
+            return;
+        i++;
+        if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i != 45){
             i++;
-            if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i != 45){
-                i++;
-            }
+        }
             ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
         if (i > 8) {
             if (itemStack.getItem() instanceof ArmorItem armorItem) {
