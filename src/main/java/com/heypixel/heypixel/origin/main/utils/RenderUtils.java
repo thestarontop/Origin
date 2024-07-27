@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +25,8 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL11.*;
 
 public class RenderUtils extends MinecraftInstance{
+
+
     private static final Map<Integer, Boolean> glCapMap = new HashMap<>();
 
     public static void draw3DBox(Matrix4f matrix4f, AABB box, Color color) {
@@ -207,6 +210,35 @@ public class RenderUtils extends MinecraftInstance{
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
         poseStack.popPose();
+    }
+    public static void renderBoundingBox(PoseStack poseStack, Entity entity, float red, float green, float blue) {
+        EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
+        double camX = dispatcher.camera.getPosition().x();
+        double camY = dispatcher.camera.getPosition().y();
+        double camZ = dispatcher.camera.getPosition().z();
+        AABB boundingBox = entity.getBoundingBox().move(-camX, -camY, -camZ);
+
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+        GL11.glPolygonOffset(1f, -1000000F);
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.LINES);
+
+        poseStack.pushPose();
+        RenderSystem.setShaderColor(red, green, blue, 1.0F);
+        LevelRenderer.renderLineBox(poseStack, vertexConsumer, boundingBox.minX, boundingBox.minY, boundingBox.minZ,
+                boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0F, 1.0F, 1.0F, 1.0F);
+        poseStack.popPose();
+
+        bufferSource.endBatch();
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
+        GL11.glPolygonOffset(1f, 1000000F);
+        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
     }
 
 }
