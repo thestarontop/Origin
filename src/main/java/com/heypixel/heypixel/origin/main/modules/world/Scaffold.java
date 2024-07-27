@@ -56,6 +56,7 @@ public class Scaffold extends Module {
         if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
             return;
         }
+        mc.player.setSprinting(false);
         var BlockMap = BlockUtils.searchBlocks(5);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(10000.0);
