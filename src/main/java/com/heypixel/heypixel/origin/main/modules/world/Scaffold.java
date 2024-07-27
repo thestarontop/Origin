@@ -63,7 +63,7 @@ public class Scaffold extends Module {
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR) {
                     if (key.getY() <= mc.player.getY()) {
-                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(key.getX(), key.getY(), key.getZ()));
+                        double currentDistance = mc.player.position().add(new Vec3(0,-1,0)).distanceToSqr(new Vec3(key.getX(), key.getY(), key.getZ()));
                         if (currentDistance < closestDistance.get()) {
                             closestDistance.set(currentDistance);
                             closestBlockPos.set(key);
@@ -73,16 +73,16 @@ public class Scaffold extends Module {
             }
         });
     BlockPos block = closestBlockPos.get();
-            Rotation.VecRotation rotation = RotationUtils.faceBlock(block);
+            Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
             if (rotation != null) {
-                RotationUtils.setTargetRotation(rotation.getRotation());
+                RotationUtils.setTargetRotation(rotation);
                 for (int i = 0; i < 9; i++) {
                     if (mc.player.inventoryMenu.getSlot(i + 36).getItem().getItem() instanceof BlockItem) {
                         mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
                         break;
                     }
                 }
-                InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(rotation.getVec(), RotationUtils.getPlacementDirection(), block, true));
+                InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
                 if ((result == InteractionResult.SUCCESS)) {
                     mc.player.swing(InteractionHand.MAIN_HAND);
                 }

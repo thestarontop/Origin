@@ -46,9 +46,7 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onJump(JumpEvent event){
-        if (!Sprint.canSprint()){
             mc.player.setSprinting(false);
-        }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event) {

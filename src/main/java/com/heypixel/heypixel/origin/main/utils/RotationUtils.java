@@ -617,9 +617,7 @@ public class RotationUtils extends MinecraftInstance{
 
         return currVelocity;
     }
-    public static Direction getPlacementDirection() {
-        return mc.player.getDirection();
-    }
+
     public static float movingYaw() {
         return (float) (getMovementDirectionOfInput(mc.player.getYRot()) * 180f / Math.PI);
     }
@@ -644,6 +642,52 @@ public class RotationUtils extends MinecraftInstance{
         }
 
         return actualYaw;
+    }
+    public static Direction getBlockPlacementDirection(BlockPos pos) {
+        Vec3 playerPosition = mc.player.position();
+        double dx = pos.getX() + 0.5 - playerPosition.x;
+        double dy = pos.getY() + 0.5 - playerPosition.y;
+        double dz = pos.getZ() + 0.5 - playerPosition.z;
+
+        double absDx = Math.abs(dx);
+        double absDy = Math.abs(dy);
+        double absDz = Math.abs(dz);
+
+        if (absDx > absDy && absDx > absDz) {
+            return dx > 0 ? Direction.WEST : Direction.EAST;
+        } else if (absDz > absDx && absDz > absDy) {
+            return dz > 0 ? Direction.NORTH : Direction.SOUTH;
+        } else {
+            return dy > 0 ? Direction.DOWN : Direction.UP;
+        }
+    }
+    public static Rotation getBlockPlacementRotation(BlockPos targetPos) {
+        var playerPos = mc.player.position();
+        double dx = targetPos.getX() + 0.5 - playerPos.x;
+        double dy = targetPos.getY() + 0.5 - (playerPos.y + mc.player.getEyeHeight()); // player eye height is approximately 1.62 blocks above their position
+        double dz = targetPos.getZ() + 0.5 - playerPos.z;
+
+        double distanceXZ = Math.sqrt(dx * dx + dz * dz);
+
+        float preferredYaw = 180.0f;
+        float actualYaw = (float) (Math.atan2(dz, dx) * (180 / Math.PI)) - 90;
+
+        // Calculate the pitch needed for preferred yaw
+        double preferredYawRadians = Math.toRadians(preferredYaw);
+        double adjustedDx = Math.cos(preferredYawRadians) * distanceXZ;
+        double adjustedDz = Math.sin(preferredYawRadians) * distanceXZ;
+        double adjustedDy = targetPos.getY() + 0.5 - (playerPos.y + 1.62);
+
+        float preferredPitch = (float) -(Math.atan2(adjustedDy, distanceXZ) * (180 / Math.PI));
+
+        // Calculate the pitch for actual yaw
+        float actualPitch = (float) -(Math.atan2(dy, distanceXZ) * (180 / Math.PI));
+
+        // Decide which yaw to use based on the proximity of actual yaw to preferred yaw
+        float yaw = Math.abs(preferredYaw - actualYaw) < 30 ? preferredYaw : actualYaw;
+        float pitch = yaw == preferredYaw ? preferredPitch : actualPitch;
+
+        return new Rotation(yaw, pitch);
     }
 
 
