@@ -1,5 +1,6 @@
 package com.heypixel.heypixel.origin.main.modules.movement;
 
+import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.UpdateEvent;
@@ -26,7 +27,8 @@ public class Sprint extends Module {
                 && !mc.player.horizontalCollision
                 && (mc.player.getFoodData().getFoodLevel() > 6)
                 && !mc.player.hasEffect(MobEffects.BLINDNESS)
-                 &&   !(Math.abs(Mth.wrapDegrees(mc.player.getYRot()) - Mth.wrapDegrees(RotationUtils.serverRotation.getYaw())) > 60));
+                 &&   !(Math.abs(Mth.wrapDegrees(mc.player.getYRot()) - Mth.wrapDegrees(RotationUtils.serverRotation.getYaw())) > 60)
+        && !Origin.getInstance().getModuleManager().getModule("scaffold").isEnabled());
     }
 
 

@@ -4,6 +4,7 @@ import com.heypixel.heypixel.origin.main.modules.Module;
 import com.heypixel.heypixel.origin.main.event.events.JumpEvent;
 import com.heypixel.heypixel.origin.main.modules.ModuleManager;
 import com.heypixel.heypixel.origin.main.Origin;
+import com.heypixel.heypixel.origin.main.utils.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -66,8 +67,18 @@ public abstract class MixinLivingEntity extends Entity{
         Vec3 vec3 = this.getDeltaMovement();
         this.setDeltaMovement(vec3.x, d0, vec3.z);
         if (this.isSprinting()) {
-            float f = yaw * ((float)Math.PI / 180);
-            this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2f, 0.0, Mth.cos(f) * 0.2f));
+            float fixedYaw;
+            if (RotationUtils.targetRotation != null) {
+                if (Origin.getInstance().getModuleManager().getModule("strafefix").isEnabled() || Origin.getInstance().getModuleManager().getModule("silentstrafefix").isEnabled()) {
+                    fixedYaw = RotationUtils.targetRotation.getYaw();
+                    double motionx = Mth.sin(fixedYaw / 180F * 3.1415927F) * 0.2F;
+                    double motionZ = Mth.cos(fixedYaw / 180F * 3.1415927F) * 0.2F;
+                    this.setDeltaMovement(this.getDeltaMovement().add(-motionx, 0.0, motionZ));
+                }
+            }else {
+                float f = yaw * ((float) Math.PI / 180);
+                this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2f, 0.0, Mth.cos(f) * 0.2f));
+            }
         }
         this.hasImpulse = true;
         ForgeHooks.onLivingJump((LivingEntity) Minecraft.getInstance().level.getEntity(getId()));

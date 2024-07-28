@@ -53,10 +53,10 @@ public class Scaffold extends Module {
         }
         findBlock();
         place();*/
+        mc.player.setSprinting(RotationUtils.targetRotation == null);
         if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
             return;
         }
-        mc.player.setSprinting(false);
         var BlockMap = BlockUtils.searchBlocks(5);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(10000.0);
@@ -79,7 +79,7 @@ public class Scaffold extends Module {
                 RotationUtils.setTargetRotation(rotation);
                 for (int i = 0; i < 9; i++) {
                     if (mc.player.inventoryMenu.getSlot(i + 36).getItem().getItem() instanceof BlockItem) {
-                        mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
+                        mc.player.getInventory().selected = i;
                         break;
                     }
                 }
@@ -88,9 +88,8 @@ public class Scaffold extends Module {
                     mc.player.swing(InteractionHand.MAIN_HAND);
                 }
                 mc.level.setBlock(block,mc.level.getBlockState(block),4);
-                mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             }
-
+        mc.player.setSprinting(RotationUtils.targetRotation == null);
     }
 
     private void place() {
