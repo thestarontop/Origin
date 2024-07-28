@@ -9,13 +9,15 @@ import com.heypixel.heypixel.origin.main.utils.MinecraftInstance;
 import com.heypixel.heypixel.origin.main.utils.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.spongepowered.asm.mixin.Mixin;
 
+
 @Mod("origin")
-public class Origin extends MinecraftInstance {
+public class Origin extends MinecraftInstance{
 
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
