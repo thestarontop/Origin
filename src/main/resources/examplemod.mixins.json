@@ -9,7 +9,7 @@
     "MixinEntity",
     "MixinLivingEntity",
     "MixinPlayer",
-    "MixinServerboundMovePlayerPacket"
+    "acesser.ServerboundMovePlayerPacketAcesser"
   ],
   "client": [
     "MixinEntityRenderer",
@@ -22,7 +22,8 @@
     "MixinLocalPlayer",
     "MixinMinecraft",
     "MixinMultiPlayerGameMode",
-    "MixinScreenEffectRenderer"
+    "MixinScreenEffectRenderer",
+    "acesser.MinecraftAcesser"
   ],
   "injectors": {
     "defaultRequire": 1

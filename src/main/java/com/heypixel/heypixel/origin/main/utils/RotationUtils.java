@@ -10,9 +10,8 @@ import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.annotations.EventTarget;
 import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.event.events.TickEvent;
-import com.heypixel.heypixel.origin.mixins.MixinServerboundMovePlayerPacket;
+import com.heypixel.heypixel.origin.mixins.acesser.ServerboundMovePlayerPacketAcesser;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -574,7 +573,7 @@ public class RotationUtils extends MinecraftInstance{
     public void onPacket(PacketEvent event) {
         if (event.getPacket() instanceof ServerboundMovePlayerPacket packet1) {
             if (targetRotation != null  && (targetRotation.getYaw() != serverRotation.getYaw() || targetRotation.getPitch() != serverRotation.getPitch())) {
-                MixinServerboundMovePlayerPacket packet = (MixinServerboundMovePlayerPacket) packet1;
+                ServerboundMovePlayerPacketAcesser packet = (ServerboundMovePlayerPacketAcesser) packet1;
                 packet.setHasRot(true);
                 packet.setYaw(targetRotation.getYaw());
                 packet.setPitch(targetRotation.getPitch());

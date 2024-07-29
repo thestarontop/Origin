@@ -4,9 +4,9 @@ import com.heypixel.heypixel.origin.main.event.events.TickEvent;
 import com.heypixel.heypixel.origin.main.Origin;
 import com.heypixel.heypixel.origin.main.event.events.WorldEvent;
 import net.minecraft.client.Minecraft;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.client.Timer;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -18,6 +18,10 @@ import javax.annotation.Nullable;
 public abstract class MixinMinecraft {
 
     @Shadow private int rightClickDelay;
+
+    @Shadow @Final private Timer timer;
+
+
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", shift = At.Shift.BEFORE))
     private void runtick(boolean bl, CallbackInfo ci) {
@@ -36,4 +40,5 @@ public abstract class MixinMinecraft {
         if (Origin.getInstance().getModuleManager().getModule("FastPlace").isEnabled())
             this.rightClickDelay = 0;
     }
+
 }

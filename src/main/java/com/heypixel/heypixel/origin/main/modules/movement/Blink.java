@@ -10,6 +10,7 @@ import com.heypixel.heypixel.origin.main.event.events.PacketEvent;
 import com.heypixel.heypixel.origin.main.utils.PacketUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Timer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
@@ -68,6 +69,7 @@ public class Blink extends Module {
         }catch (Error e){
             e.printStackTrace();
         }
+
     }
     public void onDisable() {
         tick=0;

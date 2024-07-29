@@ -1,4 +1,4 @@
-package com.heypixel.heypixel.origin.mixins;
+package com.heypixel.heypixel.origin.mixins.acesser;
 
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ServerboundMovePlayerPacket.class)
-public interface MixinServerboundMovePlayerPacket {
+public interface ServerboundMovePlayerPacketAcesser {
     @Mutable
     @Accessor("yRot")
     void setYaw(float yaw);
