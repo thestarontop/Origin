@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.mojang.mixins",
+  "package": "net.java.mixins",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
@@ -12,11 +12,13 @@
     "acesser.ServerboundMovePlayerPacketAcesser"
   ],
   "client": [
+    "MixinChatScreen",
     "MixinEntityRenderer",
     "MixinGameRenderer",
     "MixinItemInHandRenderer",
     "MixinKeyboardHandler",
     "MixinKeyboardInput",
+    "MixinKeyMapping",
     "MixinLevelRenderer",
     "MixinLivingEntityRenderer",
     "MixinLocalPlayer",
