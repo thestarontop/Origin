@@ -40,7 +40,6 @@ public class NoSlow extends Module {
         if(event.getPacket() instanceof ServerboundUseItemPacket packet){
             ItemStack item = mc.player.getItemInHand(packet.getHand());
             if (!isUsable(item)){
-                event.cancelEvent();
                 return;
             }
             shouldnoslow = false;
@@ -65,8 +64,15 @@ public class NoSlow extends Module {
                     int2objectmap.put(j, itemstack1.copy());
                 }
             }
+            boolean sprinting = mc.player.isSprinting();
+            if (sprinting){
+                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.STOP_SPRINTING));
+            }
             mc.getConnection().send(new ServerboundContainerClickPacket(0,-32767,mc.player.getInventory().selected+36,0,ClickType.PICKUP, mc.player.getInventory().getSelected(),int2objectmap));
             mc.getConnection().send(new ServerboundContainerClosePacket(0));
+            if(sprinting){
+                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
+            }
             //第二解决方案：副手
         }
         if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
