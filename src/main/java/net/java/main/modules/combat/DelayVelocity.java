@@ -18,7 +18,7 @@ public class DelayVelocity extends Module {
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundBlockUpdatePacket> packets4 = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<ClientboundStatusResponsePacket> packets5 = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     @EventTarget
     public void onPacket(PacketEvent event){
         Packet<?> packet = event.getPacket();
@@ -42,7 +42,7 @@ public class DelayVelocity extends Module {
             event.cancelEvent();
             packets4.add(packet1);
         }
-        if (packet instanceof ClientboundStatusResponsePacket packet1){
+        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player && packet1.getEventId() == 2){
             event.cancelEvent();
             packets5.add(packet1);
         }
@@ -55,15 +55,14 @@ public class DelayVelocity extends Module {
             while (!packets3.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets3.take());
             }
-            //mc2.player.handleStatusUpdate(2.toByte())
+            while (!packets5.isEmpty()){
+                PacketUtils.sendPacketNoEvent(packets5.take());
+            }
             while (!packets4.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets4.take());
             }
             while (!packets.isEmpty()){
                 PacketUtils.sendPacketNoEvent(packets.take());
-            }
-            while (!packets5.isEmpty()){
-                PacketUtils.sendPacketNoEvent(packets5.take());
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

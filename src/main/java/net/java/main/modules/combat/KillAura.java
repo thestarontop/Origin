@@ -149,11 +149,10 @@ public class KillAura extends Module {
      * Attack [entity]
      */
     private static void attackEntity(Entity entity) {
-        if (!combatdelay.getValue()) {
-            madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, false));
-        }else{
-            mc.gameMode.attack(mc.player,entity);
+        madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
+        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, false));
+        if(combatdelay.getValue()){
+            mc.player.resetAttackStrengthTicker();
         }
         mc.player.swing(InteractionHand.MAIN_HAND);
 
