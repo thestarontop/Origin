@@ -110,7 +110,7 @@ public class KillAura extends Module {
                         }else{
                             rotation.toPlayer(mc.player);
                         }
-                        if((!combatdelay.getValue() && ticks >= delay) || mc.player.getAttackStrengthScale(0.5f) == 1f) {
+                        if((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
                             attackEntity(entity);
                             if (CanReachEntities.size() >= 2) {
                                 AttackedEntities.add(entity);
