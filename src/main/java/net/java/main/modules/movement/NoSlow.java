@@ -106,6 +106,9 @@ public class NoSlow extends Module {
         if (shouldnoslow) {
             event.setMovementStrafe(1F);
             event.setMovementForward(1F);
+        }else{
+            event.setMovementStrafe(0.2F);
+            event.setMovementForward(0.2F);
         }
     }
 }

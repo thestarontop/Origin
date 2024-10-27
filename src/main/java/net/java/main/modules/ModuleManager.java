@@ -87,7 +87,7 @@ public class ModuleManager {
         addHack(new AntiBlind());
         addHack(new LowFire());
         addHack(new Ghost());
-        //addHack(new BackTrack());
+        addHack(new BackTrack());
         addHack(new PortalGodMode());
         //addHack(new FastLadder());
         addHack(new FastWeb());
@@ -99,7 +99,7 @@ public class ModuleManager {
         addHack(new KeepContainer());
         addHack(new Breaker());
         addHack(new HandDerp());
-        addHack(new GApple());
+        //addHack(new GApple());
         addHack(new Animation());
         addHack(new KeepTab());
         //addHack(new Test1());
@@ -109,6 +109,7 @@ public class ModuleManager {
         //addHack(new WaterMark());
         //addHack(new Tower());
         addHack(new DelayVelocity());
+        addHack(new LagFly());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

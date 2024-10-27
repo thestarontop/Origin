@@ -11,24 +11,23 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class BackTrack extends Module {
     public BackTrack(){super("BackTrack","bzd",Category.COMBAT);}
-    LinkedList<Packet<?>> packets = new LinkedList<>();
-    LinkedList<Packet<?>> packets2 = new LinkedList<>();
+    LinkedBlockingQueue<Packet<?>> packets = new LinkedBlockingQueue<>();
     @EventTarget
     public void onPacket(PacketEvent event){
             Packet<?> packet = event.getPacket();
-            if (packet instanceof ServerboundMovePlayerPacket || packet instanceof ServerboundPongPacket) {
+            if (PacketUtils.isUseFulPacket(packet)) {
+                if (packet instanceof ServerboundInteractPacket || packet instanceof ServerboundSwingPacket || packet instanceof ServerboundMovePlayerPacket || packet instanceof ServerboundPlayerCommandPacket) {
+                    return;
+                }
                 event.cancelEvent();
                 packets.add(packet);
-            }
-            if (packet instanceof ClientboundMoveEntityPacket || packet instanceof ClientboundSetEntityMotionPacket){
-                event.cancelEvent();
-                packets2.add(packet);
-            }
-            if (packet instanceof ClientboundPlayerLookAtPacket || packet instanceof ClientboundPlayerPositionPacket) {
-                this.setEnable(false);
+                if (packet instanceof ClientboundPlayerLookAtPacket || packet instanceof ClientboundPlayerPositionPacket) {
+                    this.setEnable(false);
+                }
             }
 
 
@@ -36,25 +35,13 @@ public class BackTrack extends Module {
     }
     @Override
     public void onDisable() {
-        ChatManager.sendHotBarChat(ChatFormatting.RED + "BackTrack Was Disabled");
         try {
             while (!packets.isEmpty()){
-                PacketUtils.sendPacketNoEvent(packets.get(0));
-                packets.remove(0);
+                PacketUtils.sendPacketNoEvent(packets.take());
             }
-            while (!packets2.isEmpty()){
-                Packet<?> packet = packets2.get(0);
-                if (packet instanceof ClientboundMoveEntityPacket){
-                    mc.getConnection().handleMoveEntity((ClientboundMoveEntityPacket) packet);
-                }
-                if (packet instanceof ClientboundSetEntityMotionPacket){
-                    mc.getConnection().handleSetEntityMotion((ClientboundSetEntityMotionPacket) packet);
-                }
-                packets.remove(0);
-            }
-        }catch (Error e){
-            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        madebystarontopandfml.getInstance().getEventManager().unregister(this);
+        super.onDisable();
     }
 }

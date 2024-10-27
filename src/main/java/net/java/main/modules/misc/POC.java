@@ -1,5 +1,6 @@
 package net.java.main.modules.misc;
 
+import net.java.main.command.ChatManager;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.Module;
 import net.java.main.event.events.PacketEvent;
@@ -17,6 +18,11 @@ public class POC extends Module {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
+        if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
+            if (packet.getSlot() == mc.player.getInventory().selected +36 && packet.getContainerId() == 0){
+                ChatManager.sendChat("ojbk");
+            }
+        }
     }
 
 
