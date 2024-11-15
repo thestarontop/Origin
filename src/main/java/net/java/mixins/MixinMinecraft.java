@@ -151,6 +151,7 @@ public abstract class MixinMinecraft {
     }
     @Inject(method="<init>",at=@At("TAIL"))
     public void onInit(CallbackInfo ci){
+        //madebystarontopandfml.start();
         madebystarontopandfml.getInstance().getEventManager().call(new ClientStartEvent());
     }
 

@@ -110,6 +110,7 @@ public class ModuleManager {
         //addHack(new Tower());
         addHack(new DelayVelocity());
         addHack(new LagFly());
+        addHack(new NameProtect());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

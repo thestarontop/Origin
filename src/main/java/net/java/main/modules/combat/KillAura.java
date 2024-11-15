@@ -3,6 +3,7 @@ package net.java.main.modules.combat;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.events.AttackEvent;
 import net.java.main.event.events.UpdateEvent;
+import net.java.main.modules.ModuleManager;
 import net.java.main.modules.misc.Teams;
 import net.java.main.modules.misc.AntiBot;
 import net.java.main.event.events.JumpEvent;
@@ -21,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.LinkedList;
 
@@ -51,7 +53,37 @@ public class KillAura extends Module {
     public void onUpdate(UpdateEvent event) {
         int delay = 2;
         ticks += 1;
+        if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) {
+            if (DelayVelocity.target != null) {
+                if (DelayVelocity.target instanceof Player target) {
+                    var boundingBox = DelayVelocity.box;
+                    boundingBox = boundingBox.expandTowards(0.0,2.14,0.0);
 
+                    if(mc.player.getY() - boundingBox.minY <= 0.25)
+                        boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
+
+
+                    if(mc.player.getY() - boundingBox.minY >= 0.25)
+                        boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
+
+                    Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F);
+                    if(prevrotation == null) return;
+                    Rotation rotation = prevrotation.getRotation();
+                    if (silentrotation.getValue()) {
+                        RotationUtils.setTargetRotation(rotation);
+                    }else{
+                        rotation.toPlayer(mc.player);
+                    }
+                    if (target.hurtTime <= 10) {
+                        if ((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
+                            attackEntity(target);
+                            ticks = 0;
+                        }
+                    }
+                }
+            }
+            return;
+        }
         Iterable<Entity> entitylist = mc.level.entitiesForRendering();
         for (Entity entity1 : entitylist){
             if(entity1 instanceof EndCrystal){

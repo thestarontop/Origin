@@ -70,4 +70,7 @@ public class madebystarontopandfml extends MinecraftInstance {
     public  ModuleManager getModuleManager() {
         return moduleManager;
     }
+    //public static void start(){
+    //    new madebystarontopandfml();
+    //}
 }

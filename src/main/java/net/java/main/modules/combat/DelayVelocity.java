@@ -3,12 +3,16 @@ package net.java.main.modules.combat;
 import net.java.main.command.ChatManager;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
+import net.java.main.event.events.Render3DEvent;
 import net.java.main.event.events.UpdateEvent;
 import net.java.main.modules.Module;
 import net.java.main.utils.PacketUtils;
+import net.java.main.utils.RenderUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -19,15 +23,16 @@ public class DelayVelocity extends Module {
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundBlockUpdatePacket> packets4 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
+    public static Entity target = null;
+    public static AABB box = null;
     @EventTarget
     public void onPacket(PacketEvent event){
         Packet<?> packet = event.getPacket();
-        if (packet instanceof ClientboundPingPacket packet1 && packet1.getId() < 0){
+        if (packet instanceof ClientboundPingPacket packet1){
             event.cancelEvent();
             packets.add(packet1);
-            PacketUtils.sendPacketNoEvent(new ServerboundPongPacket(0));
         }
-        if (packet instanceof ServerboundInteractPacket){
+        if (packet instanceof ServerboundInteractPacket && target == null){
             event.cancelEvent();
         }
         if (packet instanceof ClientboundSetEntityMotionPacket packet1){
@@ -46,6 +51,13 @@ public class DelayVelocity extends Module {
             event.cancelEvent();
             packets5.add(packet1);
         }
+    }
+    @EventTarget
+    public void onRender3D(Render3DEvent event){
+        if (box == null){
+            return;
+        }
+        RenderUtils.renderBoundingBox(event.getPoseStack(), box, 1F, 0.7529F, 0.7961F);
     }
     public void onDisable() {
         try {
@@ -67,9 +79,17 @@ public class DelayVelocity extends Module {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        target = null;
         super.onDisable();
     }
     public void onEnable() {
         super.onEnable();
+        if (KillAura.target != null){
+            target = KillAura.target;
+            box = target.getBoundingBox();
+        }else{
+            target = null;
+            box = null;
+        }
     }
 }
