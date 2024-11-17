@@ -78,7 +78,7 @@ public class ModuleManager {
         addHack(new AntiBot());
         addHack(new Stuck());
         addHack(new Sneak());
-        //addHack(new EntitySpeed());
+        addHack(new EntitySpeed());
         addHack(new SafeWalk());
         addHack(new MidClick());
         addHack(new ThrowableAura());
@@ -111,6 +111,8 @@ public class ModuleManager {
         addHack(new DelayVelocity());
         addHack(new LagFly());
         addHack(new NameProtect());
+        addHack(new GhostBlock());
+        addHack(new CivBreak());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

@@ -25,7 +25,7 @@ public class EntitySpeed extends Module {
 
         // Grim gives 0.08 leniency per entity which is customizable by speed.
         var yaw = Math.toRadians(RotationUtils.getMovementDirectionOfInput(RotationUtils.serverRotation.getYaw()));
-        var boost = 0.05 * collisions;
+        var boost = 0.02 * collisions;
 
         mc.player.setDeltaMovement(mc.player.getDeltaMovement().add(-Math.sin(yaw) * boost, 0.0, Math.cos(yaw) * boost));
     }

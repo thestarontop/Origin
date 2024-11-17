@@ -18,11 +18,13 @@ import net.java.main.value.FloatValue;
 import net.java.main.value.IntValue;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import java.util.LinkedList;
 
@@ -56,28 +58,26 @@ public class KillAura extends Module {
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) {
             if (DelayVelocity.target != null) {
                 if (DelayVelocity.target instanceof Player target) {
-                    var boundingBox = DelayVelocity.box;
-                    boundingBox = boundingBox.expandTowards(0.0,2.14,0.0);
+                    if (distanceTo(DelayVelocity.box) <= 3.2) {
+                        var boundingBox = DelayVelocity.box;
+                        boundingBox = boundingBox.expandTowards(0.0, 2.14, 0.0);
 
-                    if(mc.player.getY() - boundingBox.minY <= 0.25)
-                        boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
+                        if(mc.player.getY() - DelayVelocity.box.minY <= 0.25)
+                            boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
 
-
-                    if(mc.player.getY() - boundingBox.minY >= 0.25)
-                        boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
-
-                    Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F);
-                    if(prevrotation == null) return;
-                    Rotation rotation = prevrotation.getRotation();
-                    if (silentrotation.getValue()) {
-                        RotationUtils.setTargetRotation(rotation);
-                    }else{
-                        rotation.toPlayer(mc.player);
-                    }
-                    if (target.hurtTime <= 10) {
-                        if ((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
-                            attackEntity(target);
-                            ticks = 0;
+                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 4F);
+                        if (prevrotation == null) return;
+                        Rotation rotation = prevrotation.getRotation();
+                        if (silentrotation.getValue()) {
+                            RotationUtils.setTargetRotation(rotation);
+                        } else {
+                            rotation.toPlayer(mc.player);
+                        }
+                        if (target.hurtTime <= 10) {
+                            if ((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
+                                attackEntity(target);
+                                ticks = 0;
+                            }
                         }
                     }
                 }
@@ -204,7 +204,12 @@ public class KillAura extends Module {
     }
 
 
-
+    public float distanceTo(AABB arg) {
+        float f = (float)(mc.player.getX() - arg.minX);
+        float f1 = (float)(mc.player.getY() - arg.minY);
+        float f2 = (float)(mc.player.getZ() - arg.minZ);
+        return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
+    }
 
 
 

@@ -21,7 +21,7 @@ public class DelayVelocity extends Module {
     private LinkedBlockingQueue<ClientboundPingPacket> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<ClientboundBlockUpdatePacket> packets4 = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     public static Entity target = null;
     public static AABB box = null;
@@ -44,6 +44,18 @@ public class DelayVelocity extends Module {
             packets3.add(packet1);
         }
         if (packet instanceof ClientboundBlockUpdatePacket packet1){
+            event.cancelEvent();
+            packets4.add(packet1);
+        }
+        if (packet instanceof ClientboundBlockBreakAckPacket packet1){
+            event.cancelEvent();
+            packets4.add(packet1);
+        }
+        if (packet instanceof ClientboundBlockEventPacket packet1){
+            event.cancelEvent();
+            packets4.add(packet1);
+        }
+        if (packet instanceof ClientboundBlockDestructionPacket packet1){
             event.cancelEvent();
             packets4.add(packet1);
         }

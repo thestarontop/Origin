@@ -622,8 +622,8 @@ public class RotationUtils extends MinecraftInstance{
         return currVelocity;
     }
 
-    public static float movingYaw() {
-        return (float) (getMovementDirectionOfInput(mc.player.getYRot()) * 180f / Math.PI);
+    public static double movingYaw() {
+        return Math.toRadians(RotationUtils.getMovementDirectionOfInput(RotationUtils.serverRotation.getYaw()));
     }
     public static double getMovementDirectionOfInput(double facingYaw){
         var actualYaw = facingYaw;
