@@ -16,6 +16,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.status.ServerboundPingRequestPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -44,6 +45,7 @@ public class Blink extends Module {
                 packet instanceof ServerboundUseItemPacket ||
                 packet instanceof ServerboundMovePlayerPacket ||
                 packet instanceof ServerboundPongPacket ||
+                packet instanceof ServerboundPingRequestPacket ||
                 packet instanceof ServerboundSetCarriedItemPacket ||
                 packet instanceof ServerboundCustomPayloadPacket ||
                 packet instanceof ServerboundPlayerAbilitiesPacket ||

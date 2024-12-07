@@ -74,24 +74,5 @@ public abstract class MixinLivingEntity extends Entity{
             cir.setReturnValue(false);
     }
 
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    private Vec3 handleOnClimbable(Vec3 arg) {
-        if (this.onClimbable()) {
-            this.resetFallDistance();
-            float f = 0.15F;
-            double d0 = Mth.clamp(arg.x, -0.15000000596046448, 0.15000000596046448);
-            double d1 = Mth.clamp(arg.z, -0.15000000596046448, 0.15000000596046448);
-            double d2 = Math.max(arg.y, -0.15000000596046448);
-
-
-            arg = new Vec3(d0, d2, d1);
-        }
-
-        return arg;
-    }
 
 }

@@ -1,13 +1,11 @@
 package net.java.main.modules.world;
 
 
+import net.java.main.event.events.Render3DEvent;
 import net.java.main.event.events.UpdateEvent;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.Module;
-import net.java.main.utils.BlockUtils;
-import net.java.main.utils.PlaceInfo;
-import net.java.main.utils.Rotation;
-import net.java.main.utils.RotationUtils;
+import net.java.main.utils.*;
 import net.java.main.value.BooleanValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,12 +34,10 @@ public class Scaffold extends Module {
     }
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public BooleanValue silentautoblock = new BooleanValue("SilentAutoBlock",false);
+    BlockPos block = null;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         mc.player.setSprinting(RotationUtils.targetRotation == null);
-        if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
-            return;
-        }
         var BlockMap = BlockUtils.searchBlocks(3);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
@@ -60,7 +56,10 @@ public class Scaffold extends Module {
                     }
             }
         });
-        BlockPos block = closestBlockPos.get();
+        block = closestBlockPos.get();
+        if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
+            return;
+        }
         if(block == null) return;
         Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
         if (silentrotation.getValue()) {
@@ -100,6 +99,12 @@ public class Scaffold extends Module {
             mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
         }
         mc.player.setSprinting(RotationUtils.targetRotation == null);
+    }
+    @EventTarget
+    public void onRender3D(Render3DEvent event){
+        if (block != null){
+            RenderUtils.renderBoundingBox(event.getPoseStack(),block,0.5F,0.0F,0.5F);
+        }
     }
 
 }

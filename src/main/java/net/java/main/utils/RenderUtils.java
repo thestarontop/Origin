@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -280,6 +281,9 @@ public class RenderUtils extends MinecraftInstance{
         RenderSystem.enableDepthTest();
         GL11.glPolygonOffset(1f, 1000000F);
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+    }
+    public static void renderBoundingBox(PoseStack poseStack, BlockPos key, float red, float green, float blue){
+        renderBoundingBox(poseStack,new AABB(key.getX(), key.getY(), key.getZ(), key.getX() + 1, key.getY() + 1, key.getZ() + 1),1F,0.5F,0F);
     }
 
 }

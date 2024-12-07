@@ -9,6 +9,7 @@
     "MixinEntity",
     "MixinLivingEntity",
     "MixinPlayer",
+    "acesser.ClientboundSetTitleTextPacketAcesser",
     "acesser.ServerboundInteractPacketAcesser",
     "acesser.ServerboundMovePlayerPacketAcesser"
   ],

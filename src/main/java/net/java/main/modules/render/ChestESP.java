@@ -16,8 +16,7 @@ public class ChestESP extends Module {
         var BlockMap = BlockUtils.searchBlocks(20);
         BlockMap.forEach((key, value) -> {
             if(value == Blocks.CHEST) {
-                RenderUtils.renderBoundingBox(event.getPoseStack(),new AABB(key.getX(), key.getY(), key.getZ(),
-                        key.getX() + 1, key.getY() + 1, key.getZ() + 1),1F,0.5F,0F);
+                RenderUtils.renderBoundingBox(event.getPoseStack(),key,1F,0.5F,0F);
             }
         });
     }

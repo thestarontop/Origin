@@ -2,10 +2,6 @@ package net.java.main.modules;
 
 import net.java.main.modules.client.ClickGui;
 import net.java.main.modules.client.HUD;
-import net.java.main.modules.client.hud.Notification;
-import net.java.main.modules.client.hud.TargetHud;
-import net.java.main.modules.client.hud.Test1;
-import net.java.main.modules.client.hud.WaterMark;
 import net.java.main.modules.combat.*;
 import net.java.main.modules.exploit.*;
 import net.java.main.modules.misc.*;
@@ -70,7 +66,6 @@ public class ModuleManager {
         addHack(new ESP());
         addHack(new NameTags());
         addHack(new Scaffold());
-        addHack(new SilentStrafeFix());
         addHack(new Chams());
         addHack(new BoatJump());
         addHack(new CrystalAura());
@@ -113,6 +108,8 @@ public class ModuleManager {
         addHack(new NameProtect());
         addHack(new GhostBlock());
         addHack(new CivBreak());
+        //addHack(new GhostBlock());
+        addHack(new FalseHand());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
