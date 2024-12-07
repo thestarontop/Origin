@@ -52,7 +52,6 @@ public class ModuleManager {
         addHack(new GrimNoXZVelocity());
         addHack(new Xray());
         addHack(new HUD());
-        addHack(new MobAura());
         addHack(new Teams());
         addHack(new Rotation());
         addHack(new StrafeFix());

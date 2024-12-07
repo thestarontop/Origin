@@ -22,7 +22,7 @@ public class madebystarontopandfml extends MinecraftInstance {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String NAME = "Origin_Client";
     private static madebystarontopandfml instance;
-    public static final String VERSION = "b24";
+    public static final String VERSION = "b25";
     public static ModuleManager moduleManager;
     public static ChatManager chatManager;
     public static BindManager bindManager;
@@ -49,13 +49,10 @@ public class madebystarontopandfml extends MinecraftInstance {
         fileManager = new FileManager();
         fileManager.load();
         fileManager.loadConfig(FileManager.modulesConfig);
-        HUD.initHud();
-        fileManager.loadConfig(FileManager.hudConfig);
         isStarting = false;
     }
     public void closeClient() {
         fileManager.saveAllConfigs();
-        FileManager.saveConfig(FileManager.hudConfig);
         FileManager.saveConfig(FileManager.modulesConfig);
     }
 

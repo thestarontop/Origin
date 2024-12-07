@@ -16,6 +16,8 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -24,11 +26,14 @@ import net.minecraft.client.renderer.VirtualScreen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.MobEffectTextureManager;
 import net.minecraft.client.resources.PaintingTextureManager;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.util.ModCheck;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -87,6 +92,21 @@ public abstract class MixinMinecraft {
     @Shadow @Final private ReloadableResourceManager resourceManager;
 
     @Shadow @Final private VirtualScreen virtualScreen;
+
+
+
+    @Shadow @Nullable public abstract ClientPacketListener getConnection();
+
+    @Shadow @Nullable private IntegratedServer singleplayerServer;
+
+    @Shadow public abstract boolean isConnectedToRealms();
+
+    @Shadow @Nullable private ServerData currentServer;
+
+    @Shadow
+    public static ModCheck checkModStatus() {
+        return null;
+    }
 
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
     private void runtick(CallbackInfo ci) {
@@ -152,6 +172,35 @@ public abstract class MixinMinecraft {
     @Inject(method="<init>",at=@At("TAIL"))
     public void onInit(CallbackInfo ci){
         madebystarontopandfml.getInstance().getEventManager().call(new ClientStartEvent());
+    }
+    /**
+     * @author starontop
+     * @reason bzd
+     */
+    @Overwrite
+    private String createTitle() {
+        StringBuilder stringbuilder = new StringBuilder(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION + "---");
+        if (checkModStatus().shouldReportAsModified()) {
+            stringbuilder.append("*");
+        }
+
+        stringbuilder.append(" ");
+        stringbuilder.append(SharedConstants.getCurrentVersion().getName());
+        ClientPacketListener clientpacketlistener = this.getConnection();
+        if (clientpacketlistener != null && clientpacketlistener.getConnection().isConnected()) {
+            stringbuilder.append(" - ");
+            if (this.singleplayerServer != null && !this.singleplayerServer.isPublished()) {
+                stringbuilder.append(I18n.get("title.singleplayer"));
+            } else if (this.isConnectedToRealms()) {
+                stringbuilder.append(I18n.get("title.multiplayer.realms"));
+            } else if (this.singleplayerServer == null && (this.currentServer == null || !this.currentServer.isLan())) {
+                stringbuilder.append(I18n.get("title.multiplayer.other"));
+            } else {
+                stringbuilder.append(I18n.get("title.multiplayer.lan"));
+            }
+        }
+
+        return stringbuilder.toString();
     }
 
 }

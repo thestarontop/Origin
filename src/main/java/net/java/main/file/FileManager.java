@@ -14,7 +14,7 @@ public class FileManager {
     static File dir = new File(System.getProperty("user.home"),"Origin-1.18");
     public static FileConfig modulesConfig = new ModulesConfig(new File(dir,"modules.json"));
     public static FileConfig moduleslog = new ModulesConfig(new File(dir,"logs.json"));
-    public static FileConfig hudConfig = new HudConfig(new File(dir,"hud.json"));
+
 
     public void load() {
         dir.mkdir();

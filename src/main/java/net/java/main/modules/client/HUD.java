@@ -5,7 +5,6 @@ import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.Render2DEvent;
 import net.java.main.madebystarontopandfml;
 import net.java.main.modules.ModuleManager;
-import net.java.main.modules.client.hud.hud.Element;
 import net.java.main.utils.RenderUtils;
 import net.minecraft.client.gui.screens.ChatScreen;
 import org.lwjgl.glfw.GLFW;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class HUD extends Module {
 
-    public static ArrayList<Element> elements = new ArrayList<>();
+
     public static int realMouseX = 0, realMouseY = 0;
     static int xOffset = -1;
     static int yOffset = -1;
@@ -72,37 +71,5 @@ public class HUD extends Module {
             poseStack.popPose();
         }*/
     }
-    public static void handleMouseClick(double mouseX, double mouseY, int mouseButton) {
-        if (!(mc.screen instanceof ChatScreen)) return;
 
-        for (Element element : elements) {
-            double mouseX1 = (mouseX / element.getScale()) - element.renderX;
-            double mouseY1 = (mouseY / element.getScale()) - element.renderY;
-
-            if (mouseX1 > element.border.getX() && mouseX1 < element.border.getX2() && mouseY1 > element.border.getY() && mouseY1 < element.border.getY2()) {
-                element.dragging = true;
-                xOffset = (int) (mouseX - element.renderX);
-                yOffset = (int) (mouseY - element.renderY);
-            }
-        }
-    }
-    public static void handleMouseReleased(double mouseX, double mouseY, int mouseButton) {
-        if (!(mc.screen instanceof ChatScreen)) return;
-
-        for (Element element : elements) {
-            element.dragging = false;
-        }
-        xOffset = -1;
-        yOffset = -1;
-    }
-    public static void initHud() {
-        for (Module module : ModuleManager.modules) {
-            if (module.getCategory() == Category.CLIENT) {
-                if(module instanceof ClickGui || module instanceof HUD) break;
-                if (module.isEnabled()) {
-                    elements.add((Element) module);
-                }
-            }
-        }
-    }
 }

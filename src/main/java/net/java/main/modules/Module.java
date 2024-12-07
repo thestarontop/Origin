@@ -5,14 +5,9 @@ import net.java.main.madebystarontopandfml;
 import net.java.main.command.ChatManager;
 import net.java.main.modules.client.ClickGui;
 import net.java.main.modules.client.HUD;
-import net.java.main.modules.client.hud.Notification;
-import net.java.main.modules.client.hud.hud.Element;
-import net.java.main.modules.client.hud.noti.Noti;
-import net.java.main.modules.client.hud.noti.NotiType;
 import net.java.main.utils.MinecraftInstance;
 import net.java.main.value.Value;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyboardHandler;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -60,7 +55,7 @@ public class Module extends MinecraftInstance {
 
 
         public void toggle() {
-            if (this.getCategory() == Category.CLIENT) {
+            /*if (this.getCategory() == Category.CLIENT) {
                 if(!(this instanceof ClickGui) && !(this instanceof HUD)) {
                     if (this.isEnabled()) {
                         HUD.elements.remove((Element) this);
@@ -68,7 +63,7 @@ public class Module extends MinecraftInstance {
                         HUD.elements.add((Element) this);
                     }
                 }
-            }
+            }*/
 
             if (this.isEnabled) {
                 setEnable(false);
@@ -86,12 +81,12 @@ public class Module extends MinecraftInstance {
 
         if (enable) {
             if (!madebystarontopandfml.getInstance().isStarting) {
-                Notification.addNotification(new Noti("✔", ChatFormatting.WHITE + this.getName() + ChatFormatting.WHITE + " is Enabled",30, NotiType.SUCCESS));
+                //Notification.addNotification(new Noti("✔", ChatFormatting.WHITE + this.getName() + ChatFormatting.WHITE + " is Enabled",30, NotiType.SUCCESS));
             }
             onEnable();
         } else {
             if (!madebystarontopandfml.getInstance().isStarting) {
-                Notification.addNotification(new Noti("✘", ChatFormatting.WHITE + this.getName() + ChatFormatting.WHITE + " is Disabled", 30, NotiType.ERROR));
+                //Notification.addNotification(new Noti("✘", ChatFormatting.WHITE + this.getName() + ChatFormatting.WHITE + " is Disabled", 30, NotiType.ERROR));
             }
             onDisable();
         }

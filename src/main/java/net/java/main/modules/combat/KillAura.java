@@ -21,8 +21,13 @@ import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
@@ -32,12 +37,14 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay);
+        addValues(range,silentrotation,combatdelay,player,mob);
     }
 
 
     public FloatValue range = new FloatValue("Range", 3.2f, 0.0f, 6.0f);
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
+    public static BooleanValue player = new BooleanValue("AttackPlayer",true);
+    public static BooleanValue mob = new BooleanValue("AttackMob",true);
     public static BooleanValue combatdelay = new BooleanValue("1.9+CombatDelay",true);
 
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
@@ -92,24 +99,24 @@ public class KillAura extends Module {
                     attackEntity(entity1);
                 }
             }
-            if (entity1 instanceof AbstractClientPlayer entity) {;
-                boolean canReach = mc.player.distanceTo(entity) <= range.getValue();
 
-                if (canReach && isEnemy(entity) && entity.getId() != mc.player.getId()) {
-                    if (!CanReachEntities.contains(entity)) {
-                        CanReachEntities.add(entity);
+                boolean canReach = mc.player.distanceTo(entity1) <= range.getValue();
+
+                if (canReach && isEnemy(entity1) && entity1.getId() != mc.player.getId()) {
+                    if (!CanReachEntities.contains(entity1)) {
+                        CanReachEntities.add(entity1);
                     }
                 } else {
-                    if (CanReachEntities.contains(entity)) {
-                        CanReachEntities.remove(entity);
+                    if (CanReachEntities.contains(entity1)) {
+                        CanReachEntities.remove(entity1);
                     }
                 }
-                if (entity.isRemoved()) {
-                    if (CanReachEntities.contains(entity)) {
-                        CanReachEntities.remove(entity);
+                if (entity1.isRemoved()) {
+                    if (CanReachEntities.contains(entity1)) {
+                        CanReachEntities.remove(entity1);
                     }
                 }
-            }
+
 
         }
         CanReachEntities.removeIf(entity -> !isInIterable(entity, entitylist));
@@ -170,12 +177,6 @@ public class KillAura extends Module {
 
 
 
-    /**
-     * Check if [entity] is selected as enemy with current target options and other modules
-     */
-    private static boolean isEnemy(AbstractClientPlayer entity) {
-        return (entity.getHealth() > 0 && !Teams.isTeammate(entity)) && !AntiBot.isBot(entity) && !MidClick.isFriend(entity);
-    }
 
     /**
      * Attack [entity]
@@ -210,10 +211,35 @@ public class KillAura extends Module {
         float f2 = (float)(mc.player.getZ() - arg.minZ);
         return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
     }
+    /**
+     * Check if [entity] is selected as enemy with current target options and other modules
+     */
+    private static boolean isEnemy(Entity entity) {
+        EntityType<?> type = entity.getType();
+        return (mob.getValue() && isHostileMob(entity)) ||(player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player);
+    }
 
+    public static boolean isHostileMob(Entity entity) {
+        // Monster 接口包含了大多数敌对生物
+        if (entity instanceof Monster) {
+            return true;
+        }
 
+        // 某些特殊的敌对生物可能需要单独判断
+        if (entity instanceof Slime) {
+            return true;
+        }
 
+        if (entity instanceof Ghast) {
+            return true;
+        }
 
+        if (entity instanceof Shulker) {
+            return true;
+        }
+
+        return false;
+    }
 
 
 
