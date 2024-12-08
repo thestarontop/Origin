@@ -3,6 +3,7 @@ package net.java.main.utils;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.ClientStartEvent;
 import net.java.main.event.events.PacketEvent;
+import net.java.main.event.events.UpdateEvent;
 import net.java.main.madebystarontopandfml;
 import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundClientInformationPacket;
@@ -31,5 +32,9 @@ public class BasicUtils extends MinecraftInstance{
         }
 
         ModList.get().getMods().removeAll(modlist);
+    }
+    @EventTarget
+    public void onUpdate(UpdateEvent event){
+        mc.getWindow().setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
     }
 }

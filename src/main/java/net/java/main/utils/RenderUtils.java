@@ -283,7 +283,7 @@ public class RenderUtils extends MinecraftInstance{
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
     }
     public static void renderBoundingBox(PoseStack poseStack, BlockPos key, float red, float green, float blue){
-        renderBoundingBox(poseStack,new AABB(key.getX(), key.getY(), key.getZ(), key.getX() + 1, key.getY() + 1, key.getZ() + 1),1F,0.5F,0F);
+        renderBoundingBox(poseStack,new AABB(key.getX(), key.getY(), key.getZ(), key.getX() + 1, key.getY() + 1, key.getZ() + 1),red,green,blue);
     }
 
 }

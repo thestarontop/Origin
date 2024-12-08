@@ -657,12 +657,20 @@ public class RotationUtils extends MinecraftInstance{
         double absDy = Math.abs(dy);
         double absDz = Math.abs(dz);
 
+        // 检查水平方向的最大值
         if (absDx > absDy && absDx > absDz) {
             return dx > 0 ? Direction.WEST : Direction.EAST;
-        } else if (absDz > absDx && absDz > absDy) {
+        } else if (absDz > absDy && absDz > absDx) {
             return dz > 0 ? Direction.NORTH : Direction.SOUTH;
         } else {
-            return dy > 0 ? Direction.DOWN : Direction.UP;
+            // 如果 dy 是最大的，并且 dy 大于 0，我们选择 UP，否则继续检查 dx 和 dz
+            if (dy < 0) {
+                return Direction.UP;
+            } else if (absDx > absDz) {
+                return dx > 0 ? Direction.WEST : Direction.EAST;
+            } else {
+                return dz > 0 ? Direction.NORTH : Direction.SOUTH;
+            }
         }
     }
     public static Rotation getBlockPlacementRotation(BlockPos targetPos) {

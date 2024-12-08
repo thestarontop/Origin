@@ -109,6 +109,7 @@ public class ModuleManager {
         addHack(new CivBreak());
         //addHack(new GhostBlock());
         addHack(new FalseHand());
+        addHack(new AutoShield());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
