@@ -41,19 +41,19 @@ public class Scaffold extends Module {
         var BlockMap = BlockUtils.searchBlocks(3);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
-
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR && value != Blocks.GLASS) {
-                var pos = mc.player.getY();
-                    if (key.getY() < pos) {
-                        Vec3 addvalue = new Vec3(0,-1.5,0);
-                        //if (mc.player.getDeltaMovement().y < 0 && (!mc.player.isOnGround())){addvalue.add(0,-1,0);}
-                        double currentDistance = mc.player.position().add(addvalue).distanceToSqr(new Vec3(key.getX(), key.getY(), key.getZ()));
-                        if (currentDistance < closestDistance.get()) {
-                            closestDistance.set(currentDistance);
-                            closestBlockPos.set(key);
-                        }
+                var playerY = mc.player.getY();
+                if (key.getY() < playerY) {
+                    double blockCenterX = key.getX() + 0.5;
+                    double blockCenterY = key.getY() + 0.5;
+                    double blockCenterZ = key.getZ() + 0.5;
+                    double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
+                    if (currentDistance < closestDistance.get()) {
+                        closestDistance.set(currentDistance);
+                        closestBlockPos.set(key);
                     }
+                }
             }
         });
         block = closestBlockPos.get();
