@@ -111,6 +111,7 @@ public class ModuleManager {
         //addHack(new GhostBlock());
         addHack(new FalseHand());
         addHack(new AutoShield());
+        addHack(new Stealer());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
