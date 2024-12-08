@@ -214,9 +214,14 @@ public class KillAura extends Module {
     /**
      * Check if [entity] is selected as enemy with current target options and other modules
      */
-    private static boolean isEnemy(Entity entity) {
-        EntityType<?> type = entity.getType();
-        return (mob.getValue() && isHostileMob(entity)) ||(player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player);
+    public static boolean isEnemy(Entity entity) {
+        boolean isliving = false;
+        if (entity instanceof LivingEntity){
+            if (!((LivingEntity) entity).isDeadOrDying()){
+                isliving = true;
+            }
+        }
+        return isliving && ((mob.getValue() && isHostileMob(entity)) ||(player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player));
     }
 
     public static boolean isHostileMob(Entity entity) {

@@ -5,6 +5,7 @@ import net.java.main.event.events.Render3DEvent;
 import net.java.main.event.events.RenderNamePlateEvent;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.Module;
+import net.java.main.modules.combat.KillAura;
 import net.java.main.modules.misc.MidClick;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.java.main.utils.RenderUtils;
@@ -32,7 +33,7 @@ public class NameTags extends Module {
         if (mc.level != null && mc.player != null) {
             for (Entity entity : mc.level.entitiesForRendering()) {
 
-                if (entity instanceof Player || mc.player.distanceTo(entity) <= 5.0) {
+                if ((entity instanceof Player || (KillAura.isEnemy(entity)) || mc.player.distanceTo(entity) <= 5.0) && entity.getId() != mc.player.getId()) {
                     boolean isItem = entity instanceof ItemEntity;
                     event.getPoseStack().pushPose();
                     event.getPoseStack().translate(
