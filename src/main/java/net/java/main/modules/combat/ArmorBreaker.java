@@ -39,6 +39,7 @@ public class ArmorBreaker extends Module {
         if (event.getPacket() instanceof ServerboundSwingPacket packet && packet.getHand() == InteractionHand.MAIN_HAND){
             event.cancelEvent();
         }
+        //
     }
     public static double getDamage(ItemStack itemStack) {
        return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS,itemStack)*0.00000001;
