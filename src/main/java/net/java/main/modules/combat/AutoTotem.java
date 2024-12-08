@@ -47,11 +47,7 @@ public class AutoTotem extends Module {
                     ItemStack itemstack = list.get(j);
                     ItemStack itemstack1 = nonnulllist.get(j).getItem();
                     if (!ItemStack.matches(itemstack, itemstack1)) {
-                        if (j == 0){
-                            int2objectmap.put(j, new ItemStack(Items.BEDROCK));
-                        }else {
                             int2objectmap.put(j, itemstack1.copy());
-                        }
                     }
                 }
                 mc.getConnection().send(new ServerboundContainerClickPacket(0,a+100,a,40,ClickType.SWAP,new ItemStack(Items.TOTEM_OF_UNDYING),int2objectmap));

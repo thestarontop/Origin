@@ -43,8 +43,7 @@ public class MixinBlock {
                 Blocks.DEEPSLATE_DIAMOND_ORE
         );
         if(!ORE_BLOCKS.contains(block)) {
-            Module xray = madebystarontopandfml.getInstance().getModuleManager().getModule("xray");
-            cir.setReturnValue(!xray.isEnabled());
+            cir.setReturnValue(!madebystarontopandfml.getInstance().getModuleManager().getModule("xray").isEnabled());
         }else{
             cir.setReturnValue(true);
         }
