@@ -37,6 +37,7 @@ public class ModuleManager {
     public void intModules() {
         modules = new ArrayList<Module>();
         addHack(new ThunderDeath());
+        addHack(new AutoFish());
         addHack(new POC());
         addHack(new ClickGui());
         addHack(new AutoTotem());
