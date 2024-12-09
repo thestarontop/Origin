@@ -17,7 +17,9 @@ import net.java.main.value.BooleanValue;
 import net.java.main.value.FloatValue;
 import net.java.main.value.IntValue;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerAbilitiesPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -28,6 +30,7 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
@@ -61,6 +64,9 @@ public class KillAura extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         int delay = 2;
+        if (madebystarontopandfml.getInstance().getModuleManager().getModule("armorbreaker").isEnabled()){
+            delay = 4;
+        }
         ticks += 1;
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) {
             if (DelayVelocity.target != null) {

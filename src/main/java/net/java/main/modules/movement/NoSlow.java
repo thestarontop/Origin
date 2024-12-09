@@ -29,6 +29,7 @@ public class NoSlow extends Module {
     public static boolean shouldnoslow = true;
     @EventTarget
     public void onPacket(PacketEvent event){
+        if (mc.getConnection() == null || mc.player == null) return;
         if (!shouldnoslow && mc.player.isUsingItem()) {
             if (event.getPacket() instanceof ServerboundInteractPacket) {
                 event.cancelEvent();

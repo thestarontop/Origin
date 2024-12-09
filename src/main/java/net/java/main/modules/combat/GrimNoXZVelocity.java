@@ -11,6 +11,7 @@ import net.java.main.modules.movement.NoSlow;
 import net.java.main.modules.Module;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
+import net.java.main.utils.PacketUtils;
 import net.java.main.utils.Rotation;
 import net.java.main.utils.RotationUtils;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -63,8 +64,8 @@ public class GrimNoXZVelocity extends Module {
                 RotationUtils.setTargetRotation(rotation);
 
 
-            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));
-            mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+            PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, false));
+            PacketUtils.sendPacketNoEvent(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
             mc.player.setDeltaMovement(mc.player.getDeltaMovement().x*0.6,mc.player.getDeltaMovement().y,mc.player.getDeltaMovement().z*0.6);
             }
             break;

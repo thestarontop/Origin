@@ -49,11 +49,11 @@ public class DelayVelocity extends Module {
             packets4.add(packet1);
         }
 
-        if (packet instanceof ClientboundBlockUpdatePacket || packet instanceof ClientboundBlockBreakAckPacket || packet instanceof ClientboundBlockEventPacket || packet instanceof ClientboundBlockDestructionPacket){
+        if (packet instanceof ClientboundBlockUpdatePacket || packet instanceof ClientboundBlockBreakAckPacket || packet instanceof ClientboundBlockEventPacket || packet instanceof ClientboundBlockDestructionPacket || packet instanceof ClientboundSetEntityDataPacket){
             event.cancelEvent();
             packets4.add(packet);
         }
-        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player && packet1.getEventId() == 2){
+        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player){
             event.cancelEvent();
             packets5.add(packet1);
         }
