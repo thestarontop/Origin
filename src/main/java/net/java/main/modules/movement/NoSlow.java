@@ -5,6 +5,7 @@ import net.java.main.event.events.MotionEvent;
 import net.java.main.event.events.SlowDownEvent;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
+import net.java.main.event.events.UpdateEvent;
 import net.java.main.modules.Module;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -27,6 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class NoSlow extends Module {
     public NoSlow(){super("NoSlow","bzd",Category.MOVEMENT);}
     public static boolean shouldnoslow = true;
+    public boolean shouldstartsprint = false;
     @EventTarget
     public void onPacket(PacketEvent event){
         if (mc.getConnection() == null || mc.player == null) return;
@@ -67,19 +69,23 @@ public class NoSlow extends Module {
             }
             boolean sprinting = mc.player.isSprinting();
             if (sprinting){
-                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.STOP_SPRINTING));
+                shouldstartsprint = false;
             }
             mc.getConnection().send(new ServerboundContainerClickPacket(0,-32767,mc.player.getInventory().selected+36,0,ClickType.PICKUP, mc.player.getInventory().getSelected(),int2objectmap));
             mc.getConnection().send(new ServerboundContainerClosePacket(0));
-            if(sprinting){
-                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
-            }
             //第二解决方案：副手
         }
         if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
             if (packet.getSlot() == mc.player.getInventory().selected +36 && packet.getContainerId() == 0){
                 shouldnoslow = true;
+                shouldstartsprint = true;
             }
+        }
+    }
+    @EventTarget
+    public void onUpdate(UpdateEvent event){
+        if (mc.player.isUsingItem() && shouldstartsprint != mc.player.isSprinting()){
+                mc.player.setSprinting(shouldstartsprint);
         }
     }
     public static boolean isUsable(ItemStack itemStack) {

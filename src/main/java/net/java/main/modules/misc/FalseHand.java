@@ -8,16 +8,12 @@ import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.InteractionHand;
 
 public class FalseHand extends Module {
-    public FalseHand(){super("FalseHand","bzd",Category.MISC);
-    addValues(mode);}
-    public ListValue mode = new ListValue("mode",new String[]{"OnlyLeft","Both"},"OnlyLeft");
+    public FalseHand(){super("FalseHand","bzd",Category.MISC);}
     @EventTarget
     public void onPacket(PacketEvent event){
         if (event.getPacket() instanceof ServerboundSwingPacket packet){
             if (packet.getHand() == InteractionHand.MAIN_HAND){
-                if (mode.getValue() == "OnlyLeft") {
-                    event.cancelEvent();
-                }
+                event.cancelEvent();
                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.OFF_HAND));
             }
         }

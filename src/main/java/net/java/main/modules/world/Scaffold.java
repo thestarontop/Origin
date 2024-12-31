@@ -30,11 +30,13 @@ import static net.java.main.utils.BlockUtils.*;
 public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold","bzd", Category.WORLD);
-        addValues(silentrotation,silentautoblock);
+        addValues(silentrotation,silentautoblock,samey);
     }
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public BooleanValue silentautoblock = new BooleanValue("SilentAutoBlock",false);
+    public BooleanValue samey = new BooleanValue("SameY",false);
     BlockPos block = null;
+    double starty;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         mc.player.setSprinting(RotationUtils.targetRotation == null);
@@ -43,15 +45,29 @@ public class Scaffold extends Module {
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR && value != Blocks.GLASS) {
+                if (!samey.getValue()) {
                 var playerY = mc.player.getY() -1;
-                if (key.getY() <= playerY) {
-                    double blockCenterX = key.getX() + 0.5;
-                    double blockCenterY = key.getY() + 0.5;
-                    double blockCenterZ = key.getZ() + 0.5;
-                    double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
-                    if (currentDistance < closestDistance.get()) {
-                        closestDistance.set(currentDistance);
-                        closestBlockPos.set(key);
+                    if (key.getY() <= playerY) {
+                        double blockCenterX = key.getX() + 0.5;
+                        double blockCenterY = key.getY() + 0.5;
+                        double blockCenterZ = key.getZ() + 0.5;
+                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
+                            if (currentDistance < closestDistance.get()) {
+                                closestDistance.set(currentDistance);
+                                closestBlockPos.set(key);
+                            }
+                    }
+                }else{
+                    var playerY = starty -1;
+                    if (key.getY()+0.5 <= playerY) {
+                        double blockCenterX = key.getX() + 0.5;
+                        double blockCenterY = key.getY() + 0.5;
+                        double blockCenterZ = key.getZ() + 0.5;
+                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
+                            if (currentDistance < closestDistance.get()) {
+                                closestDistance.set(currentDistance);
+                                closestBlockPos.set(key);
+                            }
                     }
                 }
             }
@@ -105,6 +121,11 @@ public class Scaffold extends Module {
         if (block != null){
             RenderUtils.renderBoundingBox(event.getPoseStack(),block,0.5F,0.0F,0.5F);
         }
+    }
+    @Override
+    public void onEnable(){
+        super.onEnable();
+        starty = mc.player.position().y;
     }
 
 }
