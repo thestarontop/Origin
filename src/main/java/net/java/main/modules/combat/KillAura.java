@@ -46,7 +46,7 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode);
     }
 
 
