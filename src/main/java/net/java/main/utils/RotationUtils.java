@@ -6,7 +6,6 @@
 package net.java.main.utils;
 
 
-import net.java.main.event.events.ClientStartEvent;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
@@ -25,16 +24,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.IModInfo;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.sqrt;
+import static net.minecraft.util.Mth.wrapDegrees;
 
 public class RotationUtils extends MinecraftInstance{
     public RotationUtils() {
@@ -85,9 +81,9 @@ public class RotationUtils extends MinecraftInstance{
         final double diffY = vec.y - eyesPos.y;
         final double diffZ = vec.z - eyesPos.z;
 
-        return new Rotation(Mth.wrapDegrees(
+        return new Rotation(wrapDegrees(
                 (float) Math.toDegrees(atan2(diffZ, diffX)) - 90F
-        ), Mth.wrapDegrees(
+        ), wrapDegrees(
                 (float) (-Math.toDegrees(atan2(diffY, sqrt(diffX * diffX + diffZ * diffZ))))
         ));
 
@@ -113,8 +109,8 @@ public class RotationUtils extends MinecraftInstance{
                     final double diffXZ = sqrt(diffX * diffX + diffZ * diffZ);
 
                     final Rotation rotation = new Rotation(
-                            Mth.wrapDegrees((float) Math.toDegrees(atan2(diffZ, diffX)) - 90F),
-                            Mth.wrapDegrees((float) -Math.toDegrees(atan2(diffY, diffXZ)))
+                            wrapDegrees((float) Math.toDegrees(atan2(diffZ, diffX)) - 90F),
+                            wrapDegrees((float) -Math.toDegrees(atan2(diffY, diffXZ)))
                     );
 
                     final Vec3 rotationVector = getVectorForRotation(rotation);
@@ -142,8 +138,9 @@ public class RotationUtils extends MinecraftInstance{
         final double xDist = destX - srcX;
         final double zDist = destZ - srcZ;
         final float var1 = (float)(StrictMath.atan2(zDist, xDist) * 180.0 / 3.141592653589793) - 90.0f;
-        return yaw + Mth.wrapDegrees(var1 - yaw);
+        return yaw + wrapDegrees(var1 - yaw);
     }
+
     public static Rotation.VecRotation lockView(final AABB bb, final boolean outborder, final boolean random,
                                                 final boolean predict, final boolean throughWalls, final float distance) {
         if (outborder) {
@@ -193,6 +190,17 @@ public class RotationUtils extends MinecraftInstance{
         return vecRotation;
     }
 
+    public static Rotation getHVHRotation(Entity entity) {
+            double diffX = entity.position().x - mc.player.position().x;
+            double diffY = entity.position().y + (double) entity.getEyeHeight() * 0.9D - (mc.player.position().y + (double) mc.player.getEyeHeight());
+            double diffZ = entity.position().z - mc.player.position().z;
+            double dist = sqrt(diffX * diffX + diffZ * diffZ);
+            float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0D / 3.141592653589793D) - 90.0F;
+            float pitch = (float) (-(Math.atan2(diffY, dist) * 180.0D / 3.141592653589793D));
+
+            return new Rotation(mc.player.getYRot() + wrapDegrees(yaw - mc.player.getYRot()), mc.player.getXRot() + wrapDegrees(pitch - mc.player.getXRot()));
+
+    }
     public static Rotation.VecRotation calculateCenter(final String calMode, final String randMode, final double randomRange, final AABB bb, final boolean predict, final boolean throughWalls) {
 
         /*if(outborder) {
@@ -376,9 +384,9 @@ public class RotationUtils extends MinecraftInstance{
         final double diffY = vec.y - eyesPos.y;
         final double diffZ = vec.z - eyesPos.z;
 
-        return new Rotation(Mth.wrapDegrees(
+        return new Rotation(wrapDegrees(
                 (float) Math.toDegrees(atan2(diffZ, diffX)) - 90F
-        ), Mth.wrapDegrees(
+        ), wrapDegrees(
                 (float) (-Math.toDegrees(atan2(diffY, sqrt(diffX * diffX + diffZ * diffZ))))
         ));
     }
