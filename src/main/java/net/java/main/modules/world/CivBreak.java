@@ -23,6 +23,14 @@ public class CivBreak extends Module {
         if (event.getPacket() instanceof ServerboundPlayerActionPacket packet1 && packet1.getAction().equals(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK)){
             blockpos = packet1.getPos();
         }
+        if (event.getPacket() instanceof ServerboundPlayerActionPacket packet){
+            if (packet.getAction() == ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK){
+                if (blockpos != null){
+                    event.cancelEvent();
+                }
+            }
+            
+        }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
@@ -33,6 +41,7 @@ public class CivBreak extends Module {
             PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
         }
     }
+
     @Override
     public void onEnable(){
         super.onEnable();

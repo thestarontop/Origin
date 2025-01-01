@@ -112,7 +112,7 @@ public class ModuleManager {
         addHack(new AutoShield());
         addHack(new ArmorBreaker());
         addHack(new Stealer());
-        addHack(new LegitAura());
+        addHack(new AutoPartyGame());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

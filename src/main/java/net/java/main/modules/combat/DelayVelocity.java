@@ -8,6 +8,7 @@ import net.java.main.event.events.UpdateEvent;
 import net.java.main.modules.Module;
 import net.java.main.utils.PacketUtils;
 import net.java.main.utils.RenderUtils;
+import net.java.main.value.BooleanValue;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
@@ -17,13 +18,14 @@ import net.minecraft.world.phys.AABB;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DelayVelocity extends Module {
-    public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);}
+    public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);addValues(explode);}
     private LinkedBlockingQueue<ClientboundPingPacket> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
+    public BooleanValue explode = new BooleanValue("VelocityBeforeExplode",false);
     public static Entity target = null;
     public static AABB box = null;
     @EventTarget
@@ -49,11 +51,11 @@ public class DelayVelocity extends Module {
             packets4.add(packet1);
         }
 
-        if (packet instanceof ClientboundBlockUpdatePacket || packet instanceof ClientboundBlockBreakAckPacket || packet instanceof ClientboundBlockEventPacket || packet instanceof ClientboundBlockDestructionPacket){
+        if (packet instanceof ClientboundBlockUpdatePacket || packet instanceof ClientboundBlockBreakAckPacket || packet instanceof ClientboundBlockEventPacket || packet instanceof ClientboundBlockDestructionPacket || packet instanceof ClientboundSetEntityDataPacket){
             event.cancelEvent();
             packets4.add(packet);
         }
-        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player && packet1.getEventId() == 2){
+        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player){
             event.cancelEvent();
             packets5.add(packet1);
         }
@@ -71,11 +73,18 @@ public class DelayVelocity extends Module {
     }
     public void onDisable() {
         try {
-            while (!packets2.isEmpty()){
-                PacketUtils.sendPacketNoEvent(packets2.take());
+            if (explode.getValue()) {
+                while (!packets2.isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(packets2.take());
+                }
             }
             while (!packets3.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets3.take());
+            }
+            if (!explode.getValue()){
+                while (!packets2.isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(packets2.take());
+                }
             }
             while (!packets5.isEmpty()){
                 PacketUtils.sendPacketNoEvent(packets5.take());

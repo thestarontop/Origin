@@ -1,9 +1,34 @@
 package net.java.main.utils;
 
+import net.minecraft.ChatFormatting;
+
 import java.awt.*;
 
 public class ColorUtils {
+    private static final ChatFormatting[] colour = new ChatFormatting[] {
+            ChatFormatting.RED, ChatFormatting.GOLD, ChatFormatting.YELLOW, ChatFormatting.GREEN, ChatFormatting.AQUA, ChatFormatting.BLUE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_AQUA, ChatFormatting.DARK_BLUE, ChatFormatting.DARK_GRAY,
+            ChatFormatting.DARK_GREEN, ChatFormatting.DARK_PURPLE, ChatFormatting.DARK_RED };
 
+    public static String formatting(String input, ChatFormatting[] colours, double delay) {
+        StringBuilder sb = new StringBuilder(input.length() * 3);
+        if (delay <= 0.0D)
+            delay = 0.001D;
+        int offset = (int)Math.floor((System.currentTimeMillis() & 0x3FFFL) / delay) % colours.length;
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            sb.append(colours[(colours.length + i - offset) % colours.length].toString());
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    public static String makeColour(String input) {
+        return formatting(input, colour, 80.0D);
+    }
+
+    public static String makeColour2(String input) {
+        return formatting(input, colour, 59.5D);
+    }
     public static Color skyRainbow(int var2, float st, float bright) {
         double v1 = Math.ceil(System.currentTimeMillis() + (var2 * 109L)) / 5;
         return Color.getHSBColor((double) ((float) ((v1 %= 360.0) / 360.0)) < 0.5 ? -((float) (v1 / 360.0)) : (float) (v1 / 360.0), st, bright);

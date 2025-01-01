@@ -3,6 +3,7 @@ package net.java.main.modules.misc;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
 import net.java.main.modules.Module;
+import net.java.main.value.ListValue;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.InteractionHand;
 

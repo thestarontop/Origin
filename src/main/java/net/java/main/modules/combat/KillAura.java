@@ -16,18 +16,27 @@ import net.java.main.utils.RotationUtils;
 import net.java.main.value.BooleanValue;
 import net.java.main.value.FloatValue;
 import net.java.main.value.IntValue;
+import net.java.main.value.ListValue;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerAbilitiesPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.GlowSquid;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 
@@ -37,7 +46,7 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode);
     }
 
 
@@ -45,7 +54,9 @@ public class KillAura extends Module {
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public static BooleanValue player = new BooleanValue("AttackPlayer",true);
     public static BooleanValue mob = new BooleanValue("AttackMob",true);
+    public static BooleanValue animal = new BooleanValue("AttackAnimal",true);
     public static BooleanValue combatdelay = new BooleanValue("1.9+CombatDelay",true);
+    public static ListValue mode = new ListValue("type", new String[]{"Interact", "Attack"},"Attack");
 
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
@@ -54,13 +65,16 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onJump(JumpEvent event){
-        if (target != null) {
+        if (target != null && madebystarontopandfml.getInstance().getModuleManager().getModule("strafefix").isEnabled()) {
             mc.player.setSprinting(false);
         }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         int delay = 2;
+        if (madebystarontopandfml.getInstance().getModuleManager().getModule("armorbreaker").isEnabled()){
+            delay = 4;
+        }
         ticks += 1;
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) {
             if (DelayVelocity.target != null) {
@@ -122,7 +136,13 @@ public class KillAura extends Module {
         CanReachEntities.removeIf(entity -> !isInIterable(entity, entitylist));
 
 
-
+            if (!CanReachEntities.isEmpty()){
+                CanReachEntities.sort((e1, e2) -> {
+                double dist1 = mc.player.distanceTo(e1);
+                double dist2 = mc.player.distanceTo(e2);
+                return Double.compare(dist1, dist2);
+            });
+            }
             for (Entity entity: CanReachEntities) {
                 if(CanReachEntities.size() >= 2)
                     if (AttackedEntities.contains(entity))
@@ -182,15 +202,19 @@ public class KillAura extends Module {
      * Attack [entity]
      */
     private static void attackEntity(Entity entity) {
-        madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, false));
+        if (mode.getValue() == "Attack") {
+            madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
+            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
+        }else{
+            mc.getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity,mc.player.isShiftKeyDown(),InteractionHand.MAIN_HAND));
+        }
         if(combatdelay.getValue()){
             mc.player.resetAttackStrengthTicker();
         }
         mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
-    private static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
+    public static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
         for (Entity entity : entityIterable) {
             if (entity == targetEntity) {
                 return true;
@@ -221,7 +245,11 @@ public class KillAura extends Module {
                 isliving = true;
             }
         }
-        return isliving && ((mob.getValue() && isHostileMob(entity)) ||(player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player));
+        return isliving && (
+                (mob.getValue() && isHostileMob(entity)) ||
+                (player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player) ||
+                (animal.getValue() && isPassiveMob(entity))
+                );
     }
 
     public static boolean isHostileMob(Entity entity) {
@@ -240,6 +268,28 @@ public class KillAura extends Module {
         }
 
         if (entity instanceof Shulker) {
+            return true;
+        }
+
+        return false;
+    }
+    public static boolean isPassiveMob(Entity entity) {
+        // Animal 类包含了大多数被动生物（如牛、羊、猪等）
+        if (entity instanceof Animal) {
+            return true;
+        }
+
+        // 某些特殊的被动生物需要单独判断
+        if (entity instanceof Squid) {
+            return true;
+        }
+
+
+        if (entity instanceof Bat) {
+            return true;
+        }
+
+        if (entity instanceof Dolphin) {
             return true;
         }
 

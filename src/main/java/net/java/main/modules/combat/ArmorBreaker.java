@@ -42,6 +42,6 @@ public class ArmorBreaker extends Module {
 
     }
     public static double getDamage(ItemStack itemStack) {
-       return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS,itemStack)*0.00000001;
+       return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS,itemStack)*0.001 + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.KNOCKBACK,itemStack)*0.0005;
     }
 }
