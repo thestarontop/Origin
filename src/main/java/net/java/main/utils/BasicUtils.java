@@ -39,8 +39,8 @@ public class BasicUtils extends MinecraftInstance{
     @EventTarget
     public void onUpdate(UpdateEvent event){
         mc.getWindow().setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
-        if (mc.player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY){
-            mc.player.getItemInHand(InteractionHand.MAIN_HAND).setHoverName(new TextComponent(ColorUtils.makeColour("Origin-Owner : starontop")));
-        }
+        //if (mc.player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY){
+            //mc.player.getItemInHand(InteractionHand.MAIN_HAND).setHoverName(new TextComponent(ColorUtils.makeColour("Origin-Owner : starontop")));
+        //}
     }
 }

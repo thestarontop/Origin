@@ -65,7 +65,7 @@ public class KillAura extends Module {
 
     @EventTarget
     public void onJump(JumpEvent event){
-        if (target != null) {
+        if (target != null && madebystarontopandfml.getInstance().getModuleManager().getModule("strafefix").isEnabled()) {
             mc.player.setSprinting(false);
         }
     }
@@ -202,8 +202,8 @@ public class KillAura extends Module {
      * Attack [entity]
      */
     private static void attackEntity(Entity entity) {
-        madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
         if (mode.getValue() == "Attack") {
+            madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
             mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
         }else{
             mc.getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity,mc.player.isShiftKeyDown(),InteractionHand.MAIN_HAND));
@@ -214,7 +214,7 @@ public class KillAura extends Module {
         mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
-    private static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
+    public static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
         for (Entity entity : entityIterable) {
             if (entity == targetEntity) {
                 return true;
