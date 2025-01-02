@@ -46,6 +46,11 @@ public class AutoPartyGame extends Module {
         put("雏菊", Blocks.OXEYE_DAISY);
         put("铃兰", Blocks.LILY_OF_THE_VALLEY);
         put("凋零玫瑰", Blocks.WITHER_ROSE);
+        put("红色郁金香", Blocks.RED_TULIP);
+        put("橙色郁金香", Blocks.ORANGE_TULIP);
+        put("白色郁金香", Blocks.WHITE_TULIP);
+        put("粉色郁金香", Blocks.PINK_TULIP);
+        put("菊花", Blocks.AZURE_BLUET);   // 新增
 
         // 大型花
         put("向日葵", Blocks.SUNFLOWER);
@@ -54,12 +59,12 @@ public class AutoPartyGame extends Module {
         put("牡丹", Blocks.PEONY);
 
         // 树苗
-        put("橡树苗", Blocks.OAK_SAPLING);
+        put("橡树树苗", Blocks.OAK_SAPLING);
         put("云杉树苗", Blocks.SPRUCE_SAPLING);
         put("白桦树苗", Blocks.BIRCH_SAPLING);
         put("丛林树苗", Blocks.JUNGLE_SAPLING);
         put("金合欢树苗", Blocks.ACACIA_SAPLING);
-        put("深色橡树苗", Blocks.DARK_OAK_SAPLING);
+        put("深色橡树树苗", Blocks.DARK_OAK_SAPLING);
     }};
     int delay = 1;
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
@@ -69,7 +74,6 @@ public class AutoPartyGame extends Module {
         if (event.getPacket() instanceof ClientboundSetSubtitleTextPacket packet){
             List<Block> Blocks = findMatchingBlocks(packet.getText().getString());
             for (Block item : Blocks) {
-                ChatManager.sendChat(item.getName().getString());
                 currentitem = item;
             }
         }
@@ -139,12 +143,10 @@ public class AutoPartyGame extends Module {
                 if (AttackedEntities.contains(entity))
                     continue;
 
-            if (entity instanceof LivingEntity entity1) {
-                if (entity1.hurtTime <= 10) {
+            if (entity instanceof LivingEntity) {
                    attackEntity(entity);
                    AttackedEntities.add(entity);
                    break;
-                }
             }
         }
 
@@ -156,11 +158,22 @@ public class AutoPartyGame extends Module {
     }
     public List<Block> findMatchingBlocks(String input) {
         List<Block> matchingBlocks = new ArrayList<>();
+        boolean hasDeepOak = false;
 
-        // 遍历 FLORA_MAP 中的所有中文名称
+        // 第一次遍历检查是否包含深色橡树树苗
+        if (input.contains("深色橡树树苗")) {
+            matchingBlocks.add(FLORA_MAP.get("深色橡树树苗"));
+            hasDeepOak = true;
+        }
+
+        // 遍历其他植物
         for (Map.Entry<String, Block> entry : FLORA_MAP.entrySet()) {
             String chineseName = entry.getKey();
-            // 如果输入的字符串包含某个中文名称
+            // 如果是深色橡树树苗或者在有深色橡树树苗的情况下是橡树树苗，则跳过
+            if (chineseName.equals("深色橡树树苗") ||
+                    (hasDeepOak && chineseName.equals("橡树树苗"))) {
+                continue;
+            }
             if (input.contains(chineseName)) {
                 matchingBlocks.add(entry.getValue());
             }
@@ -201,6 +214,5 @@ public class AutoPartyGame extends Module {
     }
     private static void attackEntity(Entity entity) {
         mc.getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity,mc.player.isShiftKeyDown(),InteractionHand.MAIN_HAND));
-        mc.player.swing(InteractionHand.MAIN_HAND);
     }
 }

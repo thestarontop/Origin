@@ -3,6 +3,7 @@ package net.java.main.modules;
 import net.java.main.modules.client.ClickGui;
 import net.java.main.modules.client.HUD;
 import net.java.main.modules.combat.*;
+import net.java.main.modules.combat.AutoRod;
 import net.java.main.modules.exploit.*;
 import net.java.main.modules.misc.*;
 import net.java.main.modules.movement.*;
@@ -113,6 +114,8 @@ public class ModuleManager {
         addHack(new ArmorBreaker());
         addHack(new Stealer());
         addHack(new AutoPartyGame());
+        addHack(new AutoRod());
+        addHack(new AutoFish());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

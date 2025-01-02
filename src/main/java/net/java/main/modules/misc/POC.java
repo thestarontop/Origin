@@ -18,8 +18,8 @@ public class POC extends Module {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
-        if(event.getPacket() instanceof ServerboundContainerClickPacket packet){
-            ChatManager.sendChat("windowid----"+packet.getContainerId()+"----buttonid----"+packet.getButtonNum()+"----slotid----"+packet.getSlotNum());
+        if (event.getPacket() instanceof ClientboundSoundPacket packet){
+            ChatManager.sendChat(packet.getSound().getLocation().getPath());
         }
     }
 
