@@ -116,6 +116,7 @@ public class ModuleManager {
         addHack(new AutoPartyGame());
         addHack(new AutoRod());
         addHack(new AutoFish());
+        addHack(new LegitAura());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
