@@ -7,6 +7,7 @@ import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.java.main.utils.MSTimer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -26,6 +27,8 @@ public class ChestStealer extends Module {
     private boolean hasWindow = false;
     private int ticks = 0;
     private boolean isfull = false;
+    private MSTimer timer = new MSTimer();
+
     private List<Item> blackItemList = List.of(Items.DIAMOND_SHOVEL,Items.STONE_SHOVEL,Items.IRON_SHOVEL,Items.GOLDEN_SHOVEL,Items.NETHERITE_SHOVEL,Items.COBWEB,Items.EGG,Items.BOOK,Items.CHEST,Items.FISHING_ROD,Items.LAVA_BUCKET,Items.CROSSBOW,Items.EXPERIENCE_BOTTLE,Items.WATER_BUCKET,Items.SADDLE,Items.FLINT,Items.FLINT_AND_STEEL,Items.COMPASS,Items.SNOWBALL);
     @EventTarget
     public void onPacket(PacketEvent event){
@@ -33,10 +36,10 @@ public class ChestStealer extends Module {
             hasWindow = true;
             windowid = packet.getContainerId();
         }
-        if (event.getPacket() instanceof ClientboundContainerSetContentPacket packet){
+        if (event.getPacket() instanceof ClientboundContainerSetContentPacket packet) {
             isfull = true;
-            for (int i = 9;i<=36;i++){
-                if(mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR){
+            for (int i = 9; i <= 36; i++) {
+                if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR) {
                     isfull = false;
                     break;
                 }
@@ -50,14 +53,14 @@ public class ChestStealer extends Module {
             List<ItemStack> list = Lists.newArrayListWithCapacity(i);
             Iterator var10 = nonnulllist.iterator();
 
-            while(var10.hasNext()) {
-                Slot slot = (Slot)var10.next();
+            while (var10.hasNext()) {
+                Slot slot = (Slot) var10.next();
                 list.add(slot.getItem().copy());
             }
 
             Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
 
-            for(int j = 0; j < i; ++j) {
+            for (int j = 0; j < i; ++j) {
                 ItemStack itemstack = list.get(j);
                 ItemStack itemstack1 = nonnulllist.get(j).getItem();
                 if (!ItemStack.matches(itemstack, itemstack1)) {
@@ -65,43 +68,49 @@ public class ChestStealer extends Module {
                 }
             }
 
-            if (packet.getItems().size() == 63){
-                for (int index = 0;index <=26;index++) {
-                    if (packet.getItems().get(index).getItem() == Items.AIR) continue;
-                    if (blackItemList.contains(packet.getItems().get(index).getItem())) {
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
-                    }else{
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                if (packet.getItems().size() == 63) {
+                    for (int index = 0; index <= 26; index++) {
+                        if (packet.getItems().get(index).getItem() == Items.AIR) continue;
+                            if (blackItemList.contains(packet.getItems().get(index).getItem())) {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
+                            } else {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                            }
+
+                    }
+
+                if (packet.getItems().size() == 90) {
+                    for (int index = 0; index <= 53; index++) {
+                        if (packet.getItems().get(index).getItem() == Items.AIR) continue;
+
+
+                            if (blackItemList.contains(packet.getItems().get(index).getItem())) {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
+                            } else {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                            }
                     }
                 }
-            }
-            if (packet.getItems().size() == 90){
-                for (int index = 0;index <=53;index++) {
-                    if (packet.getItems().get(index).getItem() == Items.AIR) continue;
-                    if (blackItemList.contains(packet.getItems().get(index).getItem())) {
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
-                    }else{
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                if (packet.getItems().size() == 39) {
+                    for (int index = 0; index <= 2; index++) {
+                        if (packet.getItems().get(index).getItem() == Items.AIR) continue;
+                            if (blackItemList.contains(packet.getItems().get(index).getItem())) {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
+                            } else {
+                                mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                            }
                     }
                 }
-            }
-            if (packet.getItems().size() == 39){
-                for (int index = 0;index <=2;index++) {
-                    if (packet.getItems().get(index).getItem() == Items.AIR) continue;
-                    if (blackItemList.contains(packet.getItems().get(index).getItem())) {
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
-                    }else{
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
-                    }
-                }
-            }
-            if (packet.getItems().size() == 41){
-                for (int index = 0;index <=2;index++) {
-                    if (packet.getItems().get(index).getItem() == Items.AIR) continue;
-                    if (blackItemList.contains(packet.getItems().get(index).getItem())) {
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
-                    }else{
-                        mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                if (packet.getItems().size() == 41) {
+                    for (int index = 0; index <= 2; index++) {
+
+
+                        if (packet.getItems().get(index).getItem() == Items.AIR) continue;
+                        if (blackItemList.contains(packet.getItems().get(index).getItem())) {
+                            mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.THROW, packet.getItems().get(index), int2objectmap));
+                        } else {
+                            mc.getConnection().send(new ServerboundContainerClickPacket(packet.getContainerId(), index, index, 1, ClickType.QUICK_MOVE, packet.getItems().get(index), int2objectmap));
+                        }
                     }
                 }
             }
