@@ -16,29 +16,15 @@ import net.java.main.value.FloatValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
-import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Shulker;
-import net.minecraft.world.entity.monster.Slime;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
+
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.apache.http.util.EntityUtils;
 
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class LegitAura extends Module {
     public LegitAura() {
         super("LegitAura", "LegitAura", Module.Category.COMBAT);
-
     }
 
 
