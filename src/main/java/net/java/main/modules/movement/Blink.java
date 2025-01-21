@@ -49,7 +49,8 @@ public class Blink extends Module {
                 packet instanceof ServerboundSetCarriedItemPacket ||
                 packet instanceof ServerboundCustomPayloadPacket ||
                 packet instanceof ServerboundPlayerAbilitiesPacket ||
-                packet instanceof ServerboundPlayerInputPacket
+                packet instanceof ServerboundPlayerInputPacket ||
+                packet instanceof ServerboundKeepAlivePacket
         ){
             event.cancelEvent();
             packets.add(packet);

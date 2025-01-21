@@ -112,7 +112,7 @@ public class Breaker extends Module {
     private BlockPos find() {
         var BlockMap = BlockUtils.searchBlocks(6);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
-        AtomicReference<Double> closestDistance = new AtomicReference<>(10000.0);
+        AtomicReference<Double> closestDistance = new AtomicReference<>(10.0);
 
         BlockMap.forEach((key, value) -> {
             if (value instanceof BedBlock) {

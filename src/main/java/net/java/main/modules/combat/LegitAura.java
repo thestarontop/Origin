@@ -43,7 +43,7 @@ public class LegitAura extends Module {
 
 
     @EventTarget
-    public void Render2DEvent(UpdateEvent event) {
+    public void onUpdate(UpdateEvent event) {
         if (mc.hitResult.getType() == HitResult.Type.ENTITY) {
             var entity = ((EntityHitResult) mc.hitResult).getEntity();
             if (entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) {

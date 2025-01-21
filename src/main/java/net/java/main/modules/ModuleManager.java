@@ -108,7 +108,6 @@ public class ModuleManager {
         addHack(new NameProtect());
         addHack(new GhostBlock());
         addHack(new CivBreak());
-        //addHack(new GhostBlock());
         addHack(new FalseHand());
         addHack(new AutoShield());
         addHack(new ArmorBreaker());
@@ -116,6 +115,8 @@ public class ModuleManager {
         addHack(new AutoPartyGame());
         addHack(new AutoRod());
         addHack(new AutoFish());
+        addHack(new LegitAura());
+        addHack(new SelfDestruct());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

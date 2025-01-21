@@ -70,6 +70,7 @@ public class NoSlow extends Module {
             boolean sprinting = mc.player.isSprinting();
             if (sprinting){
                 shouldstartsprint = false;
+                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player,ServerboundPlayerCommandPacket.Action.STOP_SPRINTING));
             }
             mc.getConnection().send(new ServerboundContainerClickPacket(0,-32767,mc.player.getInventory().selected+36,0,ClickType.PICKUP, mc.player.getInventory().getSelected(),int2objectmap));
             mc.getConnection().send(new ServerboundContainerClosePacket(0));
@@ -77,6 +78,7 @@ public class NoSlow extends Module {
         }
         if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
             if (packet.getSlot() == mc.player.getInventory().selected +36 && packet.getContainerId() == 0){
+                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player,ServerboundPlayerCommandPacket.Action.START_SPRINTING));
                 shouldnoslow = true;
                 shouldstartsprint = true;
             }

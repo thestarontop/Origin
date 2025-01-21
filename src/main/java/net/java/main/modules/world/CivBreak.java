@@ -39,6 +39,7 @@ public class CivBreak extends Module {
             if (block == Blocks.AIR || block == Blocks.LIGHT || block == Blocks.WATER || block == Blocks.LAVA || block == Blocks.BUBBLE_COLUMN || block == Blocks.MOVING_PISTON || block == Blocks.FIRE)
                 return;
             PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
+            mc.level.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 2);
         }
     }
 

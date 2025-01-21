@@ -24,7 +24,7 @@ public abstract class MixinKeyMapping {
     @Overwrite
     public boolean isDown() {
         Module InvMove = madebystarontopandfml.getInstance().getModuleManager().getModule("invmove");
-        boolean shouldInvMove = InvMove.isEnabled() ? this.isDown : this.isDown && this.getKeyConflictContext().isActive() && this.getKeyModifier().isActive(this.getKeyConflictContext());
+        boolean shouldInvMove = InvMove.isEnabled() ? this.isDown : (this.isDown && this.getKeyConflictContext().isActive() && this.getKeyModifier().isActive(this.getKeyConflictContext()));
         return shouldInvMove;
     }
 }
