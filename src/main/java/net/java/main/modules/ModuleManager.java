@@ -117,6 +117,7 @@ public class ModuleManager {
         addHack(new AutoFish());
         addHack(new LegitAura());
         addHack(new SelfDestruct());
+        addHack(new Speed());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
