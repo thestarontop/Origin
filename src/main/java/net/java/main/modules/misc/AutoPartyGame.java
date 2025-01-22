@@ -227,7 +227,7 @@ public class AutoPartyGame extends Module {
             if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.WATER_BUCKET && value == Blocks.FURNACE){
                 mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.DOWN, key, false)));
             }
-            if (value == Blocks.STONE_BUTTON){
+            if (value == Blocks.STONE_BUTTON || value == Blocks.CAKE){
                 mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.DOWN, key, false)));
             }
         }
