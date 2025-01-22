@@ -10,32 +10,59 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(Font.class)
 public class MixinFont {
     @ModifyVariable(
-            method = "drawInternal(Ljava/lang/String;FFIZLcom/mojang/math/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;ZIIZ)I",
+            method = "drawInternal*",
             at = @At("HEAD"),
             ordinal = 0
     )
     private String onDrawInternal(String text) {
-        if (text == null || madebystarontopandfml.eventManager == null) {
+        if (text == null || madebystarontopandfml.getInstance().getEventManager() == null) {
             return text;
         }
 
         TextEvent event = new TextEvent(text);
-        madebystarontopandfml.eventManager.call(event);
+        madebystarontopandfml.getInstance().getEventManager().call(event);
         return event.getText();
     }
+    @ModifyVariable(
+            method = "draw*",
+            at = @At("HEAD"),
+            ordinal = 0
+    )
+    private String ondraw(String text) {
+        if (text == null || madebystarontopandfml.getInstance().getEventManager() == null) {
+            return text;
+        }
 
+        TextEvent event = new TextEvent(text);
+        madebystarontopandfml.getInstance().getEventManager().call(event);
+        return event.getText();
+    }
+    @ModifyVariable(
+            method = "drawInBatch*",
+            at = @At("HEAD"),
+            ordinal = 0
+    )
+    private String ondrawInBatch(String text) {
+        if (text == null || madebystarontopandfml.getInstance().getEventManager() == null) {
+            return text;
+        }
+
+        TextEvent event = new TextEvent(text);
+        madebystarontopandfml.getInstance().getEventManager().call(event);
+        return event.getText();
+    }
     @ModifyVariable(
             method = "width(Ljava/lang/String;)I",
             at = @At("HEAD"),
             ordinal = 0
     )
     private String onWidth(String text) {
-        if (text == null || madebystarontopandfml.eventManager == null) {
+        if (text == null || madebystarontopandfml.getInstance().getEventManager() == null) {
             return text;
         }
 
         TextEvent event = new TextEvent(text);
-        madebystarontopandfml.eventManager.call(event);
+        madebystarontopandfml.getInstance().getEventManager().call(event);
         return event.getText();
     }
 }
