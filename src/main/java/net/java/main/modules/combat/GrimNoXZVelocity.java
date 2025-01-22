@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class GrimNoXZVelocity extends Module {
     public GrimNoXZVelocity() {
-        super("Velocity","bzd",Module.Category.COMBAT);
+        super("GrimNoXZVelocity","bzd",Module.Category.COMBAT);
     }
     private boolean a = false;
 
