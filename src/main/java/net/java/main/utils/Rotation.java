@@ -9,6 +9,8 @@ package net.java.main.utils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
+import static net.minecraft.util.Mth.wrapDegrees;
+
 public class Rotation extends MinecraftInstance{
 
     private float yaw;
@@ -18,7 +20,16 @@ public class Rotation extends MinecraftInstance{
         this.yaw = yaw;
         this.pitch = pitch;
     }
+    public Rotation(Vec3 from, Vec3 to) {
+        final Vec3 diff = to.subtract(from);
 
+        this.yaw = wrapDegrees(
+                (float) Math.toDegrees(Math.atan2(diff.z, diff.x)) - 90F
+        );
+        this.pitch = wrapDegrees(
+                (float) (-Math.toDegrees(Math.atan2(diff.y, Math.sqrt(diff.x * diff.x + diff.z * diff.z))))
+        );
+    }
     public float getYaw() {
         return yaw;
     }

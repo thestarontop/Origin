@@ -64,7 +64,7 @@ public class Module extends MinecraftInstance {
                     }
                 }
             }*/
-
+            onActivate();
             if (this.isEnabled) {
                 setEnable(false);
             } else {
@@ -93,6 +93,10 @@ public class Module extends MinecraftInstance {
         FileManager.saveConfig(FileManager.modulesConfig);
     }
 
+
+    public void onActivate() {
+
+    }
     public String getName() {
         return this.name;
     }
