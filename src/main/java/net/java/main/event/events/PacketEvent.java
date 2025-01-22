@@ -15,4 +15,7 @@ public class PacketEvent implements Event {
     public void cancelEvent() {
         isCancelled = true;
     }
+    public void setCancelled(boolean cancelled) {
+        this.isCancelled = cancelled;
+    }
 }
