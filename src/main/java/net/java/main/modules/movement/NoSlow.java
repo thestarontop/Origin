@@ -38,7 +38,7 @@ public class NoSlow extends Module {
     public static ListValue mode = new ListValue("Mode", new String[]{"RestBug","Grim","Gapple"},"Gapple");
     public FloatValue startTime = new FloatValue("startTime", 100f, 0.0f, 200f);
     public static boolean shouldnoslow = true;
-//1
+
     @EventTarget
     public void onPacket(PacketEvent event) {
 

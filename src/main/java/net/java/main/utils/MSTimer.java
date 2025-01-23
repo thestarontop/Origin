@@ -2,7 +2,7 @@ package net.java.main.utils;
 
 public class MSTimer {
     long time = -1L;
-//1
+
     public boolean hasTimePassed(long MS) {
         return System.currentTimeMillis() >= time + MS;
     }
