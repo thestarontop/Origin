@@ -22,7 +22,7 @@ public abstract class MixinGameRenderer {
     }
     @Inject(method = "render",at=@At(value = "INVOKE",target = "Lnet/minecraft/client/gui/Gui;render(Lcom/mojang/blaze3d/vertex/PoseStack;F)V"))
     public void onRender(float g, long l, boolean bl, CallbackInfo ci){
-        madebystarontopandfml.getInstance().getEventManager().call(new Render2DEvent());
+        madebystarontopandfml.getInstance().getEventManager().call(new Render2DEvent(g));
     }
 
 }

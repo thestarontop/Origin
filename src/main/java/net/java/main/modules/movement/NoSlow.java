@@ -78,7 +78,9 @@ public class NoSlow extends Module {
         }
         if(event.getPacket() instanceof ClientboundContainerSetSlotPacket packet){
             if (packet.getSlot() == mc.player.getInventory().selected +36 && packet.getContainerId() == 0){
-                mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player,ServerboundPlayerCommandPacket.Action.START_SPRINTING));
+                if (!shouldstartsprint) {
+                    mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
+                }
                 shouldnoslow = true;
                 shouldstartsprint = true;
             }

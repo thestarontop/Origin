@@ -46,8 +46,11 @@ public class Xray extends Module {
         for (Map.Entry<BlockPos, Block> entry : BlockMap.entrySet()) {
             BlockPos key = entry.getKey();
             Block value = entry.getValue();
-            if(value == Blocks.DIAMOND_ORE || value == Blocks.IRON_ORE) {
+            if(value == Blocks.IRON_ORE || value == Blocks.DEEPSLATE_IRON_ORE) {
                 RenderUtils.renderBoundingBox(event.getPoseStack(),key,1,0,0);
+            }
+            if (value == Blocks.DIAMOND_ORE || value == Blocks.DEEPSLATE_DIAMOND_ORE){
+                RenderUtils.renderBoundingBox(event.getPoseStack(),key,0,0,1);
             }
         }
     }

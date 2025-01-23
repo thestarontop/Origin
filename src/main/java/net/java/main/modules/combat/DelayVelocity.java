@@ -9,6 +9,7 @@ import net.java.main.modules.Module;
 import net.java.main.utils.PacketUtils;
 import net.java.main.utils.RenderUtils;
 import net.java.main.value.BooleanValue;
+import net.java.mixins.acesser.ClientboundSetEntityMotionPacketAcesser;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
@@ -18,7 +19,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DelayVelocity extends Module {
-    public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);addValues(explode);}
+    public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);addValues(explode,velocity);}
     private LinkedBlockingQueue<ClientboundPingPacket> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
@@ -26,6 +27,7 @@ public class DelayVelocity extends Module {
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
     public BooleanValue explode = new BooleanValue("VelocityBeforeExplode",false);
+    public BooleanValue velocity = new BooleanValue("SaveVelocity",false);
     public static Entity target = null;
     public static AABB box = null;
     @EventTarget
@@ -39,6 +41,7 @@ public class DelayVelocity extends Module {
             event.cancelEvent();
         }
         if (packet instanceof ClientboundSetEntityMotionPacket packet1){
+            ClientboundSetEntityMotionPacketAcesser packet2 = (ClientboundSetEntityMotionPacketAcesser) packet1;
             event.cancelEvent();
             packets2.add(packet1);
         }
@@ -74,16 +77,56 @@ public class DelayVelocity extends Module {
     public void onDisable() {
         try {
             if (explode.getValue()) {
-                while (!packets2.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets2.take());
+                if (velocity.getValue()){
+                    int xa = 0;
+                    int ya = 0;
+                    int za = 0;
+                    while (packets2.size() > 1){
+                    ClientboundSetEntityMotionPacket packet3 = packets2.take();
+                        xa = (packet3.getXa() + xa);
+                        ya = (packet3.getYa() + ya);
+                        za = (packet3.getZa() + za);
+                    }
+                    if (!packets2.isEmpty()) {
+                        ClientboundSetEntityMotionPacket packet = packets2.take();
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setXa(xa + packet.getXa());
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setYa(ya + packet.getYa());
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setZa(za + packet.getZa());
+                        ChatManager.sendChat("Xa："+xa+" Ya："+ya+" Za："+za);
+                        PacketUtils.sendPacketNoEvent(packet);
+                    }
+                }else {
+                    while (!packets2.isEmpty()) {
+                        PacketUtils.sendPacketNoEvent(packets2.take());
+                    }
                 }
             }
             while (!packets3.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets3.take());
             }
             if (!explode.getValue()){
-                while (!packets2.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets2.take());
+                if (velocity.getValue()){
+                    int xa = 0;
+                    int ya = 0;
+                    int za = 0;
+                    while (packets2.size() > 1){
+                        ClientboundSetEntityMotionPacket packet3 = packets2.take();
+                        xa = (packet3.getXa() + xa);
+                        ya = (packet3.getYa() + ya);
+                        za = (packet3.getZa() + za);
+                    }
+                    if (!packets2.isEmpty()) {
+                        ClientboundSetEntityMotionPacket packet = packets2.take();
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setXa(xa + packet.getXa());
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setYa(ya + packet.getYa());
+                        ((ClientboundSetEntityMotionPacketAcesser) packet).setZa(za + packet.getZa());
+                        ChatManager.sendChat("Xa："+xa+" Ya："+ya+" Za："+za);
+                        PacketUtils.sendPacketNoEvent(packet);
+                    }
+                }else {
+                    while (!packets2.isEmpty()) {
+                        PacketUtils.sendPacketNoEvent(packets2.take());
+                    }
                 }
             }
             while (!packets5.isEmpty()){

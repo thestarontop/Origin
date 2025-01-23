@@ -45,7 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 
-@Mixin(Minecraft.class)
+@Mixin(value = Minecraft.class, priority = 2000)
 public abstract class MixinMinecraft {
 
     @Shadow private int rightClickDelay;
@@ -68,8 +68,6 @@ public abstract class MixinMinecraft {
     @Shadow public boolean noRender;
 
     @Shadow @Final private SoundManager soundManager;
-
-    @Shadow public abstract void updateTitle();
 
     @Shadow @Final private ModelManager modelManager;
 
@@ -107,6 +105,8 @@ public abstract class MixinMinecraft {
     public static ModCheck checkModStatus() {
         return null;
     }
+
+    @Shadow protected abstract String createTitle();
 
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
     private void runtick(CallbackInfo ci) {
@@ -178,29 +178,7 @@ public abstract class MixinMinecraft {
      * @reason bzd
      */
     @Overwrite
-    private String createTitle() {
-        StringBuilder stringbuilder = new StringBuilder(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION + "---");
-        if (checkModStatus().shouldReportAsModified()) {
-            stringbuilder.append("*");
-        }
-
-        stringbuilder.append(" ");
-        stringbuilder.append(SharedConstants.getCurrentVersion().getName());
-        ClientPacketListener clientpacketlistener = this.getConnection();
-        if (clientpacketlistener != null && clientpacketlistener.getConnection().isConnected()) {
-            stringbuilder.append(" - ");
-            if (this.singleplayerServer != null && !this.singleplayerServer.isPublished()) {
-                stringbuilder.append(I18n.get("title.singleplayer"));
-            } else if (this.isConnectedToRealms()) {
-                stringbuilder.append(I18n.get("title.multiplayer.realms"));
-            } else if (this.singleplayerServer == null && (this.currentServer == null || !this.currentServer.isLan())) {
-                stringbuilder.append(I18n.get("title.multiplayer.other"));
-            } else {
-                stringbuilder.append(I18n.get("title.multiplayer.lan"));
-            }
-        }
-
-        return stringbuilder.toString();
+    public void updateTitle() {
     }
 
 }

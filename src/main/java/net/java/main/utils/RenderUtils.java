@@ -19,6 +19,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class RenderUtils extends MinecraftInstance{
 
 
@@ -284,6 +286,55 @@ public class RenderUtils extends MinecraftInstance{
     }
     public static void renderBoundingBox(PoseStack poseStack, BlockPos key, float red, float green, float blue){
         renderBoundingBox(poseStack,new AABB(key.getX(), key.getY(), key.getZ(), key.getX() + 1, key.getY() + 1, key.getZ() + 1),red,green,blue);
+    }
+    public static void glColor(final int red, final int green, final int blue, final int alpha) {
+        RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
+    }
+
+    public static void glColor(final Color color) {
+        RenderSystem.setShaderColor(
+                color.getRed() / 255F,
+                color.getGreen() / 255F,
+                color.getBlue() / 255F,
+                color.getAlpha() / 255F
+        );
+    }
+
+    private static void glColor(final int hex) {
+        glColor(hex >> 16 & 0xFF, hex >> 8 & 0xFF, hex & 0xFF, hex >> 24 & 0xFF);
+    }
+    public static void glColor(final Color color, final int alpha) {
+        glColor(color, (int) (alpha/255F));
+    }
+    public static void enableGlCap(final int cap) {
+        setGlCap(cap, true);
+    }
+
+    public static void enableGlCap(final int... caps) {
+        for (final int cap : caps)
+            setGlCap(cap, true);
+    }
+
+    public static void disableGlCap(final int cap) {
+        setGlCap(cap, true);
+    }
+
+    public static void disableGlCap(final int... caps) {
+        for (final int cap : caps)
+            setGlCap(cap, false);
+    }
+    public static void setGlCap(final int cap, final boolean state) {
+        glCapMap.put(cap, glGetBoolean(cap));
+        setGlState(cap, state);
+    }
+    public static void setGlState(final int cap, final boolean state) {
+        if (state)
+            glEnable(cap);
+        else
+            glDisable(cap);
+    }
+    public static void resetCaps() {
+        glCapMap.forEach(RenderUtils::setGlState);
     }
 
 }

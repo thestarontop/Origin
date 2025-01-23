@@ -8,6 +8,7 @@ import net.java.main.event.events.UpdateEvent;
 import net.java.main.modules.Module;
 import net.java.main.utils.ColorUtils;
 import net.java.main.utils.RenderUtils;
+import net.java.main.utils.StringUtils;
 import net.java.mixins.acesser.ClientboundChatPacketAcesser;
 import net.java.mixins.acesser.ClientboundSetScorePacketAcesser;
 import net.java.mixins.acesser.ClientboundSetTitleTextPacketAcesser;
@@ -24,7 +25,7 @@ public class NameProtect extends Module {
     String name = null;
     @EventTarget
     public void onText(TextEvent event){
-        event.setText(event.getText().replaceAll(name,ColorUtils.makeColour("Hidden")));
+        event.setText(StringUtils.replace(event.getText(),name,ColorUtils.makeColour("Hidden")));
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
@@ -33,7 +34,7 @@ public class NameProtect extends Module {
            ChatManager.sendChat("玩家名字："+ name);
        }
        if (name != null){
-           mc.getConnection().getPlayerInfo(mc.player.getUUID()).setTabListDisplayName(new TextComponent(mc.getConnection().getPlayerInfo(mc.player.getUUID()).getTabListDisplayName().getString().replaceAll(name,ColorUtils.makeColour("Hidden"))));
+           mc.getConnection().getPlayerInfo(mc.player.getUUID()).setTabListDisplayName(new TextComponent(StringUtils.replace(mc.getConnection().getPlayerInfo(mc.player.getUUID()).getTabListDisplayName().getString(),name, ColorUtils.makeColour("Hidden"))));
 
        }
     }
@@ -41,12 +42,14 @@ public class NameProtect extends Module {
     public void onPacket(PacketEvent event){
         if (name == null) return;
         if (event.getPacket() instanceof ClientboundChatPacket packet){
+            if (event.isCancelled) return;
             ClientboundChatPacketAcesser packet1 = (ClientboundChatPacketAcesser) packet;
-            packet1.setmessage(new TextComponent(packet.getMessage().getString().replaceAll(name,ColorUtils.makeColour("Hidden"))));
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getMessage().getString(), name, ColorUtils.makeColour("Hidden"))));
         }
         if (event.getPacket() instanceof ClientboundSetScorePacket packet){
+            if (event.isCancelled) return;
             ClientboundSetScorePacketAcesser packet1 = (ClientboundSetScorePacketAcesser) packet;
-            packet1.setObjectiveName(packet.getObjectiveName().replaceAll(name,ColorUtils.makeColour("Hidden")));
+            packet1.setObjectiveName(StringUtils.replace(packet.getObjectiveName(),name, ColorUtils.makeColour("Hidden")));
         }
     }
 }
