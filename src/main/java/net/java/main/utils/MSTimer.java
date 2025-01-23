@@ -6,7 +6,9 @@ public class MSTimer {
     public boolean hasTimePassed(long MS) {
         return System.currentTimeMillis() >= time + MS;
     }
-
+    public boolean passedMs(Float MS) {
+        return System.currentTimeMillis() >= time + MS;
+    }
     public long hasTimeLeft(long MS){
         return MS + time - System.currentTimeMillis();
     }
