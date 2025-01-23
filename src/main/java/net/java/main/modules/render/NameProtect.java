@@ -30,7 +30,7 @@ public class NameProtect extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
        if (name == null && mc.player != null){
-            name = mc.player.getDisplayName().getString();
+            name = mc.player.getDisplayName().getString().replaceAll(" ","");
            ChatManager.sendChat("玩家名字："+ name);
        }
        if (name != null){

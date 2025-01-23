@@ -29,7 +29,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL21;
+import org.lwjgl.opengl.GL21;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -130,13 +131,13 @@ public class Projectiles extends Module {
         BufferBuilder worldRenderer = tessellator.getBuilder();
 
         // Start drawing of path
-        GL11.glDepthMask(false);
-        RenderUtils.enableGlCap(GL11.GL_BLEND, GL11.GL_LINE_SMOOTH);
-        RenderUtils.disableGlCap(GL11.GL_DEPTH_TEST, GL11.GL_ALPHA_TEST, GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+        GL21.glDepthMask(false);
+        RenderUtils.enableGlCap(GL21.GL_BLEND, GL21.GL_LINE_SMOOTH);
+        RenderUtils.disableGlCap(GL21.GL_DEPTH_TEST, GL21.GL_ALPHA_TEST, GL21.GL_TEXTURE_2D);
+        GL21.glBlendFunc(GL21.GL_SRC_ALPHA, GL21.GL_ONE_MINUS_SRC_ALPHA);
+        GL21.glHint(GL21.GL_LINE_SMOOTH_HINT, GL21.GL_NICEST);
                 RenderUtils.glColor(new Color(255, 119, 194, 255));
-        GL11.glLineWidth(2f);
+        GL21.glLineWidth(2f);
 
         worldRenderer.begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION);
 
@@ -226,8 +227,12 @@ public class Projectiles extends Module {
 
         // End the rendering of the path
         tessellator.end();
-        GL11.glPushMatrix();
-        GL11.glTranslated(posX - renderManager.camera.getPosition().x,
+        PoseStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushPose();
+// 渲染代码
+        matrixStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        GL21.glTranslated(posX - renderManager.camera.getPosition().x,
                 posY - renderManager.camera.getPosition().y,
                 posZ - renderManager.camera.getPosition().z);
 
@@ -235,10 +240,10 @@ public class Projectiles extends Module {
             // Switch rotation of hit cylinder of the hit axis
             switch (((BlockHitResult)landingPosition).getDirection().getAxis()) {
                 case X:
-                    GL11.glRotatef(90F, 0F, 0F, 1F);
+                    GL21.glRotatef(90F, 0F, 0F, 1F);
                     break;
                 case Z:
-                    GL11.glRotatef(90F, 1F, 0F, 0F);
+                    GL21.glRotatef(90F, 1F, 0F, 0F);
                     break;
             }
 
@@ -248,7 +253,7 @@ public class Projectiles extends Module {
         }
 
         // Rendering hit cylinder
-        GL11.glRotatef(-90F, 1F, 0F, 0F);
+        GL21.glRotatef(-90F, 1F, 0F, 0F);
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
@@ -282,10 +287,10 @@ public class Projectiles extends Module {
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
-        GL11.glPopMatrix();
-        GL11.glDepthMask(true);
+        GL21.glPopMatrix();
+        GL21.glDepthMask(true);
         RenderUtils.resetCaps();
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL21.glColor4f(1F, 1F, 1F, 1F);
     }
 
 }

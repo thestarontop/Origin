@@ -210,10 +210,11 @@ public class AutoPartyGame extends Module {
                 }
             }
             if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof HoeItem && value != Blocks.AIR){
-                if (clickedblock.contains(key)) continue;
-                mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.UP, key, false)));
-                clickedblock.add(key);
-                break;
+                if (!clickedblock.contains(key)) {
+                    mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.UP, key, false)));
+                    clickedblock.add(key);
+                    break;
+                }
             }
             if (value == Blocks.WATER){
                 if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.BUCKET) {

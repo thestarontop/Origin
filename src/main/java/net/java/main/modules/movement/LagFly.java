@@ -9,15 +9,14 @@ import java.util.Random;
 
 public class LagFly extends Module {
     public LagFly(){super("LagFly","bzd",Category.MOVEMENT);}
-    private int ticks = 0;
     @EventTarget
     public void onUpdate(UpdateEvent event){
-        ticks ++;
-        mc.getConnection().send(new ServerboundMovePlayerPacket.PosRot(mc.player.getX(),mc.player.getY(),mc.player.getZ(),mc.player.getYRot() + 360*ticks ,mc.player.getXRot(),mc.player.isOnGround()));
+        for (int i =1;i<5;i++){
+            mc.getConnection().send(new ServerboundMovePlayerPacket.PosRot(mc.player.getX(),mc.player.getY(),mc.player.getZ(),mc.player.getYRot() + 360*i ,mc.player.getXRot(),mc.player.isOnGround()));
+        }
     }
     @Override
     public void onDisable(){
         super.onDisable();
-        ticks = 0;
     }
 }

@@ -159,7 +159,7 @@ public class NoSlow extends Module {
             //    mc.font.drawShadow(new PoseStack(),"Eating",width/2f,height/2f+20,Color.white);
         }
     }
-    public static boolean isUsable(ItemStack itemStack) {
+    private boolean isUsable(ItemStack itemStack) {
         if (itemStack != null && !itemStack.isEmpty()) {
             Item item = itemStack.getItem();
             boolean isFood = item.getFoodProperties() != null;

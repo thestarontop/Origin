@@ -1,23 +1,16 @@
 package net.java.main.modules.world;
 
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.java.main.event.events.PacketEvent;
-import net.java.main.event.events.Render2DEvent;
 import net.java.main.event.events.Render3DEvent;
 import net.java.main.event.events.UpdateEvent;
 import net.java.main.event.annotations.EventTarget;
-import net.java.main.madebystarontopandfml;
 import net.java.main.modules.Module;
 import net.java.main.utils.*;
 import net.java.main.value.BooleanValue;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.protocol.status.ServerboundPingRequestPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,13 +19,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import java.awt.*;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.java.main.utils.BlockUtils.*;
@@ -111,6 +101,7 @@ public class Scaffold extends Module {
         if (currentslot == -1) return;
         if (silentautoblock.getValue()) {
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(currentslot));
+            mc.player.setItemInHand(InteractionHand.MAIN_HAND, blockstack);
         }else {
             mc.player.getInventory().selected = currentslot;
         }
@@ -118,10 +109,10 @@ public class Scaffold extends Module {
         InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
         if ((result == InteractionResult.SUCCESS)) {
             mc.player.swing(InteractionHand.MAIN_HAND);
-            mc.level.setBlock(block, ((BlockItem)blockstack.getItem()).getBlock().defaultBlockState(),2);
         }
         if (silentautoblock.getValue()) {
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
+            mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
         }
         mc.player.setSprinting(RotationUtils.targetRotation == null);
     }
