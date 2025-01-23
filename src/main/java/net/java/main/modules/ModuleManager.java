@@ -119,6 +119,8 @@ public class ModuleManager {
         addHack(new SelfDestruct());
         addHack(new Speed());
         addHack(new Projectiles());
+        addHack(new Protocol());
+
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

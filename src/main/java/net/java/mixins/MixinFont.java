@@ -9,11 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(Font.class)
 public class MixinFont {
-    @ModifyVariable(
-            method = "drawInternal*",
-            at = @At("HEAD"),
-            ordinal = 0
-    )
+    @ModifyVariable(method = "drawInternal*", at = @At("HEAD"), ordinal = 0)
     private String onDrawInternal(String text) {
         if (text == null || madebystarontopandfml.getInstance().getEventManager() == null) {
             return text;

@@ -12,6 +12,9 @@ public class MSTimer {
     public long hasTimeLeft(long MS){
         return MS + time - System.currentTimeMillis();
     }
+    public boolean check(double milliseconds) {
+        return (double) time >= milliseconds;
+    }
 
     public long timePassed() {
         return System.currentTimeMillis() - time;
