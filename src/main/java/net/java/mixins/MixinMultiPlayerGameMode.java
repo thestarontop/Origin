@@ -3,7 +3,6 @@ package net.java.mixins;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.events.AttackEvent;
 import net.java.main.event.events.ClickBlockEvent;
-import net.java.main.utils.BasicUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;

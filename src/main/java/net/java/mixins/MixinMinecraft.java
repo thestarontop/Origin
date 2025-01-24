@@ -120,6 +120,7 @@ public abstract class MixinMinecraft {
         madebystarontopandfml.getInstance().getEventManager().call(event);
     }
 
+
     @Inject(method = "startUseItem", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelay:I", shift = At.Shift.AFTER))
     private void useItem(CallbackInfo ci) {
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("FastPlace").isEnabled())

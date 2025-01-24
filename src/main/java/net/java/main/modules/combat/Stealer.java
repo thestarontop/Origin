@@ -57,7 +57,7 @@ public class Stealer extends Module {
 
                 hasItem = true;
 
-                //if (!ItemUtil.useful(stack)) continue;
+               // if (!ItemUtil.useful(stack)) continue;
                 if (tickCounter >= 3) {
                     mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE,screen.getMenu().getContainer().getItem(i), int2objectmap));
                     tickCounter = 0;
