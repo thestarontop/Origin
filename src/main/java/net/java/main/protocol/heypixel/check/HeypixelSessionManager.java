@@ -446,7 +446,7 @@ public class HeypixelSessionManager {
             buffer.packValue(new Variable().setIntegerValue(System.currentTimeMillis()));
 //            System.out.println("send: client data");
 
-            ByteBuf buf = null;
+            var buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeBytes(buffer.toByteArray());
             NetPayload.send(new ResourceLocation(HeypixelCheckPacket.getChannel()), buf);
         } catch (IOException e) {
@@ -647,7 +647,8 @@ public class HeypixelSessionManager {
 
                 var id = new ResourceLocation(HeypixelCheckPacket.getChannel());
                // var buf = new ByteBuf(Unpooled.buffer());
-                ByteBuf buf = null;
+                var buf = new FriendlyByteBuf(Unpooled.buffer());
+                buf.writeBytes(buffer.toByteArray());
 
                 HeypixelVarUtils.writeUnsignedInt(buf, 1);
                 bufferHelper.writeByteArray(buf, buffer.toByteArray());

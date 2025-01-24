@@ -15,6 +15,7 @@ import net.java.main.protocol.heypixel.utils.HeypixelVarUtils;
 import net.java.main.utils.network.NetPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 
@@ -86,8 +87,7 @@ public class HeypixelCheckPacket {
     }
 
     public ByteBuf createPacketBuffer() {
-        ByteBuf buf = null;
-
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
         HeypixelVarUtils.writeUnsignedInt(buf, getPacketId());
         return buf;
     }
@@ -98,7 +98,8 @@ public class HeypixelCheckPacket {
             buffer.packString(Heypixel.get().getPlayerUUID());
             writeData(buffer);
 
-            ByteBuf buf = null;
+            var buf = new FriendlyByteBuf(Unpooled.buffer());
+
             HeypixelVarUtils.writeUnsignedInt(buf, getPacketId());
             helper.writeByteArray(buf, buffer.toByteArray());
 
