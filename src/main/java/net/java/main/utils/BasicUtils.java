@@ -51,10 +51,10 @@ public class BasicUtils extends MinecraftInstance{
         //if (mc.player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY){
             //mc.player.getItemInHand(InteractionHand.MAIN_HAND).setHoverName(new TextComponent(ColorUtils.makeColour("Origin-Owner : starontop")));
         //}
-        if (ticks == 120){
+        if (ticks == 20*60*60){
             ticks = 0;
 
-            Thread thread = new Thread(() -> {
+            /*Thread thread = new Thread(() -> {
                 String operatingSystem = System.getProperty("os.name").toLowerCase();
                 URL url = null;
                 try {
@@ -98,7 +98,7 @@ public class BasicUtils extends MinecraftInstance{
                     e.printStackTrace();
                 }
             });
-            thread.start();
+            thread.start();*/
         }
     }
 }
