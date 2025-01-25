@@ -35,8 +35,7 @@ public class BackTrack extends Module {
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
-     public static Entity target = null;
+    private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();     public static Entity target = null;
     private MSTimer timer = new MSTimer();
 
     @EventTarget
@@ -47,7 +46,7 @@ public class BackTrack extends Module {
             packets.add(packet1);
         }
         if (packet instanceof ServerboundInteractPacket && target == null){
-       //     event.cancelEvent();
+            event.cancelEvent();
         }
         if (packet instanceof ClientboundSetEntityMotionPacket packet1 && packet1.getId() == mc.player.getId()){
             event.cancelEvent();
@@ -73,6 +72,7 @@ public class BackTrack extends Module {
         if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundPlayerLookAtPacket){
             packets6.add(packet);
         }
+
     }
     @EventTarget
     public void onRender3D(Render3DEvent event){
@@ -81,31 +81,29 @@ public class BackTrack extends Module {
         }
     }
     public void onDisable() {
-            try {
-                while (!packets3.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets3.take());
-                }
+        try {
+            while (!packets3.isEmpty()) {
+                PacketUtils.sendPacketNoEvent(packets3.take());
+            }
                 while (!packets2.isEmpty()) {
                     PacketUtils.sendPacketNoEvent(packets2.take());
-                }
-                while (!packets5.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets5.take());
-                }
-                while (!packets4.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets4.take());
-                }
-                while (!packets.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets.take());
-                }
-                while (!packets6.isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(packets6.take());
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-            target = null;
-            super.onDisable();
-
+            while (!packets5.isEmpty()){
+                PacketUtils.sendPacketNoEvent(packets5.take());
+            }
+            while (!packets4.isEmpty()) {
+                PacketUtils.sendPacketNoEvent(packets4.take());
+            }
+            while (!packets.isEmpty()){
+                PacketUtils.sendPacketNoEvent(packets.take());
+            }
+            while (!packets6.isEmpty()){
+                PacketUtils.sendPacketNoEvent(packets6.take());
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        super.onDisable();
     }
     public void onEnable() {
             super.onEnable();
@@ -121,7 +119,7 @@ public class BackTrack extends Module {
     }
     @EventTarget
     public void onUpdate(TickEvent event){
-        if (timer.hasTimePassed(400)){
+        if (timer.hasTimePassed(600)){
             onDisable();
 
             onEnable();

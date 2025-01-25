@@ -44,7 +44,7 @@ public class Stealer extends Module {
     private int tickCounter = 0;
     Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
     public FloatValue delay = new FloatValue("Delay", 3f, 0f, 6f);
-
+//1
 
     @EventTarget
     public void onTick(TickEvent event) {
