@@ -53,7 +53,7 @@ public class AutoPartyGame extends Module {
 
     private List<Item> blackItemList = List.of(Items.DIAMOND_SHOVEL,Items.STONE_SHOVEL,Items.IRON_SHOVEL,Items.GOLDEN_SHOVEL,Items.NETHERITE_SHOVEL,Items.COBWEB,Items.EGG,Items.BOOK,Items.CHEST,Items.FISHING_ROD,Items.LAVA_BUCKET,Items.CROSSBOW,Items.EXPERIENCE_BOTTLE,Items.WATER_BUCKET,Items.SADDLE,Items.FLINT,Items.FLINT_AND_STEEL,Items.COMPASS,Items.SNOWBALL);
 
-    private List<BlockPos> clickedblock = List.of();
+    private ArrayList<BlockPos> clickedblock = new ArrayList<>();
     Map<String, Block> FLORA_MAP = new HashMap<String, Block>() {{
         // 小型花
         put("蒲公英", Blocks.DANDELION);

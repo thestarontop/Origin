@@ -122,6 +122,8 @@ public class ModuleManager {
         addHack(new Projectiles());
         addHack(new Protocol());
         addHack(new IRC());
+        addHack(new Crasher());
+        addHack(new ColorSigns());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

@@ -40,7 +40,9 @@ public class Protocol extends Module {
     @EventTarget
     private void onPacket(PacketEvent e) {
        var c = Protocols.HeyPixel.protocol.onPacket(e.getPacket());
-        e.setCancelled(c);
+       if (!c) return;
+
+       e.cancelEvent();
     }
     @EventTarget
     private void onTick(TickEvent e) {
