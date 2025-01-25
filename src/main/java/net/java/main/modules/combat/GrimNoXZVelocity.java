@@ -5,6 +5,7 @@
 package net.java.main.modules.combat;
 
 
+import net.java.main.event.events.AttackEvent;
 import net.java.main.event.events.UpdateEvent;
 import net.java.main.madebystarontopandfml;
 import net.java.main.modules.movement.NoSlow;
@@ -29,66 +30,59 @@ public class GrimNoXZVelocity extends Module {
 
 
     @EventTarget
-    public void onUpdate(UpdateEvent event){
+    public void onPacket(UpdateEvent event) {
+        if (mc.player == null) return;
         if((!NoSlow.shouldnoslow && mc.player.isUsingItem()) || madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()){
             return;
         }
-            Iterable<Entity> entitylist = mc.level.entitiesForRendering();
-            for (Entity entity : entitylist) {
+        Iterable<Entity> entitylist = mc.level.entitiesForRendering();
+        for (Entity entity : entitylist) {
             if (mc.player.hurtTime == 9) {
-            if ((entity instanceof Player && mc.player.distanceTo(
-            entity) <= 3.2 && entity.getId() != mc.player.getId()
-            )) {
-            if (KillAura.target != null){
-                entity = KillAura.target;
+                if ((entity instanceof Player && mc.player.distanceTo(entity) <= 3.2 && entity.getId() != mc.player.getId())) {
+                    if (KillAura.target != null) {
+                        entity = KillAura.target;
+                    }
+                    //Target-range-check
+
+                    madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
+                    for (int i = 0; i < 5; i++) {
+                        if (!mc.player.isSprinting() && !a) {
+                            mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
+                            a = true;
+                        }
+                        var boundingBox = entity.getBoundingBox().expandTowards(0.0,1.0,0.0);
+
+
+                        if(mc.player.getY() - entity.getY() <= 0.25)
+                            boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
+
+
+                        if(mc.player.getY() - entity.getY() >= 0.25)
+                            boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
+
+                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F);
+                        if(prevrotation == null) return;
+                        Rotation rotation = prevrotation.getRotation();
+                        RotationUtils.setTargetRotation(rotation);
+
+                        PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, false));
+                        PacketUtils.sendPacketNoEvent(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                        mc.player.setDeltaMovement(mc.player.getDeltaMovement().x*0.6,mc.player.getDeltaMovement().y,mc.player.getDeltaMovement().z*0.6);
+                    }
+                    break;
+                }
             }
-            for (int i = 0;i<5;i++){
-            if (!mc.player.isSprinting() && !a) {
-            mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));
-            a = true;
-            }
-
-                var boundingBox = entity.getBoundingBox().expandTowards(0.0,1.0,0.0);
-
-
-                if(mc.player.getY() - entity.getY() <= 0.25)
-                    boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
-
-
-                if(mc.player.getY() - entity.getY() >= 0.25)
-                    boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
-
-                Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F);
-                if(prevrotation == null) return;
-                Rotation rotation = prevrotation.getRotation();
-                RotationUtils.setTargetRotation(rotation);
-
-
-            PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, false));
-            PacketUtils.sendPacketNoEvent(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-            mc.player.setDeltaMovement(mc.player.getDeltaMovement().x*0.6,mc.player.getDeltaMovement().y,mc.player.getDeltaMovement().z*0.6);
-            }
-            break;
-            }
-
-
-            }
-            }
-
-
-
-            if(!mc.options.keyUp.isDown() && a){
+        }
+        if(!mc.options.keyUp.isDown() && a){
             mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.STOP_SPRINTING));
             a = false;
-            }
-            }
+        }
+    }
+
     @EventTarget
     public void onPacket(PacketEvent event) {
-
-
-            if (event.getPacket() instanceof ServerboundPlayerCommandPacket packet && packet.getAction().equals(ServerboundPlayerCommandPacket.Action.STOP_SPRINTING)) {
+        if (event.getPacket() instanceof ServerboundPlayerCommandPacket packet && packet.getAction().equals(ServerboundPlayerCommandPacket.Action.STOP_SPRINTING)) {
             a = false;
-            }
-            }
-
-            }
+        }
+    }
+}

@@ -11,6 +11,7 @@ import net.java.main.modules.Module;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.misc.MidClick;
 import net.java.main.modules.world.Breaker;
+import net.java.main.utils.MSTimer;
 import net.java.main.utils.Rotation;
 import net.java.main.utils.RotationUtils;
 import net.java.main.value.BooleanValue;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.LinkedList;
 
@@ -46,22 +48,27 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob,animal,mode);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode,cps);
     }
 
 
     public FloatValue range = new FloatValue("Range", 3.2f, 0.0f, 6.0f);
+    public FloatValue cps = new FloatValue("CPS", 7f, 0.0f, 20f);
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public static BooleanValue player = new BooleanValue("AttackPlayer",true);
     public static BooleanValue mob = new BooleanValue("AttackMob",true);
     public static BooleanValue animal = new BooleanValue("AttackAnimal",true);
     public static BooleanValue combatdelay = new BooleanValue("1.9+CombatDelay",true);
+
     public static ListValue mode = new ListValue("type", new String[]{"Interact", "Attack"},"Attack");
 
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
     private int ticks = 0;
     public static Entity target;
+    private MSTimer timer = new MSTimer();
+    public static LinkedList<AABB>targetaabb= new LinkedList<>();
+    public static LinkedList<AABB>attackccbb= new LinkedList<>();
 
     @EventTarget
     public void onJump(JumpEvent event){
@@ -105,14 +112,17 @@ public class KillAura extends Module {
             }
             return;
         }
-        Iterable<Entity> entitylist = mc.level.entitiesForRendering();
-        for (Entity entity1 : entitylist){
-            if(entity1 instanceof EndCrystal){
-                boolean canReach = mc.player.distanceTo(entity1) <= range.getValue();
-                if (canReach){
-                    attackEntity(entity1);
+
+        if (!madebystarontopandfml.getInstance().getModuleManager().getModule("backtrack").isEnabled()) {
+            Iterable<Entity> entitylist = mc.level.entitiesForRendering();
+
+            for (Entity entity1 : entitylist) {
+                if (entity1 instanceof EndCrystal) {
+                    boolean canReach = mc.player.distanceTo(entity1) <= range.getValue();
+                    if (canReach) {
+                        attackEntity(entity1);
+                    }
                 }
-            }
 
                 boolean canReach = mc.player.distanceTo(entity1) <= range.getValue();
 
@@ -132,25 +142,105 @@ public class KillAura extends Module {
                 }
 
 
-        }
-        CanReachEntities.removeIf(entity -> !isInIterable(entity, entitylist));
-
-
-            if (!CanReachEntities.isEmpty()){
-                CanReachEntities.sort((e1, e2) -> {
-                double dist1 = mc.player.distanceTo(e1);
-                double dist2 = mc.player.distanceTo(e2);
-                return Double.compare(dist1, dist2);
-            });
             }
-            for (Entity entity: CanReachEntities) {
-                if(CanReachEntities.size() >= 2)
+            CanReachEntities.removeIf(entity -> !isInIterable(entity, entitylist));
+
+
+            if (!CanReachEntities.isEmpty()) {
+                CanReachEntities.sort((e1, e2) -> {
+                    double dist1 = mc.player.distanceTo(e1);
+                    double dist2 = mc.player.distanceTo(e2);
+                    return Double.compare(dist1, dist2);
+                });
+            }
+            for (Entity entity : CanReachEntities) {
+                if (CanReachEntities.size() >= 2)
                     if (AttackedEntities.contains(entity))
                         continue;
 
                 if (entity instanceof LivingEntity entity1) {
                     if (entity1.hurtTime <= 10) {
                         var boundingBox = entity.getBoundingBox();
+                        boundingBox = boundingBox.expandTowards(0.0, 2.14, 0.0);
+
+                        if (mc.player.getY() - entity.getY() <= 0.25)
+                            boundingBox = boundingBox.expandTowards(0.0, -3.0, 0.0);
+
+
+                        if (mc.player.getY() - entity.getY() >= 0.25)
+                            boundingBox = boundingBox.expandTowards(0.0, 0.1, 0.0);
+
+                        target = entity;
+                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 4F);
+                        if (prevrotation == null) return;
+                        Rotation rotation = prevrotation.getRotation();
+                        if (silentrotation.getValue()) {
+                            RotationUtils.setTargetRotation(rotation);
+                        } else {
+                            rotation.toPlayer(mc.player);
+                        }
+                        if ((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
+                            attackEntity(entity);
+                            if (CanReachEntities.size() >= 2) {
+                                AttackedEntities.add(entity);
+                            }
+                            ticks = 0;
+                        }
+                        break;
+                    }
+                }
+            }
+        }else {
+            Iterable<Entity> entitylist = mc.level.entitiesForRendering();
+            for (AABB entity : BackTrack.cnmb){
+                Entity entity1 = BackTrack.starjjxiao.get(entity);
+                if(entity1 instanceof EndCrystal){
+                    boolean canReach = distanceTo(entity) <= range.getValue();
+                    if (canReach){
+                        attackEntity(entity1);
+                    }
+                }
+
+                boolean canReach = distanceTo(entity) <= range.getValue();
+
+                if (canReach && isEnemy(entity1) && entity1.getId() != mc.player.getId()) {
+                    if (!targetaabb.contains(entity)) {
+                        targetaabb.add(entity);
+                    }
+                } else {
+                    if (targetaabb.contains(entity)) {
+                        targetaabb.remove(entity);
+                    }
+                }
+                if (entity1.isRemoved()) {
+                    if (targetaabb.contains(entity)) {
+                        targetaabb.remove(entity);
+                    }
+                }
+
+
+            }
+            targetaabb.removeIf(entity -> !isInIterable(BackTrack.starjjxiao.get(entity), entitylist));
+
+
+            if (!targetaabb.isEmpty()){
+                targetaabb.sort((e1, e2) -> {
+                    double dist1 = distanceTo(e1);
+                    double dist2 = distanceTo(e2);
+                    return Double.compare(dist1, dist2);
+                });
+            }
+
+            for (AABB entity2: targetaabb) {
+
+                if(targetaabb.size() >= 2)
+                    if (attackccbb.contains(entity2))
+                        continue;
+
+              Entity entity = BackTrack.starjjxiao.get(entity2);
+                if (entity instanceof LivingEntity entity1) {
+                    if (entity1.hurtTime <= 10) {
+                        var boundingBox = entity2;
                         boundingBox = boundingBox.expandTowards(0.0,2.14,0.0);
 
                         if(mc.player.getY() - entity.getY() <= 0.25)
@@ -171,8 +261,8 @@ public class KillAura extends Module {
                         }
                         if((!combatdelay.getValue() && ticks >= delay) || (combatdelay.getValue() && mc.player.getAttackStrengthScale(0.5f) == 1f)) {
                             attackEntity(entity);
-                            if (CanReachEntities.size() >= 2) {
-                                AttackedEntities.add(entity);
+                            if (targetaabb.size() >= 2) {
+                                attackccbb.add(entity2);
                             }
                             ticks = 0;
                         }
@@ -181,36 +271,50 @@ public class KillAura extends Module {
                 }
             }
 
+        }
 
+        if(attackccbb.size() >= targetaabb.size()){
+            attackccbb.clear();
+
+        }
+        if (targetaabb.isEmpty()) {
+            target = null;
+        }
 
         if(AttackedEntities.size() >= CanReachEntities.size()){
             AttackedEntities.clear();
+
         }
         if (CanReachEntities.isEmpty()) {
             target = null;
         }
     }
+//我操你妈逼star
 
 
 
 
 
 
+    public boolean shouldAttack() {
+        return timer.hasTimePassed((long) (1000.0D / cps.getValue()));
+    }
 
 
     /**
      * Attack [entity]
      */
     private static void attackEntity(Entity entity) {
-        if (mode.getValue() == "Attack") {
+        if (mode.getValue() == "Attack")  {
             madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
+            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,true));
         }else{
             mc.getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity,mc.player.isShiftKeyDown(),InteractionHand.MAIN_HAND));
         }
         if(combatdelay.getValue()){
             mc.player.resetAttackStrengthTicker();
         }
+        mc.player.getCooldowns();
         mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
@@ -227,7 +331,6 @@ public class KillAura extends Module {
         super.onDisable();
         target = null;
     }
-
 
     public float distanceTo(AABB arg) {
         float f = (float)(mc.player.getX() - arg.minX);

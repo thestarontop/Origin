@@ -38,10 +38,12 @@ import java.util.concurrent.TimeUnit;
 public class Stealer extends Module {
     public Stealer() {
         super("Stealer", "bzd", Module.Category.COMBAT);
+        addValues(delay);
     }
 
     private int tickCounter = 0;
     Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
+    public FloatValue delay = new FloatValue("Delay", 3f, 0f, 6f);
 
 
     @EventTarget
@@ -58,7 +60,7 @@ public class Stealer extends Module {
                 hasItem = true;
 
                // if (!ItemUtil.useful(stack)) continue;
-                if (tickCounter >= 3) {
+                if (tickCounter >=delay.getValue()) {
                     mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE,screen.getMenu().getContainer().getItem(i), int2objectmap));
                     tickCounter = 0;
                 }
