@@ -27,8 +27,6 @@ public class GrimNoXZVelocity extends Module {
         super("GrimNoXZVelocity","bzd",Module.Category.COMBAT);
     }
     private boolean a = false;
-
-
     @EventTarget
     public void onPacket(UpdateEvent event) {
         if (mc.player == null) return;
@@ -42,9 +40,6 @@ public class GrimNoXZVelocity extends Module {
                     if (KillAura.target != null) {
                         entity = KillAura.target;
                     }
-                    //Target-range-check
-
-                    madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
                     for (int i = 0; i < 5; i++) {
                         if (!mc.player.isSprinting() && !a) {
                             mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_SPRINTING));

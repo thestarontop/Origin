@@ -28,14 +28,14 @@ public class BackTrack extends Module {
     public BackTrack() {
         super("BackTrack", "bzd", Category.COMBAT);
     }
-    public static Map<AABB,Entity> starjjxiao = new HashMap<>();
-    public static LinkedList<AABB>cnmb= new LinkedList<>();
+    public static Map<AABB,Entity> entitymap = new HashMap<>();
+    public static LinkedList<AABB>aabblist= new LinkedList<>();
     private LinkedBlockingQueue<ClientboundPingPacket> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();     public static Entity target = null;
+    private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
     private MSTimer timer = new MSTimer();
 
     @EventTarget
@@ -44,9 +44,6 @@ public class BackTrack extends Module {
         if (packet instanceof ClientboundPingPacket packet1){
             event.cancelEvent();
             packets.add(packet1);
-        }
-        if (packet instanceof ServerboundInteractPacket && target == null){
-            event.cancelEvent();
         }
         if (packet instanceof ClientboundSetEntityMotionPacket packet1 && packet1.getId() == mc.player.getId()){
             event.cancelEvent();
@@ -76,7 +73,7 @@ public class BackTrack extends Module {
     }
     @EventTarget
     public void onRender3D(Render3DEvent event){
-        for (AABB entity : cnmb) {
+        for (AABB entity : aabblist) {
             RenderUtils.renderBoundingBox(event.getPoseStack(), entity, 1F, 0.7529F, 0.7961F);
         }
     }
@@ -107,24 +104,15 @@ public class BackTrack extends Module {
     }
     public void onEnable() {
             super.onEnable();
-            starjjxiao.clear();
-            cnmb.clear();
+            entitymap.clear();
+            aabblist.clear();
             for (Entity entity : mc.level.entitiesForRendering()) {
                 if (entity == mc.player)
                     continue;
-                starjjxiao.put(entity.getBoundingBox(), entity);
-                cnmb.add(entity.getBoundingBox());
+                entitymap.put(entity.getBoundingBox(), entity);
+                aabblist.add(entity.getBoundingBox());
             }
 
-    }
-    @EventTarget
-    public void onUpdate(TickEvent event){
-        if (timer.hasTimePassed(600)){
-            onDisable();
-
-            onEnable();
-            timer.reset();
-        }
     }
 
 

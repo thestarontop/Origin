@@ -34,7 +34,10 @@ public class CivBreak extends Module {
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
+        //grim用不了，操你妈的
         if (blockpos != null){
+            PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
+            PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
             PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
             PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));
             PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,blockpos, Direction.DOWN));

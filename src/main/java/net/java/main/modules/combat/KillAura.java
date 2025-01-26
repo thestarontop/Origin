@@ -48,12 +48,11 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob,animal,mode,cps);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode);
     }
 
 
     public FloatValue range = new FloatValue("Range", 3.2f, 0.0f, 6.0f);
-    public FloatValue cps = new FloatValue("CPS", 7f, 0.0f, 20f);
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public static BooleanValue player = new BooleanValue("AttackPlayer",true);
     public static BooleanValue mob = new BooleanValue("AttackMob",true);
@@ -192,16 +191,15 @@ public class KillAura extends Module {
             }
         }else {
             Iterable<Entity> entitylist = mc.level.entitiesForRendering();
-            for (AABB entity : BackTrack.cnmb){
-                Entity entity1 = BackTrack.starjjxiao.get(entity);
+            for (AABB entity : BackTrack.aabblist){
+                Entity entity1 = BackTrack.entitymap.get(entity);
+                boolean canReach = distanceTo(entity) <= range.getValue();
                 if(entity1 instanceof EndCrystal){
-                    boolean canReach = distanceTo(entity) <= range.getValue();
                     if (canReach){
                         attackEntity(entity1);
                     }
                 }
 
-                boolean canReach = distanceTo(entity) <= range.getValue();
 
                 if (canReach && isEnemy(entity1) && entity1.getId() != mc.player.getId()) {
                     if (!targetaabb.contains(entity)) {
@@ -220,7 +218,7 @@ public class KillAura extends Module {
 
 
             }
-            targetaabb.removeIf(entity -> !isInIterable(BackTrack.starjjxiao.get(entity), entitylist));
+            targetaabb.removeIf(entity -> !isInIterable(BackTrack.entitymap.get(entity), entitylist));
 
 
             if (!targetaabb.isEmpty()){
@@ -237,7 +235,7 @@ public class KillAura extends Module {
                     if (attackccbb.contains(entity2))
                         continue;
 
-              Entity entity = BackTrack.starjjxiao.get(entity2);
+              Entity entity = BackTrack.entitymap.get(entity2);
                 if (entity instanceof LivingEntity entity1) {
                     if (entity1.hurtTime <= 10) {
                         var boundingBox = entity2;
@@ -272,33 +270,24 @@ public class KillAura extends Module {
             }
 
         }
+        if(madebystarontopandfml.getInstance().getModuleManager().getModule("backtrack").isEnabled()) {
+            if (attackccbb.size() >= targetaabb.size()) {
+                attackccbb.clear();
 
-        if(attackccbb.size() >= targetaabb.size()){
-            attackccbb.clear();
-
-        }
-        if (targetaabb.isEmpty()) {
-            target = null;
+            }
+            if (targetaabb.isEmpty()) {
+                target = null;
+            }
         }
 
         if(AttackedEntities.size() >= CanReachEntities.size()){
             AttackedEntities.clear();
-
         }
         if (CanReachEntities.isEmpty()) {
             target = null;
         }
     }
-//我操你妈逼star 1
 
-
-
-
-
-
-    public boolean shouldAttack() {
-        return timer.hasTimePassed((long) (1000.0D / cps.getValue()));
-    }
 
 
     /**
@@ -314,7 +303,6 @@ public class KillAura extends Module {
         if(combatdelay.getValue()){
             mc.player.resetAttackStrengthTicker();
         }
-        mc.player.getCooldowns();
         mc.player.swing(InteractionHand.MAIN_HAND);
 
     }
