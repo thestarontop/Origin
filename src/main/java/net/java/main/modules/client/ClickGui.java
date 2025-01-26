@@ -2,6 +2,7 @@ package net.java.main.modules.client;
 
 
 import net.java.main.madebystarontopandfml;
+import net.java.main.newgui.ClickGUIScreen;
 import org.lwjgl.glfw.GLFW;
 import net.java.main.modules.Module;
 
@@ -13,7 +14,9 @@ public class ClickGui extends Module {
     @Override
     public void onEnable() {
         setEnable(false);
-        mc.setScreen(madebystarontopandfml.getInstance().clickGUi);
+    //    mc.setScreen(madebystarontopandfml.getInstance().gui);
+        mc.setScreen(ClickGUIScreen.INSTANCE);
+
     }
 
 }

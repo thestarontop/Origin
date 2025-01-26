@@ -1,12 +1,13 @@
 package net.java.main.value;
 
 import com.google.gson.JsonElement;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Value<T> {
 
     private T value;
     public final String name;
-    Value(String name, T value) {
+    Value( String name, T value) {
         this.name = name;
         this.value = value;
     }
@@ -16,7 +17,9 @@ public abstract class Value<T> {
     public T getValue() {
         return value;
     }
-
+    public boolean getValue2() {
+        return (boolean) value;
+    }
     public void setValue(T value) {
         this.value = value;
     }
@@ -26,4 +29,5 @@ public abstract class Value<T> {
     public void changeValue(T value) {
         this.value = value;
     }
+
 }

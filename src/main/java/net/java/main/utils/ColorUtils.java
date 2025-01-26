@@ -21,7 +21,9 @@ public class ColorUtils {
         }
         return sb.toString();
     }
-
+    public static int color(int r, int g, int b, int a) {
+        return (a & 0xFF) << 24 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | b & 0xFF;
+    }
     public static String makeColour(String input) {
         return formatting(input, colour, 80.0D);
     }
