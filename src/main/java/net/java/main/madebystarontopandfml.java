@@ -29,7 +29,6 @@ public class madebystarontopandfml extends MinecraftInstance {
     public static EventManager eventManager;
     public static RotationUtils rotationutils;
     public static Commands commands;
-    public static NewClickGui gui;
     public static BasicUtils bu;
     private final FileManager fileManager;
     public ClickGUi clickGUi;
@@ -44,7 +43,6 @@ public class madebystarontopandfml extends MinecraftInstance {
         bindManager = new BindManager();
         rotationutils = new RotationUtils();
         commands = new Commands();
-        gui = new NewClickGui();
         bu = new BasicUtils();
         fileManager = new FileManager();
         fileManager.load();

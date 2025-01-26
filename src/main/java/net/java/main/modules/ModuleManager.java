@@ -124,6 +124,7 @@ public class ModuleManager {
         addHack(new IRC());
         addHack(new Crasher());
         addHack(new ColorSigns());
+        addHack(new AntiAFK());
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

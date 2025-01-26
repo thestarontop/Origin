@@ -39,6 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.java.main.modules.combat.KillAura.isInIterable;
 import static net.minecraft.world.level.block.Blocks.DARK_OAK_SAPLING;
@@ -192,7 +193,7 @@ public class AutoPartyGame extends Module {
                 ticks = 0;
             }
         }
-        var BlockMap = BlockUtils.searchBlocks(4);
+        var BlockMap = sortBlocksByDistance(BlockUtils.searchBlocks(4));
         for (Map.Entry<BlockPos, Block> entry : BlockMap.entrySet()) {
             BlockPos key = entry.getKey();
             Block value = entry.getValue();
@@ -340,5 +341,28 @@ public class AutoPartyGame extends Module {
     public void onDisable(){
         super.onDisable();
         clickedblock.clear();
+    }
+    public static Map<BlockPos, Block> sortBlocksByDistance(Map<BlockPos, Block> originalMap) {
+
+        return originalMap.entrySet().stream()
+                .sorted((e1, e2) -> {
+                    double dist1 = mc.player.distanceToSqr(
+                            e1.getKey().getX() + 0.5,
+                            e1.getKey().getY() + 0.5,
+                            e1.getKey().getZ() + 0.5
+                    );
+                    double dist2 = mc.player.distanceToSqr(
+                            e2.getKey().getX() + 0.5,
+                            e2.getKey().getY() + 0.5,
+                            e2.getKey().getZ() + 0.5
+                    );
+                    return Double.compare(dist1, dist2);
+                })
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
 }
