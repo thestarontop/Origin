@@ -10,6 +10,7 @@ import net.java.main.protocol.heypixel.msgpack.value.ValueFactory;
 import net.java.main.protocol.heypixel.msgpack.value.impl.ImmutableLongValueImpl;
 import net.java.main.protocol.heypixel.utils.BufferHelper;
 import net.java.main.protocol.heypixel.utils.HeypixelVarUtils;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class ClassesC2SPacket extends HeypixelCheckPacket {
     }
 
     @Override
-    public void processBuffer(ByteBuf buf, BufferHelper bufferHelper) {
+    public void processBuffer(FriendlyByteBuf buf, BufferHelper bufferHelper) {
         HeypixelVarUtils.writeVarInt(buf, this.id);
         HeypixelVarUtils.writeUnsignedInt(buf, this.size);
         HeypixelVarUtils.writeUnsignedInt(buf, this.size1);

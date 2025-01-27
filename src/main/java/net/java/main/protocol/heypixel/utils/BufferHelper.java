@@ -29,7 +29,12 @@ public class BufferHelper {
     public static String readString(ByteBuf byteBuf, BufferHelper bufferHelper) {
         return bufferHelper.readString(byteBuf);
     }
-
+    public byte[] readByteArrayHeypixelClient(ByteBuf byteBuf) {
+        int readVarInt = HeypixelVarUtils.readVarInt(byteBuf);
+        byte[] bArr = new byte[readVarInt - 1];
+        byteBuf.readBytes(bArr);
+        return bArr;
+    }
     public void writeScaledFloat(ByteBuf byteBuf, float f) {
         byteBuf.writeByte((byte) (f / 1.40625f));
     }

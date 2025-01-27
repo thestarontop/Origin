@@ -1,5 +1,6 @@
 package net.java.main.modules.combat;
 
+import net.java.main.event.events.Render3DEvent;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.events.AttackEvent;
 import net.java.main.event.events.UpdateEvent;
@@ -12,6 +13,7 @@ import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.misc.MidClick;
 import net.java.main.modules.world.Breaker;
 import net.java.main.utils.MSTimer;
+import net.java.main.utils.RenderUtils;
 import net.java.main.utils.Rotation;
 import net.java.main.utils.RotationUtils;
 import net.java.main.value.BooleanValue;
@@ -289,7 +291,12 @@ public class KillAura extends Module {
     }
 
 
-
+    @EventTarget
+    public void onRender3D(Render3DEvent event) {
+        if (target != null) {
+            RenderUtils.renderBoundingBox(event.getPoseStack(), target.getBoundingBox(), 0.1F, 1F, 0.1F);
+        }
+    }
     /**
      * Attack [entity]
      */

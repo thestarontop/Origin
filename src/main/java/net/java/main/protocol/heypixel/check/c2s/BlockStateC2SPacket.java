@@ -10,6 +10,7 @@ import net.java.main.protocol.heypixel.utils.BufferHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
@@ -74,7 +75,7 @@ public class BlockStateC2SPacket extends HeypixelCheckPacket {
     }
 
     @Override
-    public void processBuffer(ByteBuf friendlyByteBuf, BufferHelper bufferHelper) {
+    public void processBuffer(FriendlyByteBuf friendlyByteBuf, BufferHelper bufferHelper) {
         bufferHelper.writeString(friendlyByteBuf, str);
 //        System.out.println("state: " + str);
     }

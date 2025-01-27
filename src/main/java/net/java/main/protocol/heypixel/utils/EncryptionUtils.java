@@ -26,7 +26,7 @@ public class EncryptionUtils {
 
 
     public static PublicKey generatePublicKey(HeypixelSessionManager manager, byte[] bArr) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        var mode = manager.convertBytesToString(manager.encryptMode);
+        var mode = manager.getEncryptMode();
         //System.out.println(mode);
         return KeyFactory.getInstance(mode).generatePublic(new X509EncodedKeySpec(bArr));
     }
@@ -34,20 +34,19 @@ public class EncryptionUtils {
 
     public static String encryptString(HeypixelSessionManager manager, String str) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
         PublicKey generatePublicKey = generatePublicKey(manager, manager.key2);
-        Cipher serverChipher = ChiperUtils.getServerChipher(manager);
+        Cipher serverChipher = ChiperUtils.getServerCipher(manager);
         serverChipher.init(1, generatePublicKey);
         return Base64.getEncoder().encodeToString(serverChipher.doFinal(str.getBytes()));
     }
 
 
     public static PrivateKey generatePrivateKey(HeypixelSessionManager manager, byte[] bArr) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return KeyFactory.getInstance(manager.convertBytesToString(manager.encryptMode)).generatePrivate(new PKCS8EncodedKeySpec(bArr));
+        return KeyFactory.getInstance(manager.getEncryptMode()).generatePrivate(new PKCS8EncodedKeySpec(bArr));
     }
-
 
     public static String decryptBytes(HeypixelSessionManager manager, byte[] bArr) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException, InvalidKeySpecException {
         PrivateKey generatePrivateKey = generatePrivateKey(manager, manager.key3);
-        Cipher serverChipher = ChiperUtils.getServerChipher(manager);
+        Cipher serverChipher = ChiperUtils.getServerCipher(manager);
         serverChipher.init(2, generatePrivateKey);
         return new String(serverChipher.doFinal(bArr), StandardCharsets.UTF_8);
     }

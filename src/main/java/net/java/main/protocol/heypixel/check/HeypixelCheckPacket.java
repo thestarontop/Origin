@@ -32,7 +32,7 @@ public class HeypixelCheckPacket {
 
     public static BufferHelper helper = Heypixel.bufferHelper;
 
-    public static Map<Integer, Function<ByteBuf, HeypixelCheckPacket>> s2cMap = new HashMap<>();
+    public static Map<Integer, Function<FriendlyByteBuf, HeypixelCheckPacket>> s2cMap = new HashMap<>();
     public static Map<Class<? extends HeypixelCheckPacket>, Integer> c2sMap = new HashMap<>();
 
     protected HeypixelSessionManager manager;
@@ -60,7 +60,7 @@ public class HeypixelCheckPacket {
         c2sMap.put(cls, id);
     }
 
-    private static void registerS2C(int id, Function<ByteBuf, HeypixelCheckPacket> function) {
+    private static void registerS2C(int id, Function<FriendlyByteBuf, HeypixelCheckPacket> function) {
         s2cMap.put(id, function);
     }
 
@@ -72,34 +72,33 @@ public class HeypixelCheckPacket {
         return channel;
     }
 
-    public static Function<ByteBuf, HeypixelCheckPacket> newS2CInstance(int i) {
+    public static Function<FriendlyByteBuf, HeypixelCheckPacket> newS2CInstance(int i) {
         return s2cMap.get(i);
     }
 
     public void handleClass(Class<? extends HeypixelCheckPacket> cls) {
     }
 
-    public void processBuffer(ByteBuf buf, BufferHelper helper) {
+    public void processBuffer(FriendlyByteBuf buf, BufferHelper helper) {
     }
-   // AbstractClientPlayer
+
     public void handleClientSide(AbstractClientPlayer player) {
         throw new UnsupportedOperationException("This packet ( " + getPacketId() + ") does not implement a client side handler.");
     }
 
-    public ByteBuf createPacketBuffer() {
+    public FriendlyByteBuf createPacketBuffer() {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         HeypixelVarUtils.writeUnsignedInt(buf, getPacketId());
         return buf;
     }
 
     public void sendCheckPacket() {
-        try(var buffer = MessagePack.newDefaultBufferPacker()) {
+        try (var buffer = MessagePack.newDefaultBufferPacker()) {
             buffer.packString(Heypixel.get().clientId.toString());
             buffer.packString(Heypixel.get().getPlayerUUID());
             writeData(buffer);
 
             var buf = new FriendlyByteBuf(Unpooled.buffer());
-
             HeypixelVarUtils.writeUnsignedInt(buf, getPacketId());
             helper.writeByteArray(buf, buffer.toByteArray());
 
@@ -112,11 +111,13 @@ public class HeypixelCheckPacket {
     }
 
     public void sendCheckPacketVanilla() {
+        var decoder = manager.messageDecoder;
+
         ResourceLocation channel;
-        if (manager.getPlayerList() == null || manager.getPlayerList().isEmpty()) {
+        if (manager.playerList== null || manager.playerList.isEmpty()) {
             channel = new ResourceLocation(getChannel());
         } else {
-            channel = new ResourceLocation(Heypixel.MOD_ID + ":" + manager.convertBytesToString((byte[]) manager.getPlayerList().get(manager.getPlayerCount())));
+            channel = new ResourceLocation(Heypixel.MOD_ID + ":" + decoder.decode((byte[]) manager.playerList.get(manager.playerCount)));
         }
 
         var buf = createPacketBuffer();

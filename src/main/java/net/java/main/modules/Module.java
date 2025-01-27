@@ -55,6 +55,7 @@ public class Module extends MinecraftInstance {
 
 
         public void toggle() {
+
             /*if (this.getCategory() == Category.CLIENT) {
                 if(!(this instanceof ClickGui) && !(this instanceof HUD)) {
                     if (this.isEnabled()) {
@@ -71,6 +72,7 @@ public class Module extends MinecraftInstance {
                 setEnable(true);
             }
         }
+
 
 
     public boolean isEnabled() {

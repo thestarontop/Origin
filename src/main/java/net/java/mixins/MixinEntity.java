@@ -7,20 +7,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static net.java.main.utils.MinecraftInstance.mc;
+
 
 @Mixin(Entity.class)
 public abstract class MixinEntity {
+    @Shadow public abstract void setDeltaMovement(Vec3 p_20257_);
 
+    @Shadow public abstract Vec3 getDeltaMovement();
 
     @Shadow public abstract float getYRot();
-
-
 
     @Shadow
     private static Vec3 getInputVector(Vec3 arg, float g, float h) {

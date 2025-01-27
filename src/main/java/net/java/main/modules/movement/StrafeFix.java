@@ -25,6 +25,8 @@ public class StrafeFix extends Module {
     public void onStrafe(StrafeEvent event){
         if (RotationUtils.targetRotation == null) return;
         event.setVelocity(RotationUtils.fixVelocity(event.getVelocity(), event.getMovementinput(), event.getSpeed()));
+      //  event.setYaw(RotationUtils.targetRotation.getYaw());
+
     }
     @EventTarget
     public void onJump(JumpEvent event){
@@ -32,6 +34,16 @@ public class StrafeFix extends Module {
 
         event.setYaw(RotationUtils.targetRotation.getYaw());
     }
+
+    @EventTarget
+    public void onMotion(MotionEvent event){
+        if (RotationUtils.targetRotation == null) return;
+
+        event.setYaw(RotationUtils.targetRotation.getYaw());
+        event.setPitch(RotationUtils.targetRotation.getPitch());
+
+    }
+
 
     @EventTarget
     public void onMovementInput(MovementInputEvent event){

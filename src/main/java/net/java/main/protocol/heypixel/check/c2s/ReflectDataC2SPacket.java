@@ -9,6 +9,7 @@ import net.java.main.protocol.heypixel.check.HeypixelSessionManager;
 import net.java.main.protocol.heypixel.msgpack.core.MessageBufferPacker;
 import net.java.main.protocol.heypixel.msgpack.value.Variable;
 import net.java.main.protocol.heypixel.utils.BufferHelper;
+import net.minecraft.network.FriendlyByteBuf;
 
 
 import java.io.IOException;
@@ -135,7 +136,7 @@ public class ReflectDataC2SPacket extends HeypixelCheckPacket {
     }
 
     @Override
-    public void processBuffer(ByteBuf buf, BufferHelper bufferHelper) {
+    public void processBuffer(FriendlyByteBuf buf, BufferHelper bufferHelper) {
         bufferHelper.writeString(buf, this.jsonData);
     }
 }

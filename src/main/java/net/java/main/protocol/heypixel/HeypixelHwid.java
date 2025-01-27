@@ -10,16 +10,22 @@ import java.util.Map;
 
 
 public class HeypixelHwid {
-    public String userId;
-    public List<String> networkHardware;
-    public String cpuInfo;
-    public String baseboardSerial;
-    public List<String> diskSerials;
-    public Map<String,String> baseboardInfo;
-    public List<Map<String,String>> diskStoreInfo;
-    public List<Map<String,String>> networkInterfaces;
-    public String systemHwid;
-
-    public HeypixelHwid(String userId, ArrayList<String> networkHardwareInfo, String cpuInfo, String baseboardSerial, ArrayList<String> diskSerials, HashMap<String, String> baseboardInfo, List<Map<String, String>> diskStoreInfo, List<Map<String, String>> networkInterfaces, String systemInfo) {
-    }
+    @SerializedName("user")
+    public String user;
+    @SerializedName("network_hwids")
+    public List<String> network_hwids;
+    @SerializedName("cpu")
+    public String cpu;
+    @SerializedName("baseboard_serial")
+    public String baseboard_serial;
+    @SerializedName("disk_serials")
+    public List<String> disk_serials;
+    @SerializedName("baseboards")
+    public Map<String, String> baseboards;
+    @SerializedName("disks")
+    public List<Map<String, String>> disks;
+    @SerializedName("network_interfaces")
+    public List<Map<String, String>> network_interfaces;
+    @SerializedName("system")
+    public String system;
 }

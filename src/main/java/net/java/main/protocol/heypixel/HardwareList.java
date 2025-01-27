@@ -2,108 +2,216 @@ package net.java.main.protocol.heypixel;
 
 
 
-import org.apache.commons.lang3.RandomUtils;
 
+import net.java.main.protocol.heypixel.utils.StringUtils;
+import net.java.main.utils.RandomUtils;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HardwareList {
 
-    public static final List<String> CPUS = List.of(
-        "AMD Ryzen(TM) 9 5980HX @ 3.3GHz",
-        "AMD Ryzen(TM) 9 5980HS @ 3.3GHz",
-        "AMD Ryzen(TM) 9 5900HX @ 3.3GHz",
-        "AMD Ryzen(TM) 9 5900HS @ 3.3GHz",
-        "AMD Ryzen(TM) 7 5800H @ 3.2GHz",
-        "AMD Ryzen(TM) 7 5800HS @ 3.2GHz",
-        "AMD Ryzen(TM) 7 5800U @ 2.7GHz",
-        "AMD Ryzen(TM) 5 5600H @ 3.3GHz",
-        "AMD Ryzen(TM) 5 5600HS @ 3.3GHz",
-        "AMD Ryzen(TM) 5 5600U @ 2.9GHz",
-        "AMD Ryzen(TM) 7 1700X @ 3.4GHz",
-        "AMD Ryzen(TM) 7 1700 @ 3.0GHz",
-        "AMD Ryzen(TM) 5 1600X @ 3.6GHz",
-        "AMD Ryzen(TM) 5 1600 @ 3.2GHz",
-        "AMD Ryzen(TM) 3 1300X @ 3.5GHz",
-        "AMD Ryzen(TM) 9 7950X @ 4.5GHz",
-        "AMD Ryzen(TM) 9 7900X @ 4.7GHz",
-        "AMD Ryzen(TM) 9 7900 @ 3.6GHz",
-        "AMD Ryzen(TM) 7 7700X @ 4.5GHz",
-        "AMD Ryzen(TM) 7 7700 @ 3.8GHz",
-        "AMD Ryzen(TM) 5 7600X @ 4.7GHz",
-        "AMD Ryzen(TM) 5 7600 @ 3.8GHz",
-        "AMD Ryzen(TM) 5 5500 @ 3.6GHz",
-        "AMD Ryzen(TM) 7 5700G @ 3.8GHz",
-        "AMD Ryzen(TM) 5 5600G @ 3.9GHz",
-        "AMD Ryzen(TM) 7 5800X @ 3.8GHz",
-        "AMD Ryzen(TM) 9 3900X @ 3.8GHz",
-        "AMD Ryzen(TM) 9 3900 @ 3.1GHz",
-        "AMD Ryzen(TM) 7 3700X @ 3.6GHz",
-        "AMD Ryzen(TM) 5 3600X @ 3.8GHz",
-        "AMD Ryzen(TM) 5 3600 @ 3.6GHz",
-        "AMD Ryzen(TM) 3 3300X @ 3.8GHz",
-        "AMD Ryzen(TM) 9 5950X @ 3.4GHz",
-        "Intel(R) Core(TM) i9-10900K @ 3.7GHz",
-        "Intel(R) Core(TM) i7-10700K @ 3.8GHz",
-        "Intel(R) Core(TM) i5-10600K @ 4.1GHz",
-        "Intel(R) Core(TM) i9-9900K @ 3.6GHz",
-        "Intel(R) Core(TM) i7-9700K @ 3.6GHz",
-        "Intel(R) Core(TM) i5-9600K @ 3.7GHz",
-        "Intel(R) Core(TM) i7-8700K @ 3.7GHz",
-        "Intel(R) Core(TM) i5-8600K @ 3.6GHz",
-        "Intel(R) Core(TM) i9-7900X @ 3.3GHz",
-        "Intel(R) Core(TM) i7-7800X @ 3.5GHz",
-        "Intel(R) Core(TM) i5-7600K @ 3.8GHz",
-        "Intel(R) Core(TM) i9-7960X @ 2.8GHz",
-        "Intel(R) Core(TM) i9-7940X @ 3.1GHz",
-        "Intel(R) Core(TM) i7-7820X @ 3.6GHz",
-        "Intel(R) Core(TM) i7-7700K @ 4.2GHz",
-        "Intel(R) Core(TM) i5-7500 @ 3.4GHz",
-        "Intel(R) Core(TM) i7-6800K @ 3.4GHz"
-    );
 
-
+    public static final String[] INTEL_VERSION = {"1st", "2nd", "3th", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"};
+    public static final String[] INTEL_SUFFIX = {"K", "KF", "C"};
     public static final List<String> DISKS = List.of(
-        "Samsung SSD 941 EVO 1TB",
-        "Western Digital Blue SN550 NVMe 1TB",
-        "Crucial P5 NVMe 1TB",
-        "Seagate FireCuda 520 NVMe 1TB",
-        "Kingston A2000 NVMe PCIe M.2 1TB",
-        "Corsair MP600 PRO NVMe Gen4 1TB",
-        "ADATA XPG Gammix D30 NVMe 1TB",
-        "SanDisk Extreme PRO NVMe 1TB",
-        "Plextor M9P Plus NVMe PCIe M.2 1TB",
-        "OWC Aura Pro X2 NVMe 1TB",
-        "Gigabyte AORUS NVMe Gen4 1TB",
-        "TeamGroup Delta Max NVMe PCIe M.2 1TB",
-        "KLEVV Cras C930 NVMe PCIe M.2 1TB",
-        "HaiZiDe SSD 2H7 256GB"
+            "Samsung SSD 941 EVO",
+            "Western Digital Blue SN650 NVMe",
+            "Crucial P5 NVMe",
+            "Seagate FireCuda 580 NVMe",
+            "Kingston A2100 NVMe PCIe M.2",
+            "Corsair MP550 PRO NVMe Gen4",
+            "ADATA XPG Gammix D32 NVMe",
+            "SanDisk Extreme PRO NVMe",
+            "Plextor M9P Plus Plus NVMe PCIe M.2",
+            "OWC Aura Pro X3 NVMe",
+            "Gigabyte AORUS NVMe Gen4",
+            "TeamGroup Delta Max NVMe PCIe M.2",
+            "KLEVV Cras C980 NVMe PCIe M.2",
+            "LENOVO"
+    );
+    public static final String[] DISK_MEM = {"256GB", "512GB", "1TB", "2TB", ""};
+    public static final List<String> DLLS = List.of(
+            "C:\\\\WINDOWS\\\\system32\\\\urlmon.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\netutils.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\iertutil.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\srvcli.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\clrhost.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\clusapi.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmcfg32.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmdext.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmdial32.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmgrcspps.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmifw.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmintegrator.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmlua.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmpbk32.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmstplua.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cmutil.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cngcredui.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cngprovider.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cnvfat.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\CodeIntegrityAggregator.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\cofiredm.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\colbact.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\colorui.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\capauthz.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\capiprovider.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\capisp.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bootstr.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bootsvc.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bootux.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bridgeres.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bcrypt.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bcryptprimitives.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\BdeHdCfgLib.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bderepair.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bdesvc.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\BdeSysprep.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bdeui.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bdmjpeg64.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bdmpegv64.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bi.dll",
+            "C:\\\\WINDOWS\\\\SYSTEM32\\\\bidispl.dll"
     );
 
-    public static final List<String> NETWORKS = List.of(
-        "TAP-Windows Adapter V9-WFP 802.2 MAC Layer LightWeight Filter-2000",
-        "Realtek PCIe GbE Family Controller-WFP Native MAC Layer LightWeight Filter-0000",
-        "Broadcom 802.11ac WLAN Adapter-WFP Native MAC Layer LightWeight Filter-0001",
-        "Intel Centrino Advanced-N 6230 Network Adapter-WFP Native MAC Layer LightWeight Filter-0002",
-        "Qualcomm Atheros AR9485WB-EG Wireless Network Adapter-WFP Native MAC Layer LightWeight Filter-0003",
-        "Marvell Yukon 88E8059 PCI-E Gigabit Ethernet Controller-WFP Native MAC Layer LightWeight Filter-0004",
-        "TP-Link Archer T4U AC1300 Wireless Network Adapter-WFP Native MAC Layer LightWeight Filter-0005",
-        "D-Link DWA-182 USB 3.0 N600 Wi-Fi Adapter-WFP Native MAC Layer LightWeight Filter-0006",
-        "ASUS USB-N13 Nano Dual-Band 802.11n Network Wi-Fi",
-        "Netgear A6210 AC1200 DB Wi-Fi WFP Native LightWeight Pro",
-        "Edimax EW-7811UTC 802.11ac Wi-Fi",
-        "Linksys WUSB6300 AC1200 Wi-Fi Adapter-WFP",
-        "VMWare Network v11 Wi-Fi Virtual"
-    );
+    public static void main(String[] args) throws IOException {
+        Files.list(Path.of("C:\\\\WINDOWS\\\\SYSTEM32\\\\")).forEach(
+                p -> {
+                    var name = p.getFileName().toString();
+                    if (!name.substring(0,name.length() - 4).contains(".") && name.endsWith(".dll")) {
+                        System.out.println("\"C:\\\\WINDOWS\\\\SYSTEM32\\\\" + name+ "\",");
+                    }
+                }
+        );
+    }
 
     public static String randomCpu() {
-        return CPUS.get(RandomUtils.nextInt(0, CPUS.size() - 1));
+        var suffix = RandomUtils.nextArray(INTEL_SUFFIX);
+        var type = INTEL_TYPE.random();
+        var ver = RandomUtils.nextArray(INTEL_VERSION);
+
+        var id = ver.substring(0, ver.length() - 2);
+        var num = Integer.parseInt(id);
+        //      {ver}             {type.val}{id}{suffix}                  {model}    {step}
+        var s1 = "{} Gen Intel(R) Core(TM) {}-{}{}|Intel64 Family 6 Model {} Stepping {}";
+
+        String cpuId = (id.equals("1") ? "" : id) + type.suffix;
+
+        if (RandomUtils.nextBoolean()) {
+            s1 = "Intel(R) Core(TM) {}-{}{} CPU @ {}GHz|Intel64 Family 6 Model {} Stepping {}";
+            return StringUtils.getReplaced(s1,
+                    type.val,
+                    cpuId,
+                    suffix,
+                    RandomUtils.nextInt(1, 3) + "." + RandomUtils.nextInt(0, 9) + "0",
+                    RandomUtils.nextInt(7, 20) * num,
+                    RandomUtils.nextInt(1, INTEL_VERSION.length)
+            );
+        }
+
+        return StringUtils.getReplaced(s1,
+                ver,
+                type.val,
+                cpuId,
+                suffix,
+                RandomUtils.nextInt(7, 20) * num,
+                RandomUtils.nextInt(1, INTEL_VERSION.length)
+        );
     }
 
     public static String randomDisk() {
-        return DISKS.get(RandomUtils.nextInt(0, DISKS.size() - 1));
+        var mem = RandomUtils.nextArray(DISK_MEM);
+        return RandomUtils.nextList(DISKS) + (mem.isEmpty() ? "" : " ") + RandomUtils.nextArray(DISK_MEM);
     }
 
-    public static String randomNetwork() {
-        return NETWORKS.get(RandomUtils.nextInt(0, NETWORKS.size() - 1));
+    public static List<String> randomNetwork() {
+        boolean hasNpcap = RandomUtils.nextBoolean();
+        boolean hasvbox = RandomUtils.nextBoolean();
+        boolean hasZeroTier = RandomUtils.nextBoolean();
+        boolean hasHyperV = RandomUtils.nextBoolean();
+        boolean hasVmware = RandomUtils.nextBoolean();
+
+        var list = new ArrayList<String>();
+        list.add("TAP-Windows Adapter V9-WFP Native MAC Layer LightWeight Filter-0000");
+        if (hasNpcap) {
+            list.add("TAP-Windows Adapter V9-Npcap Packet Driver (NPCAP)-0000");
+        }
+        if (hasNpcap && hasZeroTier) {
+            list.add("ZeroTier Virtual Port-Npcap Packet Driver (NPCAP)-0000");
+        }
+
+        list.add("TAP-Windows Adapter V9-QoS Packet Scheduler-0000");
+
+        if (hasHyperV) {
+            list.add("Hyper-V Virtual Ethernet Adapter-WFP Native MAC Layer LightWeight Filter-0000");
+        }
+
+        list.add("TAP-Windows Adapter V9-WFP 802.3 MAC Layer LightWeight Filter-0000");
+
+        if (hasZeroTier) {
+            list.add("ZeroTier Virtual Port-QoS Packet Scheduler-0000");
+            list.add("ZeroTier Virtual Port-WFP 802.3 MAC Layer LightWeight Filter-0000");
+        }
+
+        list.add("Realtek PCIe GbE Family Controller-WFP Native MAC Layer LightWeight Filter-0000");
+
+        if (hasVmware && hasNpcap) {
+            list.add("VMware Virtual Ethernet Adapter for VMnet1-Npcap Packet Driver (NPCAP)-0000");
+        }
+
+        if (hasNpcap) {
+            list.add("Realtek PCIe GbE Family Controller-Npcap Packet Driver (NPCAP)-0000");
+        }
+        list.add("Realtek PCIe GbE Family Controller-QoS Packet Scheduler-0000");
+        list.add("Realtek PCIe GbE Family Controller-WFP 802.3 MAC Layer LightWeight Filter-0000");
+        list.add("Realtek PCIe GbE Family Controller");
+
+        if (hasvbox && hasNpcap) {
+            list.add("VirtualBox Host-Only Ethernet Adapter-Npcap Packet Driver (NPCAP)-0000");
+        }
+
+        if (hasvbox) {
+            list.add("VirtualBox Host-Only Ethernet Adapter");
+        }
+
+        list.add("TAP-Windows Adapter V9");
+        if (RandomUtils.nextBoolean()) {
+            list.add("Famatech RadminVPN Ethernet Adapter");
+        }
+        if (hasVmware) {
+            for (int i = 0; i < RandomUtils.nextInt(0, 5); i++) {
+                var net = "VMware Virtual Ethernet Adapter for VMnet" + RandomUtils.nextInt(1, 8);
+                if (!list.contains(net)) {
+                    list.add(net);
+                }
+            }
+        }
+        if (hasZeroTier) {
+            list.add("ZeroTier Virtual Port");
+        }
+        return list;
+    }
+
+    public enum INTEL_TYPE {
+        I3("i3", "100"),
+        I5("i5", "600"),
+        I7("i7", "700"),
+        I9("i9", "900");
+
+        public final String val;
+        public final String suffix;
+
+        INTEL_TYPE(String val, String suffix) {
+            this.val = val;
+            this.suffix = suffix;
+        }
+
+        public static INTEL_TYPE random() {
+            return RandomUtils.nextArray(values());
+        }
     }
 }

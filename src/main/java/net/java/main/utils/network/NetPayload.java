@@ -22,9 +22,9 @@ import static net.java.main.utils.MinecraftInstance.mc;
 
 
 public class NetPayload {
-    public static final Map<ResourceLocation, Consumer<ByteBuf>> REGISTERED_CHANNELS = new HashMap<>();
+    public static final Map<ResourceLocation, Consumer<FriendlyByteBuf>> REGISTERED_CHANNELS = new HashMap<>();
 
-    public static void register(ResourceLocation channel, Consumer<ByteBuf> buf) {
+    public static void register(ResourceLocation channel, Consumer<FriendlyByteBuf> buf) {
         if (REGISTERED_CHANNELS.containsKey(channel)) return;
 
         REGISTERED_CHANNELS.put(channel, buf);
@@ -36,7 +36,7 @@ public class NetPayload {
         preTasks.add(task);
     }
 
-    public static void send(ResourceLocation channel, ByteBuf buf) {
+    public static void send(ResourceLocation channel, FriendlyByteBuf buf) {
         if (mc.getConnection() != null) {
             mc.getConnection().send(new ServerboundCustomPayloadPacket(new PayloadPacket(channel, buf)));
         }
@@ -56,7 +56,7 @@ public class NetPayload {
         public ResourceLocation channel;
         public ByteBuf buf;
 
-        public PayloadPacket(ResourceLocation channel, ByteBuf buf) {
+        public PayloadPacket(ResourceLocation channel, FriendlyByteBuf buf) {
             super(buf);
             this.channel = channel;
             this.buf = buf;

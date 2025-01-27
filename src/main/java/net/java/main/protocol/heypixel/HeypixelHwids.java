@@ -14,15 +14,15 @@ public class HeypixelHwids {
     public List<HeypixelHwid> hwids = new ArrayList<>();
 
     public boolean has(String s) {
-        return hwids.stream().anyMatch(h -> h.userId.equals(s));
+        return hwids.stream().anyMatch(h -> s.equals(h.user));
     }
 
     public HeypixelHwid get(String s) {
-        return hwids.stream().filter(h -> h.userId.equals(s)).findFirst().orElse(null);
+        return hwids.stream().filter(h -> h.user.equals(s)).findFirst().orElse(null);
     }
 
     public void add(HeypixelHwid hwid) {
-        if (!has(hwid.userId)) {
+        if (!has(hwid.user)) {
             hwids.add(hwid);
         }
     }

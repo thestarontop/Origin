@@ -2,6 +2,7 @@ package net.java.main.utils;
 
 
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -67,7 +68,14 @@ public class RandomUtils {
         }
         return stringBuilder.toString();
     }
-
+    public static <T> T nextArray(T[] array) {
+        if (array.length == 0) return null;
+        return array[RANDOM.nextInt(array.length)];
+    }
+    public static <T> T nextList(List<T> list) {
+        if (list.isEmpty()) return null;
+        return list.get(RANDOM.nextInt(list.size()));
+    }
     public static void nextBytes(byte[] array) {
         RANDOM.nextBytes(array);
     }

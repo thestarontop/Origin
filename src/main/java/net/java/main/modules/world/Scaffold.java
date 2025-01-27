@@ -39,6 +39,7 @@ public class Scaffold extends Module {
     double starty;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+
         mc.player.setSprinting(RotationUtils.targetRotation == null);
         var BlockMap = BlockUtils.searchBlocks(3);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
@@ -46,16 +47,16 @@ public class Scaffold extends Module {
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR && value != Blocks.GLASS) {
                 if (!samey.getValue()) {
-                var playerY = mc.player.getY() -1;
+                    var playerY = mc.player.getY() -1;
                     if (key.getY() <= playerY) {
                         double blockCenterX = key.getX() + 0.5;
                         double blockCenterY = key.getY() + 0.5;
                         double blockCenterZ = key.getZ() + 0.5;
                         double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
-                            if (currentDistance < closestDistance.get()) {
-                                closestDistance.set(currentDistance);
-                                closestBlockPos.set(key);
-                            }
+                        if (currentDistance < closestDistance.get()) {
+                            closestDistance.set(currentDistance);
+                            closestBlockPos.set(key);
+                        }
                     }
                 }else{
                     var playerY = starty -1;
@@ -64,10 +65,10 @@ public class Scaffold extends Module {
                         double blockCenterY = key.getY() + 0.5;
                         double blockCenterZ = key.getZ() + 0.5;
                         double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
-                            if (currentDistance < closestDistance.get()) {
-                                closestDistance.set(currentDistance);
-                                closestBlockPos.set(key);
-                            }
+                        if (currentDistance < closestDistance.get()) {
+                            closestDistance.set(currentDistance);
+                            closestBlockPos.set(key);
+                        }
                     }
                 }
             }

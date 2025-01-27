@@ -3,6 +3,7 @@ package net.java.main.protocol.heypixel;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.java.main.event.annotations.EventTarget;
+import net.java.main.event.events.WorldChangeEvent;
 import net.java.main.protocol.IProtocol;
 import net.java.main.protocol.heypixel.check.HeypixelCheckPacket;
 import net.java.main.protocol.heypixel.check.HeypixelSessionManager;
@@ -14,7 +15,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.java.main.event.events.EntityJoinWorldEvent;
+import net.minecraft.world.entity.LivingEntity;
+import org.w3c.dom.Entity;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -123,7 +126,7 @@ public class Heypixel implements IProtocol {
                     }
                     case 250 -> { // HEYPIXEL SESSION
                         try {
-                            var heypixelCheckPacket = manager.decodePacket(buf);
+                            var heypixelCheckPacket = manager.decodePacket((FriendlyByteBuf) buf);
                             manager.handleNetworkEvent(heypixelCheckPacket);
                         } catch (Throwable t) {
                             //t.printStackTrace();
@@ -148,14 +151,16 @@ public class Heypixel implements IProtocol {
 
         @Override
         public void onMessage (Text text){
-            HeypixelSessionManager.handleChatMessage(text);
         }
 
         @Override
         public void onEntityJoinWorld (EntityJoinWorldEvent e){
-            //  manager.onEntityJoinWorld(e.getWorld(), e.getEntity());
+              manager.onEntityJoinWorld(e.world, (LivingEntity) e.entity);
         }
+    @Override
+    public void onWorldChanged(WorldChangeEvent e) {
 
+    }
 
         @Override
         public void tick () {
