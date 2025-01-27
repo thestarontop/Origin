@@ -2,11 +2,8 @@ package net.java.mixins;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.BufferUploader;
-import net.java.main.event.events.ClientStartEvent;
-import net.java.main.event.events.ScreenEvent;
+import net.java.main.event.events.*;
 import net.java.main.madebystarontopandfml;
-import net.java.main.event.events.TickEvent;
-import net.java.main.event.events.WorldEvent;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -108,12 +105,28 @@ public abstract class MixinMinecraft {
 
     @Shadow protected abstract String createTitle();
 
-    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
+   /* @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
     private void runtick(CallbackInfo ci) {
+        TickEvent event = new TickEvent();
+        madebystarontopandfml.getInstance().getEventManager().call(event);
+    }*/
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;onPreClientTick()V", shift = At.Shift.BEFORE, ordinal = 0))
+    public void preTick(CallbackInfo ci) {
         TickEvent event = new TickEvent();
         madebystarontopandfml.getInstance().getEventManager().call(event);
     }
 
+    @Inject(method = "updateLevelInEngines", at = @At("HEAD"))
+    private void updateLevelInEngines(@Nullable  ClientLevel arg, CallbackInfo ci) {
+        WorldChangeEvent event = new WorldChangeEvent();
+        madebystarontopandfml.getInstance().getEventManager().call(event);
+    }
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;onPostClientTick()V", shift = At.Shift.AFTER, ordinal = 0))
+    public void postTick(CallbackInfo ci) {
+        TickEvent event = new TickEvent();
+        madebystarontopandfml.getInstance().getEventManager().call(event);
+    }
     @Inject(method = "loadLevel", at = @At("HEAD"))
     public void loadLevel(String string, CallbackInfo ci) {
         WorldEvent event = new WorldEvent();

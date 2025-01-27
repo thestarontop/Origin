@@ -139,9 +139,9 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
                 yaw   = RotationUtils.targetRotation.getYaw();
                 pitch = RotationUtils.targetRotation.getPitch();
             }
-            double dX = this.getX() - this.xLast;
-            double dY = this.getY() - this.yLast1;
-            double dZ = this.getZ() - this.zLast;
+            double dX = event.getX() - this.xLast;
+            double dY = event.getY() - this.yLast1;
+            double dZ = event.getZ() - this.zLast;
             double dYaw = (double)(yaw - yRotLast);
             double dPitch = (double)(pitch - xRotLast);
             ++this.positionReminder;
@@ -152,36 +152,36 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
 
             if (this.isPassenger()) {
                 Vec3 vec3 = this.getDeltaMovement();
-                this.connection.send(new ServerboundMovePlayerPacket.PosRot(vec3.x, -999.0, vec3.z, this.getYRot(), this.getXRot(), this.onGround));
+                this.connection.send(new ServerboundMovePlayerPacket.PosRot(vec3.x, -999.0, vec3.z, event.getYaw(), event.getPitch(), event.getGround()));
 
             } else if (flag1 && flag2) {
-                this.connection.send(new ServerboundMovePlayerPacket.PosRot(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot(), this.onGround));
+                this.connection.send(new ServerboundMovePlayerPacket.PosRot(event.getX(), event.getY(), event.getZ(), event.getYaw(), event.getPitch(), event.getGround()));
 
             } else if (flag1) {
-                this.connection.send(new ServerboundMovePlayerPacket.Pos(this.getX(), this.getY(), this.getZ(), this.onGround));
+                this.connection.send(new ServerboundMovePlayerPacket.Pos(event.getX(), event.getY(), event.getZ(), event.getGround()));
 
             } else if (flag2) {
-                this.connection.send(new ServerboundMovePlayerPacket.Rot(this.getYRot(), this.getXRot(), this.onGround));
+                this.connection.send(new ServerboundMovePlayerPacket.Rot(event.getYaw(), event.getPitch(), event.getGround()));
 
             } else if (this.lastOnGround != this.onGround) {
-                this.connection.send(new ServerboundMovePlayerPacket.StatusOnly(this.onGround));
+                this.connection.send(new ServerboundMovePlayerPacket.StatusOnly(event.getGround()));
             }
 
 
 
             if (flag1) {
-                this.xLast = this.getX();
-                this.yLast1 = this.getY();
-                this.zLast = this.getZ();
+                this.xLast = event.getX();
+                this.yLast1 = event.getY();
+                this.zLast = event.getZ();
                 this.positionReminder = 0;
             }
 
             if (flag2) {
-                this.yRotLast = this.getYRot();
-                this.xRotLast = this.getXRot();
+                this.yRotLast = event.getYaw();
+                this.xRotLast = event.getPitch();
             }
 
-            this.lastOnGround = this.onGround;
+            this.lastOnGround = event.getGround();
             this.autoJumpEnabled = this.minecraft.options.autoJump;
         }
         MotionEvent event1 = new MotionEvent(this.getX(),this.getY(),this.getZ(),this.getYRot(),this.getXRot(),false,true,this.onGround);

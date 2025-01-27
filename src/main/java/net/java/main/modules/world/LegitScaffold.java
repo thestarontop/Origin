@@ -38,6 +38,7 @@ public class LegitScaffold extends  Module {
     }
     public FloatValue keeplength = new FloatValue("KeepLength", 0f, 0.0f, 20f);
     public BooleanValue eagle = new BooleanValue("Eagle",false);
+
     private boolean canTellyPlace;
     public int onGroundTicks, offGroundTicks;
 
@@ -56,9 +57,9 @@ public class LegitScaffold extends  Module {
         super.onDisable();
         mc.options.keyShift.setDown(false);
     }
+
     @EventTarget
     public void onMotion(MotionEvent event){
-        //motionevent他妈的每tick触发两次
         if (mc.player.isOnGround()) {
             offGroundTicks = 0;
             onGroundTicks++;
@@ -70,6 +71,7 @@ public class LegitScaffold extends  Module {
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+
         if(mc.level.getBlockState(new BlockPos(mc.player.position().x, mc.player.position().y - 1, mc.player.position().z)).getBlock() != Blocks.AIR) return;
 
         if (!mc.options.keyJump.isDown()){
@@ -96,7 +98,7 @@ public class LegitScaffold extends  Module {
                     var playerY = mc.player.getY() -1;
                     if (key.getY() <= playerY) {
                         double blockCenterX = key.getX() + 0.5;
-                        double blockCenterY = key.getY() + 0.5 ;
+                        double blockCenterY = key.getY() + 0.5;
                         double blockCenterZ = key.getZ() + 0.5;
 
                         double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
@@ -110,7 +112,7 @@ public class LegitScaffold extends  Module {
         block = closestBlockPos.get();
         if(block == null) return;
         Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
-        RotationUtils.setTargetRotation(rotation);
+        RotationUtils.setTargetRotation(rotation,keeplength.getValue().byteValue());
 
         int maxstack = 0;
         int currentslot = -1;
@@ -128,15 +130,12 @@ public class LegitScaffold extends  Module {
             }
         }
         if (currentslot == -1) return;
-            mc.getConnection().send(new ServerboundSetCarriedItemPacket(currentslot));
-            mc.player.setItemInHand(InteractionHand.MAIN_HAND, blockstack);
+        mc.player.getInventory().selected = currentslot;
 
         InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
         if ((result == InteractionResult.SUCCESS)) {
             mc.player.swing(InteractionHand.MAIN_HAND);
         }
-            mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
-            mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
         if (!mc.options.keyJump.isDown()) {
             mc.player.setSprinting(RotationUtils.targetRotation == null);
         }

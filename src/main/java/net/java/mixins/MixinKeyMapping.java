@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinKeyMapping {
     @Shadow private boolean isDown;
 
-     @Shadow public abstract IKeyConflictContext getKeyConflictContext();
+    @Shadow public abstract IKeyConflictContext getKeyConflictContext();
 
     @Shadow public abstract KeyModifier getKeyModifier();
 

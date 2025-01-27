@@ -6,6 +6,7 @@
 package net.java.main.utils;
 
 
+import com.mojang.math.Vector3d;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.annotations.EventTarget;
 import net.java.main.event.events.PacketEvent;
@@ -48,7 +49,41 @@ public class RotationUtils extends MinecraftInstance{
     private static double x = random.nextDouble();
     private static double y = random.nextDouble();
     private static double z = random.nextDouble();
+    public static Rotation getRotationBlock(final BlockPos pos, float predict) {
+        return new Rotation(mc.player.getEyePosition(predict), new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
+    }
+    public static Rotation getRotation(Vector3d from, Vector3d to) {
+        double x = to.x - from.x;
+        double y = to.y - from.y;
+        double z = to.z - from.z;
+        double sqrt = Math.sqrt(x * x + z * z);
+        float yaw = (float) Math.toDegrees(Math.atan2(z, x)) - 90f;
+        float pitch = (float) -Math.toDegrees(Math.atan2(y, sqrt));
+        return new Rotation(yaw, Math.min(Math.max(pitch, -90f), 90f));
+    }
+    public static Rotation getSimpleRotations(Entity target) {
+        if (mc.player == null)
+            return new Rotation(0, 0);
 
+        double yDist = target.getY() - mc.player.getY();
+        Vector3d targetPos;
+        if (yDist >= 1.547) {
+            targetPos = new Vector3d(target.getX(), target.getY(), target.getZ());
+        } else if (yDist <= -1.547) {
+            targetPos = new Vector3d(target.getX(), target.getY() + target.getEyeHeight(), target.getZ());
+        } else {
+            targetPos = new Vector3d(target.getX(), target.getY() + target.getEyeHeight() / 2, target.getZ());
+        }
+
+        return getRotationFromEyeToPoint(targetPos);
+    }
+    public static Rotation getRotationFromEyeToPoint(Vector3d point3d) {
+        if (mc.player != null) {
+            return getRotation(new Vector3d(mc.player.getX(), mc.player.getBoundingBox().minY + (double) mc.player.getEyeHeight(), mc.player.getZ()), point3d);
+        } else {
+            return new Rotation(0, 0);
+        }
+    }
     public static Rotation OtherRotation(final AABB bb, final Vec3 vec, final boolean predict, final boolean throughWalls, final float distance) {
         final Vec3 eyesPos = new Vec3(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getBoundingBox().minY +
                 Minecraft.getInstance().player.getEyeHeight(), Minecraft.getInstance().player.getZ());
@@ -88,6 +123,27 @@ public class RotationUtils extends MinecraftInstance{
         ));
 
 
+    }
+    public static Rotation getPlayerRotations(Entity entity) {
+        double distanceToEnt = mc.player.distanceTo(entity);
+        double predictX = entity.position().x + (entity.position().x - entity.xOld) * (distanceToEnt * 0.8);
+        double predictZ = entity.position().z + (entity.position().z - entity.zOld) * (distanceToEnt * 0.8);
+
+        double x = predictX - mc.player.position().x;
+        double z = predictZ - mc.player.position().z;
+        double h = entity.position().y + 1.0 - (mc.player.position().y + mc.player.getEyeHeight());
+
+        double h1 = Math.sqrt(x * x + z * z);
+        float yaw = (float) (Math.atan2(z, x) * 180.0D / Math.PI) - 90.0F;
+
+        float pitch = -getTrajAngleSolutionLow((float) h1, (float) h, 1);
+
+        return new Rotation(yaw, pitch);
+    }
+    public static float getTrajAngleSolutionLow(float d3, float d1, float velocity) {
+        float g = 0.006F;
+        float sqrt = velocity * velocity * velocity * velocity - g * (g * (d3 * d3) + 2.0F * d1 * (velocity * velocity));
+        return (float) Math.toDegrees(Math.atan((velocity * velocity - Math.sqrt(sqrt)) / (g * d3)));
     }
     public static Rotation.VecRotation faceBlock(final BlockPos blockPos) {
         if (blockPos == null)

@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.java.main.protocol.heypixel.check.EncryptDataC2SPacket;
 import net.java.main.protocol.heypixel.check.HeypixelCheckPacket;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class HeypixelKeysS2CPacket extends HeypixelCheckPacket {
     public byte[] serverId;
 
 
-    public HeypixelKeysS2CPacket(ByteBuf buf) {
+    public HeypixelKeysS2CPacket(FriendlyByteBuf buf) {
         this.unknownArr = helper.readUnsignedByteList(buf);
         this.keys = helper.readUnsignedByteList(buf);
         this.encryptModeA = helper.readByteArray(buf);
@@ -39,7 +40,7 @@ public class HeypixelKeysS2CPacket extends HeypixelCheckPacket {
     @Override
     public void handleClientSide(AbstractClientPlayer player) {
         manager.unknownArray = this.unknownArr.stream().mapToInt(Integer::intValue).toArray();
-        manager.decodeKeys = this.keys.stream().mapToInt(Integer::intValue).toArray();
+        manager.messageDecoder.update(this.keys.stream().mapToInt(Integer::intValue).toArray());
         manager.encryptMode1 = this.encryptModeA;
         manager.encryptMode = this.encryptModeB;
         manager.unknownBytes = this.unknownBytes;

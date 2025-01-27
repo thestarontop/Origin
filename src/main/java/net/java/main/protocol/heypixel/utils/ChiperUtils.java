@@ -14,15 +14,14 @@ import java.security.NoSuchAlgorithmException;
 public class ChiperUtils {
 
     public static Cipher getServerCipher2(HeypixelSessionManager manager) throws NoSuchPaddingException, NoSuchAlgorithmException {
-        return HeypixelCipher.get(manager.convertBytesToString(manager.encryptMode1));
+        return HeypixelCipher.get(manager.getEncryptMode1());
     }
-
 
     public static HeypixelKeyGenerator Method5165(HeypixelSessionManager manager) throws NoSuchAlgorithmException {
-        return HeypixelKeyGenerator.fromString(manager.convertBytesToString(manager.encryptMode1));
+        return HeypixelKeyGenerator.fromString(manager.getEncryptMode1());
     }
 
-    public static Cipher getServerChipher(HeypixelSessionManager manager) throws NoSuchPaddingException, NoSuchAlgorithmException {
-        return HeypixelCipher.get(manager.convertBytesToString(manager.encryptMode));
+    public static Cipher getServerCipher(HeypixelSessionManager manager) throws NoSuchPaddingException, NoSuchAlgorithmException {
+        return HeypixelCipher.get(manager.getEncryptMode());
     }
 }

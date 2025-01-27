@@ -49,8 +49,7 @@ public class Blink extends Module {
 
         Packet packet = event.getPacket();
         if (packet instanceof ServerboundInteractPacket ||
-                packet instanceof ServerboundSwingPacket ||
-                packet instanceof ServerboundPlayerCommandPacket ||
+                packet instanceof ServerboundSwingPacket || packet instanceof ServerboundPlayerCommandPacket ||
                 packet instanceof ServerboundPlayerActionPacket ||
                 packet instanceof ServerboundUseItemOnPacket ||
                 packet instanceof ServerboundMovePlayerPacket ||

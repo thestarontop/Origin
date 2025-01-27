@@ -3,10 +3,10 @@ package net.java.main.protocol.heypixel.check.s2c;
 
 
 import io.netty.buffer.ByteBuf;
-import net.java.main.protocol.heypixel.check.Base64;
 import net.java.main.protocol.heypixel.check.EncryptDataC2SPacket;
 import net.java.main.protocol.heypixel.check.HeypixelCheckPacket;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.nio.charset.StandardCharsets;
 
@@ -17,12 +17,11 @@ public class TokenDataS2CPacket extends HeypixelCheckPacket {
     public byte[] ketC;
     public byte[] keyB;
 
-    public TokenDataS2CPacket(ByteBuf friendlyByteBuf) {
-        this.keyA = helper.readByteArray(friendlyByteBuf);
-        this.keyB = helper.readByteArray(friendlyByteBuf);
-        this.ketC = helper.readByteArray(friendlyByteBuf);
+    public TokenDataS2CPacket(FriendlyByteBuf buf) {
+        this.keyA = helper.readByteArray(buf);
+        this.keyB = helper.readByteArray(buf);
+        this.ketC = helper.readByteArray(buf);
     }
-
 
     @Override
     public void handleClientSide(AbstractClientPlayer player) {
@@ -30,16 +29,16 @@ public class TokenDataS2CPacket extends HeypixelCheckPacket {
         var r1 = new String(this.keyB, StandardCharsets.UTF_8);
         var r2 = new String(this.ketC, StandardCharsets.UTF_8);
 
-        var s1 = new String(Base64.deocde(r0), StandardCharsets.UTF_8);
-        var s2 = new String(Base64.deocde(r1), StandardCharsets.UTF_8);
-        var s3 = new String(Base64.deocde(r2), StandardCharsets.UTF_8);
+        var s1 = new String(decodeBase64(r0), StandardCharsets.UTF_8);
+        var s2 = new String(decodeBase64(r1), StandardCharsets.UTF_8);
+        var s3 = new String(decodeBase64(r2), StandardCharsets.UTF_8);
 
         var splitStr = " ";
         for (char c : s1.toCharArray()) {
             try {
                 Integer.valueOf(c + "");
             } catch (NumberFormatException e) {
-                splitStr = c + "";
+                splitStr = String.valueOf(c);
                 break;
             }
         }
@@ -48,9 +47,14 @@ public class TokenDataS2CPacket extends HeypixelCheckPacket {
         String[] split2 = s2.split(splitStr);
         String[] split3 = s3.split(splitStr);
 
-        manager.tokenMap.put(manager.decodeString(split[0]), manager.decodeString(split[1]));
-        manager.tokenMap.put(manager.decodeString(split2[0]), manager.decodeString(split2[1]));
-        manager.tokenMap.put(manager.decodeString(split3[0]), manager.decodeString(split3[1]));
+        var decoder = manager.messageDecoder;
+        manager.tokenMap.put(decoder.decode(split[0]), decoder.decode(split[1]));
+        manager.tokenMap.put(decoder.decode(split2[0]), decoder.decode(split2[1]));
+        manager.tokenMap.put(decoder.decode(split3[0]), decoder.decode(split3[1]));
         new EncryptDataC2SPacket(getPacketId()).m(manager).sendCheckPacketVanilla();
+    }
+
+    private byte[] decodeBase64(String s) {
+        return java.util.Base64.getDecoder().decode(s);
     }
 }

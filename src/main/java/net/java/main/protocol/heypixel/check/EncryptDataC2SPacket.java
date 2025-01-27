@@ -7,6 +7,7 @@ import net.java.main.protocol.heypixel.msgpack.value.Variable;
 import net.java.main.protocol.heypixel.utils.BufferHelper;
 import net.java.main.protocol.heypixel.utils.EncryptionUtils;
 import net.java.main.protocol.heypixel.utils.HeypixelVarUtils;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class EncryptDataC2SPacket extends HeypixelCheckPacket {
 
@@ -31,7 +32,7 @@ public class EncryptDataC2SPacket extends HeypixelCheckPacket {
     }
 
     @Override
-    public void processBuffer(ByteBuf friendlyByteBuf, BufferHelper bufferHelper) {
+    public void processBuffer(FriendlyByteBuf friendlyByteBuf, BufferHelper bufferHelper) {
         try {
             bufferHelper.writeString(friendlyByteBuf, EncryptionUtils.encryptString(manager, String.valueOf(this.packetId)));
         } catch (Exception e) {
