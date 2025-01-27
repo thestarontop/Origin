@@ -15,7 +15,9 @@ public class RandomUtils {
     public static int nextInt(int startInclusive, int endExclusive) {
         return (endExclusive - startInclusive <= 0) ? startInclusive : startInclusive + RANDOM.nextInt(endExclusive - startInclusive);
     }
-
+    public static int nextInt(float startInclusive, float endExclusive) {
+        return (int) ((endExclusive - startInclusive <= 0) ? startInclusive : startInclusive + RANDOM.nextInt((int) (endExclusive - startInclusive)));
+    }
     public static double nextDouble(double startInclusive,double endInclusive) {
         return (startInclusive == endInclusive || endInclusive - startInclusive <= 0.0) ? startInclusive : startInclusive + (endInclusive - startInclusive) * Math.random();
     }

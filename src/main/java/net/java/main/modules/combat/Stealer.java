@@ -44,10 +44,8 @@ public class Stealer extends Module {
     private int tickCounter = 0;
     Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
     public FloatValue delay = new FloatValue("Delay", 3f, 0f, 6f);
-//1
-
     @EventTarget
-    public void onTick(TickEvent event) {
+    public void onTick(UpdateEvent event) {
         if (mc.screen instanceof ContainerScreen screen) {
             tickCounter++;
             var hasItem = false;
@@ -59,21 +57,17 @@ public class Stealer extends Module {
 
                 hasItem = true;
 
-               // if (!ItemUtil.useful(stack)) continue;
-                if (tickCounter >=delay.getValue()) {
-                    mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE,screen.getMenu().getContainer().getItem(i), int2objectmap));
-                    tickCounter = 0;
-                }
+                // if (!ItemUtil.useful(stack)) continue;
+                    if (tickCounter >= delay.getValue()) {
+                            mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE, screen.getMenu().getContainer().getItem(i), int2objectmap));
+                        tickCounter = 0;
+                    }
             }
 
             if (!hasItem) {
                 screen.onClose();
-            }
-        }
-        if (mc.level != null && mc.player != null ) {
-            if (!mc.player.isAlive()) {
-                toggle();
-                return;
+                mc.player.closeContainer();
+
             }
         }
     }

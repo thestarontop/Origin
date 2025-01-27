@@ -13,6 +13,8 @@ import net.java.main.value.BooleanValue;
 import net.java.main.value.FloatValue;
 import net.java.main.value.ListValue;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
@@ -50,7 +52,6 @@ public class NoSlow extends Module {
                 event.cancelEvent();
             }
             if(event.getPacket() instanceof ServerboundUseItemPacket packet){
-
 
                 ItemStack item = mc.player.getItemInHand(packet.getHand());
                 if (!isUsable(item)){
@@ -114,6 +115,7 @@ public class NoSlow extends Module {
                 timer.reset();
 
             }
+
             if(event.getPacket() instanceof ServerboundPlayerActionPacket packet&&packet.getAction()== ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){
                 if(shouldnoslow&&eating) {
                     eating=false;
@@ -207,7 +209,7 @@ public class NoSlow extends Module {
                 maxTick=0;
             }
             //PacketUtils.sendPacketNoEvent(new ServerboundTeleportToEntityPacket());
-            /*if (slot != mc.player.getInventory().selected) {
+           /* if (slot != mc.player.getInventory().selected) {
                 PacketUtils.sendPacketNoEvent(new ServerboundSetCarriedItemPacket(slot));
                 PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.DROP_ITEM, new BlockPos(0, 0, 0), Direction.DOWN));
                 PacketUtils.sendPacketNoEvent(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));

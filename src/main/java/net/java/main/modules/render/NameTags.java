@@ -36,12 +36,7 @@ public class NameTags extends Module {
                 if ((entity instanceof Player || (KillAura.isEnemy(entity)) || mc.player.distanceTo(entity) <= 5.0) && entity.getId() != mc.player.getId()) {
                     boolean isItem = entity instanceof ItemEntity;
                     event.getPoseStack().pushPose();
-                    event.getPoseStack().translate(
-                            entity.xOld + (entity.getX() - entity.xOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().x,
-                            entity.yOld + (entity.getY() - entity.yOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().y + entity.getEyeHeight() + 1,
-                            entity.zOld + (entity.getZ() - entity.zOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().z
-                    );
-
+                    event.getPoseStack().translate(entity.xOld + (entity.getX() - entity.xOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().x, entity.yOld + (entity.getY() - entity.yOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().y + entity.getEyeHeight() + 1, entity.zOld + (entity.getZ() - entity.zOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().z);
                     event.getPoseStack().mulPose(mc.gameRenderer.getMainCamera().rotation());
                     if (isItem) {
                         event.getPoseStack().scale(-0.02F, -0.02F, 0.02F);

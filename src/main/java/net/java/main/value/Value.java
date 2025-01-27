@@ -17,9 +17,6 @@ public abstract class Value<T> {
     public T getValue() {
         return value;
     }
-    public boolean getValue2() {
-        return (boolean) value;
-    }
     public void setValue(T value) {
         this.value = value;
     }

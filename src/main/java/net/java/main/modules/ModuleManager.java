@@ -13,6 +13,8 @@ import net.java.main.modules.render.*;
 import net.java.main.modules.world.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModuleManager {
 
@@ -125,6 +127,8 @@ public class ModuleManager {
         addHack(new Crasher());
         addHack(new ColorSigns());
         addHack(new AntiAFK());
+        addHack(new LegitScaffold());
+
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {
@@ -134,5 +138,7 @@ public class ModuleManager {
         }
         return null;
     }
-
+    public List<Module> getEnableMods() {
+        return modules.stream().filter(Module::isEnabled).collect(Collectors.toList());
+    }
 }
