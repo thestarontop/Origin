@@ -110,7 +110,7 @@ public class Breaker extends Module {
      * Find new target block by targetID
      */
     private BlockPos find() {
-        var BlockMap = BlockUtils.searchBlocks(6);
+        var BlockMap = BlockUtils.searchBlocks(7);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(10.0);
 

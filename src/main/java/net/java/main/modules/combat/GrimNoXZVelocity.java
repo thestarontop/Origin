@@ -55,10 +55,12 @@ public class GrimNoXZVelocity extends Module {
                         if(mc.player.getY() - entity.getY() >= 0.25)
                             boundingBox = boundingBox.expandTowards(0.0,0.1,0.0);
 
-                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox,false,true,true,false,4F);
-                        if(prevrotation == null) return;
-                        Rotation rotation = prevrotation.getRotation();
-                        RotationUtils.setTargetRotation(rotation);
+                        if (KillAura.target == null) {
+                            Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 4F);
+                            if (prevrotation == null) return;
+                            Rotation rotation = prevrotation.getRotation();
+                            RotationUtils.setTargetRotation(rotation);
+                        }
 
                         PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, false));
                         PacketUtils.sendPacketNoEvent(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
