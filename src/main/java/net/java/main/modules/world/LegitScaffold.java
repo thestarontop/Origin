@@ -58,6 +58,7 @@ public class LegitScaffold extends  Module {
     }
     @EventTarget
     public void onMotion(MotionEvent event){
+        //motionevent他妈的每tick触发两次
         if (mc.player.isOnGround()) {
             offGroundTicks = 0;
             onGroundTicks++;
@@ -69,6 +70,8 @@ public class LegitScaffold extends  Module {
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+        if(mc.level.getBlockState(new BlockPos(mc.player.position().x, mc.player.position().y - 1, mc.player.position().z)).getBlock() != Blocks.AIR) return;
+
         if (!mc.options.keyJump.isDown()){
             canTellyPlace = true;
         }
@@ -135,6 +138,11 @@ public class LegitScaffold extends  Module {
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
         if (!mc.options.keyJump.isDown()) {
+            mc.player.setSprinting(RotationUtils.targetRotation == null);
+        }
+        if (mc.options.keyJump.isDown()) {
+            mc.player.setSprinting(!canTellyPlace);
+        }else {
             mc.player.setSprinting(RotationUtils.targetRotation == null);
         }
     }
