@@ -29,12 +29,12 @@ public class IRC extends Module {
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
-        new Thread(this::receiveMessages).start();
         if (socket != null){
             if (!socket.isClosed()){
                 return;
             }
         }
+        new Thread(this::receiveMessages).start();
         try {
             socket = new Socket("n.rainplay.cn", 56690);
             // 使用UTF-8编码读取和写入
@@ -47,7 +47,6 @@ public class IRC extends Module {
     }
 
     private void receiveMessages() {
-        if (mc.player == null || (socket != null && socket.isClosed())) return;
         String message;
         try {
             while ((message = in.readLine()) != null) {
