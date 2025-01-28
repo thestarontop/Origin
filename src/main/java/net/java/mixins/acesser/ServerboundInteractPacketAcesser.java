@@ -14,4 +14,7 @@ public interface ServerboundInteractPacketAcesser {
     @Mutable
     @Accessor("entityId")
     int getId();
+    @Mutable
+    @Accessor("usingSecondaryAction")
+    void setUsingSecondaryAction(boolean usingSecondaryAction);
 }

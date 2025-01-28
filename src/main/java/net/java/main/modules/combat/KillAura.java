@@ -24,6 +24,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerAbilitiesPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -50,7 +51,7 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob,animal,mode);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode,sb);
     }
 
 
@@ -62,6 +63,8 @@ public class KillAura extends Module {
     public static BooleanValue combatdelay = new BooleanValue("1.9+CombatDelay",true);
 
     public static ListValue mode = new ListValue("type", new String[]{"Interact", "Attack"},"Attack");
+    public static BooleanValue sb = new BooleanValue("sb",false);
+    public static boolean shouldchange = true;
 
     private LinkedList<Entity> CanReachEntities = new LinkedList<>();
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
@@ -303,7 +306,12 @@ public class KillAura extends Module {
     private static void attackEntity(Entity entity) {
         if (mode.getValue() == "Attack")  {
             madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,true));
+            if (!sb.getValue()) {
+                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
+            }else{
+                    mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, shouldchange));
+                    shouldchange = !shouldchange;
+            }
         }else{
             mc.getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity,mc.player.isShiftKeyDown(),InteractionHand.MAIN_HAND));
         }
@@ -325,6 +333,15 @@ public class KillAura extends Module {
     public void onDisable(){
         super.onDisable();
         target = null;
+        if (!shouldchange && sb.getValue()){
+            mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.PRESS_SHIFT_KEY));
+            mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.RELEASE_SHIFT_KEY));
+        }
+    }
+    @Override
+    public void onEnable(){
+        super.onEnable();
+        shouldchange = true;
     }
 
     public float distanceTo(AABB arg) {

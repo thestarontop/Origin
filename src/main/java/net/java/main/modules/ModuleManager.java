@@ -128,6 +128,8 @@ public class ModuleManager {
         addHack(new ColorSigns());
         addHack(new AntiAFK());
         addHack(new LegitScaffold());
+        addHack(new ForceSneak());
+        addHack(new AutoL());
 
     }
     public Module getModule(String name){

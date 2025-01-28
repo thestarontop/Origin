@@ -61,8 +61,10 @@ public class GrimNoXZVelocity extends Module {
                             Rotation rotation = prevrotation.getRotation();
                             RotationUtils.setTargetRotation(rotation);
                         }
-
-                        PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, false));
+                        boolean bl = mc.player.isShiftKeyDown();
+                        if (madebystarontopandfml.getInstance().getModuleManager().getModule("forcesneak").isEnabled())
+                            bl = true;
+                        PacketUtils.sendPacketNoEvent(ServerboundInteractPacket.createAttackPacket(entity, bl));
                         PacketUtils.sendPacketNoEvent(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                         mc.player.setDeltaMovement(mc.player.getDeltaMovement().x*0.6,mc.player.getDeltaMovement().y,mc.player.getDeltaMovement().z*0.6);
                     }

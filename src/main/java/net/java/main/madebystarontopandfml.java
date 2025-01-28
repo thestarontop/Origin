@@ -29,7 +29,7 @@ public class madebystarontopandfml extends MinecraftInstance {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String NAME = "Origin_Client";
     private static madebystarontopandfml instance;
-    public static final String VERSION = "b27";
+    public static final String VERSION = "b28";
     public static ModuleManager moduleManager;
     public static ChatManager chatManager;
     public static BindManager bindManager;

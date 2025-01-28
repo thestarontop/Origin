@@ -85,6 +85,7 @@ public class Module extends MinecraftInstance {
             if (!madebystarontopandfml.getInstance().isStarting) {
                 //Notification.addNotification(new Noti("✔", ChatFormatting.WHITE + this.getName() + ChatFormatting.WHITE + " is Enabled",30, NotiType.SUCCESS));
             }
+
             onEnable();
         } else {
             if (!madebystarontopandfml.getInstance().isStarting) {

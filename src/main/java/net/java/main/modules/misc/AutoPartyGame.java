@@ -193,7 +193,7 @@ public class AutoPartyGame extends Module {
                 ticks = 0;
             }
         }
-        var BlockMap = sortBlocksByDistance(BlockUtils.searchBlocks(4));
+        var BlockMap = sortBlocksByDistance(BlockUtils.searchBlocks(5));
         for (Map.Entry<BlockPos, Block> entry : BlockMap.entrySet()) {
             BlockPos key = entry.getKey();
             Block value = entry.getValue();

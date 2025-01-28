@@ -52,7 +52,7 @@ public class CrystalAura extends Module {
             if (entity instanceof EndCrystal && entity.distanceTo(mc.player) <= 3.2){
                 Rotation rotation = RotationUtils.lockView(entity.getBoundingBox(),false,false,false,false,4F).getRotation();
                 RotationUtils.setTargetRotation(rotation);
-                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,false));
+                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity,mc.player.isShiftKeyDown()));
                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                 return;
             }

@@ -105,26 +105,14 @@ public abstract class MixinMinecraft {
 
     @Shadow protected abstract String createTitle();
 
-   /* @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
+    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;profiler:Lnet/minecraft/util/profiling/ProfilerFiller;",ordinal = 5,shift = At.Shift.BEFORE))
     private void runtick(CallbackInfo ci) {
         TickEvent event = new TickEvent();
         madebystarontopandfml.getInstance().getEventManager().call(event);
-    }*/
-
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;onPreClientTick()V", shift = At.Shift.BEFORE, ordinal = 0))
-    public void preTick(CallbackInfo ci) {
-        TickEvent event = new TickEvent();
-        madebystarontopandfml.getInstance().getEventManager().call(event);
     }
-
     @Inject(method = "updateLevelInEngines", at = @At("HEAD"))
     private void updateLevelInEngines(@Nullable  ClientLevel arg, CallbackInfo ci) {
         WorldChangeEvent event = new WorldChangeEvent();
-        madebystarontopandfml.getInstance().getEventManager().call(event);
-    }
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/ForgeEventFactory;onPostClientTick()V", shift = At.Shift.AFTER, ordinal = 0))
-    public void postTick(CallbackInfo ci) {
-        TickEvent event = new TickEvent();
         madebystarontopandfml.getInstance().getEventManager().call(event);
     }
     @Inject(method = "loadLevel", at = @At("HEAD"))
@@ -180,19 +168,16 @@ public abstract class MixinMinecraft {
                 this.soundManager.resume();
                 this.mouseHandler.grabMouse();
             }
-            this.updateTitle();
+            ((Minecraft)(Object)this).updateTitle();
         }
     }
     @Inject(method="<init>",at=@At("TAIL"))
     public void onInit(CallbackInfo ci){
         madebystarontopandfml.getInstance().getEventManager().call(new ClientStartEvent());
     }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    public void updateTitle() {
-    }
 
+    @Inject(method = "updateTitle",at=@At("TAIL"))
+    public void updateTitle(CallbackInfo ci) {
+        this.window.setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
+    }
 }

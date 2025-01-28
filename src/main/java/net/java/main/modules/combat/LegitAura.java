@@ -67,7 +67,7 @@ public class LegitAura extends Module {
                 var entity = ((EntityHitResult) mc.hitResult).getEntity();
                 if (entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) {
                     if (mc.player.distanceTo(player) <= 3.000) {
-                        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, false));
+                        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
                         mc.player.swing(InteractionHand.MAIN_HAND);
                     }
                 }
@@ -94,7 +94,7 @@ public class LegitAura extends Module {
         for (Entity entity1 : entitylist) {
             if (entity1 instanceof EndCrystal) {
                 if (mc.player.distanceTo(entity) <= range.getValue() && shouldAttack()) {
-                    mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, true));
+                    mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
                     mc.player.swing(InteractionHand.MAIN_HAND);
                     timer.reset();
                 }
@@ -102,7 +102,7 @@ public class LegitAura extends Module {
         }
         if (target!= null && mc.player.distanceTo(entity) <= range.getValue() && shouldAttack()) {
                 madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, true));
+                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
                 mc.player.swing(InteractionHand.MAIN_HAND);
                 timer.reset();
 
