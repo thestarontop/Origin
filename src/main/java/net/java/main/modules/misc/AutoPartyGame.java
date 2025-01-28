@@ -29,10 +29,7 @@ import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -62,14 +59,14 @@ public class AutoPartyGame extends Module {
         put("蓝色兰花", Blocks.BLUE_ORCHID);
         put("绒球葱", Blocks.ALLIUM);
         put("蓝矢车菊", Blocks.CORNFLOWER);
-        put("雏菊", Blocks.OXEYE_DAISY);
+        put("滨菊", Blocks.OXEYE_DAISY);
         put("铃兰", Blocks.LILY_OF_THE_VALLEY);
         put("凋零玫瑰", Blocks.WITHER_ROSE);
         put("红色郁金香", Blocks.RED_TULIP);
         put("橙色郁金香", Blocks.ORANGE_TULIP);
         put("白色郁金香", Blocks.WHITE_TULIP);
         put("粉色郁金香", Blocks.PINK_TULIP);
-        put("菊花", Blocks.AZURE_BLUET);   // 新增
+        put("茜草花", Blocks.AZURE_BLUET);   // 新增
 
         // 大型花
         put("向日葵", Blocks.SUNFLOWER);
@@ -191,6 +188,18 @@ public class AutoPartyGame extends Module {
                 mc.player.closeContainer();
                 hasWindow = false;
                 ticks = 0;
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            ItemStack itemstack = mc.player.inventoryMenu.getSlot(i + 36).getItem();
+            Item item =itemstack.getItem();
+            if(item == Items.EMERALD){
+                mc.player.getInventory().selected = i;
+                return;
+            }
+            if (item == Items.EGG){
+                mc.player.getInventory().selected = i;
+                mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
             }
         }
         var BlockMap = sortBlocksByDistance(BlockUtils.searchBlocks(5));
