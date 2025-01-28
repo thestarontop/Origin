@@ -226,18 +226,19 @@ public class AutoPartyGame extends Module {
                     break;
                 }
             }
-            if (value == Blocks.WATER){
-                if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.BUCKET) {
-                    Rotation rotation = RotationUtils.getBlockPlacementRotation(key);
-                    if (rotation != null) {
-                        RotationUtils.setTargetRotation(rotation, 20);
-                        mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
-                    }
+            if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.BUCKET) {
+            if (value == Blocks.WATER) {
+                Rotation rotation = RotationUtils.getBlockPlacementRotation(key);
+                if (rotation != null) {
+                    RotationUtils.setTargetRotation(rotation, 20);
+                    mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
                 }
                 break;
             }
+            }
             if (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.WATER_BUCKET && value == Blocks.FURNACE){
                 mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.DOWN, key, false)));
+                break;
             }
             if (value == Blocks.STONE_BUTTON || value == Blocks.CAKE){
                 mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.DOWN, key, false)));
