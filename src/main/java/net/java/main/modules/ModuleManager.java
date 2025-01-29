@@ -130,6 +130,7 @@ public class ModuleManager {
         addHack(new LegitScaffold());
         addHack(new ForceSneak());
         addHack(new AutoL());
+        addHack(new LightningDetect());
 
     }
     public Module getModule(String name){

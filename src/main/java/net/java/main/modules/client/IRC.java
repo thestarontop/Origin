@@ -31,10 +31,10 @@ public class IRC extends Module {
     public void onUpdate(UpdateEvent event){
         if (socket != null){
             if (!socket.isClosed()){
+                new Thread(this::receiveMessages).start();
                 return;
             }
         }
-        new Thread(this::receiveMessages).start();
         try {
             socket = new Socket("n.rainplay.cn", 56690);
             // 使用UTF-8编码读取和写入

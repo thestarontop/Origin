@@ -15,6 +15,7 @@ import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -28,9 +29,9 @@ public class CrystalAura extends Module {
     private LinkedList<BlockPos> placedblocklist = new LinkedList<>();
     @EventTarget
     public void onUpdate(UpdateEvent event){
-        var blocks = BlockUtils.searchBlocks(3);
+        var blocks = BlockUtils.searchBlocks(4);
         for (Entity entity :mc.level.entitiesForRendering()) {
-            if (entity instanceof AbstractClientPlayer && entity.getId() != mc.player.getId()) {
+            if (entity instanceof Player && entity.getId() != mc.player.getId()) {
                 if (entity.distanceTo(mc.player) > 5){
                     placedblocklist.clear();
                     blockslist.clear();
@@ -70,16 +71,16 @@ public class CrystalAura extends Module {
                 continue;
             }
             if (placedblocklist.contains(block)) continue;
-            Rotation.VecRotation rotation = RotationUtils.faceBlock(block);
+            Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
             if(rotation == null) return;
-            RotationUtils.setTargetRotation(rotation.getRotation());
+            RotationUtils.setTargetRotation(rotation);
             for (int i = 0;i<9;i++) {
             if (mc.player.inventoryMenu.getSlot(i+36).getItem().getItem() == Items.END_CRYSTAL){
                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(i));
                 break;
             }
             }
-            mc.gameMode.useItemOn(mc.player,mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(rotation.getVec(), RotationUtils.getBlockPlacementDirection(block),block,false));
+            mc.gameMode.useItemOn(mc.player,mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block),block,false));
             mc.player.swing(InteractionHand.MAIN_HAND);
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
             placedblocklist.add(block);
