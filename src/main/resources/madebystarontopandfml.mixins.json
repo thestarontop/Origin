@@ -19,6 +19,7 @@
   "client": [
     "MixinChatScreen",
     "MixinClientPacketListener",
+    "MixinClientWorld",
     "MixinEntityRenderer",
     "MixinFont",
     "MixinGameRenderer",
@@ -32,7 +33,6 @@
     "MixinMinecraft",
     "MixinMultiPlayerGameMode",
     "MixinScreenEffectRenderer",
-    "MixinClientWorld",
     "acesser.MinecraftAcesser"
   ],
   "injectors": {

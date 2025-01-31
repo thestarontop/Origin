@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.io.BufferedReader;

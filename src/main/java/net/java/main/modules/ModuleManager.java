@@ -3,6 +3,7 @@ package net.java.main.modules;
 import net.java.main.modules.client.ClickGui;
 import net.java.main.modules.client.HUD;
 import net.java.main.modules.client.IRC;
+import net.java.main.modules.render.TargetHUD;
 import net.java.main.modules.combat.*;
 import net.java.main.modules.combat.AutoRod;
 import net.java.main.modules.exploit.*;
@@ -49,7 +50,6 @@ public class ModuleManager {
         addHack(new NoInvisible());
         addHack(new SuperKnockBack());
         addHack(new Eagle());
-        addHack(new ClayRageBot());
         addHack(new Sprint());
         addHack(new KillAura());
         addHack(new Disabler());
@@ -121,16 +121,18 @@ public class ModuleManager {
         addHack(new LegitAura());
         addHack(new SelfDestruct());
         addHack(new Speed());
-        addHack(new Projectiles());
+        //addHack(new Projectiles()); todo:fix
         addHack(new Protocol());
         addHack(new IRC());
         addHack(new Crasher());
-        addHack(new ColorSigns());
+        //addHack(new ColorSigns()); todo:delete
         addHack(new AntiAFK());
         addHack(new LegitScaffold());
         addHack(new ForceSneak());
         addHack(new AutoL());
         addHack(new LightningDetect());
+        //addHack(new TargetHUD()); todo:fix
+        addHack(new Fly());
 
     }
     public Module getModule(String name){

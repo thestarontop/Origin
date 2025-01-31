@@ -32,9 +32,8 @@ public class NameTags extends Module {
     public void onRender3D(Render3DEvent event) {
         if (mc.level != null && mc.player != null) {
             for (Entity entity : mc.level.entitiesForRendering()) {
-
-                if ((entity instanceof Player || (KillAura.isEnemy(entity)) || mc.player.distanceTo(entity) <= 5.0) && entity.getId() != mc.player.getId()) {
-                    boolean isItem = entity instanceof ItemEntity;
+                boolean isItem = entity instanceof ItemEntity;
+                if (((entity instanceof Player || (KillAura.isEnemy(entity))) || (mc.player.distanceTo(entity) <= 5.0 && isItem)) && entity.getId() != mc.player.getId()) {
                     event.getPoseStack().pushPose();
                     event.getPoseStack().translate(entity.xOld + (entity.getX() - entity.xOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().x, entity.yOld + (entity.getY() - entity.yOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().y + entity.getEyeHeight() + 1, entity.zOld + (entity.getZ() - entity.zOld) * event.getTickcounter() - mc.gameRenderer.getMainCamera().getPosition().z);
                     event.getPoseStack().mulPose(mc.gameRenderer.getMainCamera().rotation());

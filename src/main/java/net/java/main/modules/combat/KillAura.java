@@ -51,7 +51,7 @@ import java.util.LinkedList;
 public class KillAura extends Module {
     public KillAura() {
         super("KillAura","KillAura", Module.Category.COMBAT);
-        addValues(range,silentrotation,combatdelay,player,mob,animal,mode,sb);
+        addValues(range,silentrotation,combatdelay,player,mob,animal,mode,sb,throughwalls);
     }
 
 
@@ -61,6 +61,7 @@ public class KillAura extends Module {
     public static BooleanValue mob = new BooleanValue("AttackMob",true);
     public static BooleanValue animal = new BooleanValue("AttackAnimal",true);
     public static BooleanValue combatdelay = new BooleanValue("1.9+CombatDelay",true);
+    public static BooleanValue throughwalls = new BooleanValue("ThroughWalls",true);
 
     public static ListValue mode = new ListValue("type", new String[]{"Interact", "Attack"},"Attack");
     public static BooleanValue sb = new BooleanValue("sb",false);
@@ -175,7 +176,7 @@ public class KillAura extends Module {
                             boundingBox = boundingBox.expandTowards(0.0, 0.1, 0.0);
 
                         target = entity;
-                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 4F);
+                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, false, true, throughwalls.getValue(), 4F);
                         if (prevrotation == null) return;
                         Rotation rotation = prevrotation.getRotation();
                         if (silentrotation.getValue()) {
@@ -297,7 +298,7 @@ public class KillAura extends Module {
     @EventTarget
     public void onRender3D(Render3DEvent event) {
         if (target != null) {
-            RenderUtils.renderBoundingBox(event.getPoseStack(), target.getBoundingBox(), 0.1F, 1F, 0.1F);
+            RenderUtils.renderBoundingBox(event.getPoseStack(), target.getBoundingBox(), 1F, 0.1F, 0.1F);
         }
     }
     /**
