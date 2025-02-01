@@ -196,11 +196,12 @@ public class AutoPartyGame extends Module {
             Item item =itemstack.getItem();
             if(item == Items.EMERALD){
                 mc.player.getInventory().selected = i;
-                return;
+                break;
             }
             if (item == Items.EGG){
                 mc.player.getInventory().selected = i;
                 mc.getConnection().send(new ServerboundUseItemPacket(InteractionHand.MAIN_HAND));
+                break;
             }
         }
         var BlockMap = BlockUtils.searchBlocks(5);
@@ -225,8 +226,8 @@ public class AutoPartyGame extends Module {
                     mc.getConnection().send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(key.getX(), key.getY(), key.getZ()), Direction.UP, key, false)));
                     clickedblock.add(key);
                     times++;
-                    if (times == 5){
-                        return;
+                    if (times >= 5){
+                        break;
                     }
                 }
             }

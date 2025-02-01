@@ -134,6 +134,7 @@ public abstract class MixinMinecraft {
      */
     @Overwrite
     public void setScreen(@Nullable Screen arg) {
+        madebystarontopandfml.getInstance().getEventManager().call(new ScreenEvent(arg));
         if (SharedConstants.IS_RUNNING_IN_IDE && Thread.currentThread() != this.gameThread) {
             LOGGER.error("setScreen called from non-game thread");
         }
@@ -176,8 +177,9 @@ public abstract class MixinMinecraft {
         madebystarontopandfml.getInstance().getEventManager().call(new ClientStartEvent());
     }
 
-    @Inject(method = "updateTitle",at=@At("TAIL"))
+    @Inject(method = "updateTitle",at=@At("HEAD"), cancellable = true)
     public void updateTitle(CallbackInfo ci) {
         this.window.setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
+        ci.cancel();
     }
 }

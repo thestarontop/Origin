@@ -133,6 +133,7 @@ public class ModuleManager {
         addHack(new LightningDetect());
         //addHack(new TargetHUD()); todo:fix
         addHack(new Fly());
+        addHack(new PacketCanceller());
 
     }
     public Module getModule(String name){

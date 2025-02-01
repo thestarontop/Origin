@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DelayVelocity extends Module {
     public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);addValues(explode);}
-    private LinkedBlockingQueue<ClientboundPingPacket> packets = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ServerboundPongPacket> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
@@ -31,7 +31,7 @@ public class DelayVelocity extends Module {
     @EventTarget
     public void onPacket(PacketEvent event){
         Packet<?> packet = event.getPacket();
-        if (packet instanceof ClientboundPingPacket packet1){
+        if (packet instanceof ServerboundPongPacket packet1){
             event.cancelEvent();
             packets.add(packet1);
         }

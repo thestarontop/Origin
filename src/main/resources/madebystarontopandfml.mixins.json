@@ -33,6 +33,7 @@
     "MixinMinecraft",
     "MixinMultiPlayerGameMode",
     "MixinScreenEffectRenderer",
+    "MixinWindow",
     "acesser.MinecraftAcesser"
   ],
   "injectors": {

@@ -25,6 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.phys.AABB;
 
 import java.awt.*;
@@ -74,11 +75,7 @@ public class Blink extends Module {
                 packets.add(packet);
             }
         }
-        if(packet instanceof ClientboundContainerSetSlotPacket packet1){
-            if (packet1.getSlot() == mc.player.getInventory().selected +36 && packet1.getContainerId() == 0){
-                blink();
-            }
-        }
+
         if (packet instanceof ServerboundPlayerActionPacket packet1 && packet1.getAction() == ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM){
             if (antiaim.getValue()){
                 blink();
@@ -93,7 +90,7 @@ public class Blink extends Module {
                 blink();
             }
             for (Entity entity : mc.level.entitiesForRendering()){
-                if (entity instanceof Arrow && entity.distanceTo(mc.player) <= 6){
+                if ((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.distanceTo(mc.player) <= 6){
                     blink();
                     break;
                 }

@@ -7,6 +7,7 @@ import net.java.main.event.events.UpdateEvent;
 import net.java.main.madebystarontopandfml;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.ChatVisiblity;
@@ -19,6 +20,7 @@ import net.minecraftforge.forgespi.language.IModInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -49,6 +51,15 @@ public class BasicUtils extends MinecraftInstance{
     public void onUpdate(UpdateEvent event){
         ticks ++;
         mc.getWindow().setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
+
+        try {
+            InputStream icon1 = mc.getResourceManager().getResource(new ResourceLocation("madebystarontopandfml", "textures/icon/icon_16x16.png")).getInputStream();
+            InputStream icon2 = mc.getResourceManager().getResource(new ResourceLocation("madebystarontopandfml", "textures/icon/icon_32x32.png")).getInputStream();
+            mc.getWindow().setIcon(icon1,icon2);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         //if (mc.player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY){
             //mc.player.getItemInHand(InteractionHand.MAIN_HAND).setHoverName(new TextComponent(ColorUtils.makeColour("Origin-Owner : starontop")));
         //}

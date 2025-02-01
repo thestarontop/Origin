@@ -37,11 +37,12 @@ public class NoSlow extends Module {
     }
     public BooleanValue withHitting=new BooleanValue("With Hitting",true);
     public FloatValue startTime=new FloatValue("Start Time",100f,0f,200f);
-    public ListValue mode=new ListValue("Mode",new String[]{"RestBug","Grim","Gapple"},"Grim");
+    public ListValue mode=new ListValue("Mode",new String[]{"RestBug","Grim","Gapple","Vanilla"},"Grim");
     public static boolean shouldnoslow = true;
 
     @EventTarget
     public void onPacket(PacketEvent event) {
+        if (mode.getValue() == "Vanilla") return;
 
         if(mode.getValue().equals("Grim")) {
             if (event.getPacket() instanceof ServerboundInteractPacket && (!shouldnoslow && mc.player.isUsingItem())&&!withHitting.getValue()){
@@ -203,6 +204,7 @@ public class NoSlow extends Module {
     MSTimer timer = new MSTimer();
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+        if (mode.getValue() == "Vanilla") return;
         tick=Math.min(tick+1,maxTick);
         //System.out.println("tick:"+tick+" maxTick:"+maxTick);
         if (mode.getValue().equals("Gapple")&&timer.passedMs(startTime.getValue())&&!shouldnoslow) {
@@ -269,6 +271,7 @@ public class NoSlow extends Module {
 
     @EventTarget
     public void onMoment(MoveEvent event) {
+        if (mode.getValue() == "Vanilla") return;
         if(mode.getValue().equals("Grim")) {
             if (mc.player.isUsingItem() && !shouldnoslow) mc.player.setSprinting(false);
         }
@@ -277,7 +280,7 @@ public class NoSlow extends Module {
 
     @EventTarget
     public void onSlow(SlowDownEvent event) {
-        if (shouldnoslow) {
+        if (shouldnoslow || mode.getValue()=="Vanilla") {
             event.setMovementForward(1f);
             event.setMovementStrafe(1f);
         }
