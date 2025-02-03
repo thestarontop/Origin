@@ -29,7 +29,6 @@ public class Protocol extends Module {
     public Protocol(){
         super("Protocol","bzd", Category.MISC);
         addValues(mode,requestMode);
-        setEnable(true);
     }
     public static ListValue requestMode = new ListValue("requestMode", new String[]{"Port", "UUID","Merge"},"Merge");
 
@@ -47,7 +46,7 @@ public class Protocol extends Module {
 
    @Override
     public void onEnable() {
-     //   removeModInfo();
+       super.onEnable();
     }
 
         @EventTarget
@@ -137,31 +136,6 @@ public class Protocol extends Module {
         }
     }
 
-
-    /*public void removeModInfo() {
-        List<IModInfo> modsToRemove = new ArrayList<>();
-        for (IModInfo modInfo : ModList.get().getMods()) {
-            if (modInfo.getModId().equals("madebystarontopandfml")) {
-                modsToRemove.add(modInfo);
-            }
-        }
-        ModList.get().getMods().removeAll(modsToRemove);
-        List<IModFileInfo> fileInfoToRemove = new ArrayList<>();
-        for (IModFileInfo fileInfo : ModList.get().getModFiles()) {
-            boolean shouldRemove = false;
-            for (IModInfo modInfo : fileInfo.getMods()) {
-                if (modInfo.getModId().equals("madebystarontopandfml")) {
-                    shouldRemove = true;
-                    break;
-                }
-            }
-            if (shouldRemove) {
-                fileInfoToRemove.add(fileInfo);
-            }
-        }
-        ModList.get().getModFiles().removeAll(fileInfoToRemove);
-        madebystarontopandfml.getInstance().getEventManager().unregister(this);
-    }*/
 
 
 

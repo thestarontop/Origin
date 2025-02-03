@@ -18,4 +18,7 @@ public interface ServerboundMovePlayerPacketAcesser {
     @Mutable
     @Accessor("hasRot")
     void setHasRot(boolean hasRot);
+    @Mutable
+    @Accessor("onGround")
+    void setOnGround(boolean onGround);
 }
