@@ -135,6 +135,10 @@ public class ModuleManager {
         addHack(new Fly());
         addHack(new PacketCanceller());
         addHack(new Damage());
+        //addHack(new Velocity2());
+        addHack(new BlockHitResultChanger());
+        addHack(new AutoScaffold());
+        addHack(new AntiCrash());
 
     }
     public Module getModule(String name){

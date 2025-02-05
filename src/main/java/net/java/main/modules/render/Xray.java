@@ -34,8 +34,9 @@ public class Xray extends Module {
             if(value == Blocks.DIAMOND_ORE || value == Blocks.IRON_ORE) {
                 if(!visitedPositions.contains(key)) {
                     mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, key, Direction.DOWN));
+                    mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, key.east(1), Direction.DOWN));
                     visitedPositions.add(key);
-                    return;
+                    break;
                 }
             }
         }

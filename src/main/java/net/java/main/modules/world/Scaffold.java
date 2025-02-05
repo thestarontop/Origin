@@ -99,21 +99,32 @@ public class Scaffold extends Module {
                 }
             }
         }
+        ItemStack itemstack = mc.player.inventoryMenu.getSlot(45).getItem();
+        ItemStack itemstack2 = mc.player.inventoryMenu.getSlot(currentslot + 36).getItem();
+        if (itemstack.getCount() > itemstack2.getCount() && itemstack.getItem() instanceof BlockItem){
+            currentslot = 45;
+        }
         if (currentslot == -1) return;
         if (silentautoblock.getValue()) {
-            mc.getConnection().send(new ServerboundSetCarriedItemPacket(currentslot));
-            mc.player.setItemInHand(InteractionHand.MAIN_HAND, blockstack);
+            if (currentslot !=45) {
+                mc.getConnection().send(new ServerboundSetCarriedItemPacket(currentslot));
+                mc.player.setItemInHand(InteractionHand.MAIN_HAND, blockstack);
+            }
         }else {
-            mc.player.getInventory().selected = currentslot;
+            if (currentslot != 45) {
+                mc.player.getInventory().selected = currentslot;
+            }
         }
-
-        InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
+        InteractionHand hand = currentslot != 45 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, hand, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
         if ((result == InteractionResult.SUCCESS)) {
-            mc.player.swing(InteractionHand.MAIN_HAND);
+            mc.player.swing(hand);
         }
         if (silentautoblock.getValue()) {
-            mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
-            mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
+            if (currentslot != 45) {
+                mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
+                mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
+            }
         }
         mc.player.setSprinting(RotationUtils.targetRotation == null);
     }

@@ -373,6 +373,7 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
         MoveEvent event = new MoveEvent(this.getX(),this.getY(),this.getZ());
         madebystarontopandfml.getInstance().getEventManager().call(event);
         BlockPos blockpos = new BlockPos(d, this.getY(), e);
+        if(event.isCancelled) return;
         if (this.suffocatesAt(blockpos)) {
             double d0 = d - (double)blockpos.getX();
             double d1 = e - (double)blockpos.getZ();

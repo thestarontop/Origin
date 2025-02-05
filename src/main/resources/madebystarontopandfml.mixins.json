@@ -10,11 +10,13 @@
     "MixinEntity",
     "MixinLivingEntity",
     "MixinPlayer",
+    "acesser.BlockHitResultAcesser",
     "acesser.ClientboundSetEntityMotionPacketAcesser",
     "acesser.ClientboundSetScorePacketAcesser",
     "acesser.ClientboundSetTitleTextPacketAcesser",
     "acesser.ServerboundInteractPacketAcesser",
-    "acesser.ServerboundMovePlayerPacketAcesser"
+    "acesser.ServerboundMovePlayerPacketAcesser",
+    "acesser.ServerboundUseItemOnPacketAcesser"
   ],
   "client": [
     "MixinChatScreen",

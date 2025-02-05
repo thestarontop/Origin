@@ -16,7 +16,7 @@ public class IRC extends Module {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-
+    private volatile boolean running = true;
     @EventTarget
     public void onPacket(PacketEvent event){
         if (event.getPacket() instanceof ServerboundChatPacket packet){
@@ -29,9 +29,9 @@ public class IRC extends Module {
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
+        new Thread(this::receiveMessages).start();
         if (socket != null){
             if (!socket.isClosed()){
-                new Thread(this::receiveMessages).start();
                 return;
             }
         }
@@ -47,6 +47,7 @@ public class IRC extends Module {
     }
 
     private void receiveMessages() {
+        if (!running) return;
         String message;
         try {
             while ((message = in.readLine()) != null) {
@@ -63,6 +64,7 @@ public class IRC extends Module {
     @Override
     public void onDisable(){
         super.onDisable();
+        running = false;
         try {
             socket.close();
         } catch (IOException e) {

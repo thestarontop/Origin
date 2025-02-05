@@ -86,11 +86,11 @@ public class Blink extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
         if (antiaim.getValue()) {
-            if (distanceTo(box) >= 5) {
+            if (distanceTo(mc.player,box) >= 5) {
                 blink();
             }
             for (Entity entity : mc.level.entitiesForRendering()){
-                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(box) <= 6){
+                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 6){
                     blink();
                     break;
                 }
@@ -127,10 +127,10 @@ public class Blink extends Module {
         }
 
     }
-    public float distanceTo(AABB arg) {
-        float f = (float)(mc.player.getX() - arg.minX);
-        float f1 = (float)(mc.player.getY() - arg.minY);
-        float f2 = (float)(mc.player.getZ() - arg.minZ);
+    public float distanceTo(Entity entity,AABB arg) {
+        float f = (float)(entity.getX() - arg.minX);
+        float f1 = (float)(entity.getY() - arg.minY);
+        float f2 = (float)(entity.getZ() - arg.minZ);
         return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
     }
     public void onDisable() {
