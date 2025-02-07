@@ -10,6 +10,7 @@ public class AutoScaffold extends Module {
         boolean AlreadyVoid;
         boolean Toggled = false;
         boolean NeedScaffold = false;
+        boolean Dangerous = false;
         double GroundPosY;
         int i;
 
@@ -22,14 +23,24 @@ public class AutoScaffold extends Module {
         @EventTarget
         public void onMove(MoveEvent event){
                 AlreadyVoid = true;
+                Dangerous = true;
                 if (mc.player.isOnGround()){
                         GroundPosY = mc.player.getY();
                 }
+                i= (int) Math.round(-(mc.player.getY()-1.01));
+                while(i<=0) {
+                        Dangerous= !mc.level.getCollisions(mc.player, mc.player.getBoundingBox().move(mc.player.getDeltaMovement().x,i,mc.player.getDeltaMovement().z).expandTowards(-0.05,0,-0.05)).iterator().hasNext();
+                        i+=1;
+                        if(!Dangerous) break;
+                };
                 i = (int) Math.round(-(mc.player.getY()-1.01));
                 while(i<=0) {
                         AlreadyVoid= !mc.level.getCollisions(mc.player, mc.player.getBoundingBox().move(0,i,0).expandTowards(0,0,0)).iterator().hasNext();
                         i+=1;
                         if(!AlreadyVoid) break;
+                }
+                if (!Dangerous) {
+                        NeedScaffold=false;
                 }
                 if (AlreadyVoid){
                         NeedScaffold=true;

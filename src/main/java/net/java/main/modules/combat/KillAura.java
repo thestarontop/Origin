@@ -91,14 +91,14 @@ public class KillAura extends Module {
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) {
             if (DelayVelocity.target != null) {
                 if (DelayVelocity.target instanceof Player target) {
-                    if (distanceTo(DelayVelocity.box) <= 3.2) {
+                    if (distanceTo(DelayVelocity.box) <= range.getValue()) {
                         var boundingBox = DelayVelocity.box;
                         boundingBox = boundingBox.expandTowards(0.0, 2.14, 0.0);
 
                         if(mc.player.getY() - DelayVelocity.box.minY <= 0.25)
                             boundingBox = boundingBox.expandTowards(0.0,-3.0,0.0);
 
-                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 4F);
+                        Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, true, true, false, 8F);
                         if (prevrotation == null) return;
                         Rotation rotation = prevrotation.getRotation();
                         if (silentrotation.getValue()) {
@@ -284,13 +284,13 @@ public class KillAura extends Module {
             if (targetaabb.isEmpty()) {
                 target = null;
             }
-        }
-
-        if(AttackedEntities.size() >= CanReachEntities.size()){
-            AttackedEntities.clear();
-        }
-        if (CanReachEntities.isEmpty()) {
-            target = null;
+        }else {
+            if (AttackedEntities.size() >= CanReachEntities.size()) {
+                AttackedEntities.clear();
+            }
+            if (CanReachEntities.isEmpty()) {
+                target = null;
+            }
         }
     }
 

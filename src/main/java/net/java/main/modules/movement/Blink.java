@@ -90,7 +90,7 @@ public class Blink extends Module {
                 blink();
             }
             for (Entity entity : mc.level.entitiesForRendering()){
-                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 6){
+                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 4){
                     blink();
                     break;
                 }

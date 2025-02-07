@@ -39,54 +39,12 @@ public class NoSlow extends Module {
     }
     public BooleanValue withHitting=new BooleanValue("With Hitting",true);
     public FloatValue startTime=new FloatValue("Start Time",100f,0f,200f);
-    public ListValue mode=new ListValue("Mode",new String[]{"RestBug","Grim","Test","Vanilla"},"Grim");
+    public ListValue mode=new ListValue("Mode",new String[]{"RestBug","Grim","Vanilla"},"Grim");
     public static boolean shouldnoslow = true;
 
     @EventTarget
     public void onPacket(PacketEvent event) {
         if (mode.getValue() == "Vanilla") return;
-        if (mode.getValue().equals("Test")){
-            if(event.getPacket() instanceof ServerboundUseItemPacket packet){
-
-
-                ItemStack item = mc.player.getItemInHand(packet.getHand());
-                if (!isUsable(item)){
-                    return;
-                }
-                shouldnoslow = false;
-
-                //powered by mojang
-                AbstractContainerMenu abstractcontainermenu = mc.player.inventoryMenu;
-                NonNullList<Slot> nonnulllist = abstractcontainermenu.slots;
-                int i = nonnulllist.size();
-                List<ItemStack> list = Lists.newArrayListWithCapacity(i);
-                Iterator var10 = nonnulllist.iterator();
-
-                while(var10.hasNext()) {
-                    Slot slot = (Slot)var10.next();
-                    list.add(slot.getItem().copy());
-                }
-
-                Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
-
-                for(int j = 0; j < i; ++j) {
-                    ItemStack itemstack = list.get(j);
-                    ItemStack itemstack1 = nonnulllist.get(j).getItem();
-                    if (!ItemStack.matches(itemstack, itemstack1)) {
-                        int2objectmap.put(j, itemstack1.copy());
-                    }
-                }
-                if(tick>=maxTick&&isEatable(item)) {
-                    tick = 0;
-                    maxTick = item.getUseDuration();
-                }
-                event.cancelEvent();
-                PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND,BlockPos.ZERO,Direction.DOWN));
-                PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND,BlockPos.ZERO,Direction.DOWN));
-                mc.gameMode.releaseUsingItem(mc.player);
-                PacketUtils.sendPacketNoEvent(packet);
-            }
-        }
         if(mode.getValue().equals("Grim")) {
             if (event.getPacket() instanceof ServerboundInteractPacket && (!shouldnoslow && mc.player.isUsingItem())&&!withHitting.getValue()){
                 event.cancelEvent();
@@ -150,12 +108,10 @@ public class NoSlow extends Module {
                 }
             }
         }
-
-
-
     }
 
     private int tick,maxTick=0;
+
     @EventTarget
     public void onRender2D(Render2DEvent event) {
         if(tick<maxTick) {
@@ -179,6 +135,7 @@ public class NoSlow extends Module {
             //FontManager.tenacity20.drawCenteredString(RenderManager.currentPoseStack,"Eating",width/2f,height/2f+20,Color.white);
         }
     }
+
 
     public int getSlot() {
         for (int i = 0; i <= 8; i++) {

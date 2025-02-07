@@ -3,7 +3,6 @@ package net.java.main.modules;
 import net.java.main.modules.client.ClickGui;
 import net.java.main.modules.client.HUD;
 import net.java.main.modules.client.IRC;
-import net.java.main.modules.render.TargetHUD;
 import net.java.main.modules.combat.*;
 import net.java.main.modules.combat.AutoRod;
 import net.java.main.modules.exploit.*;
@@ -14,6 +13,8 @@ import net.java.main.modules.render.*;
 import net.java.main.modules.world.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class ModuleManager {
     }
 
     public void intModules() {
-        modules = new ArrayList<Module>();
+        modules = new ArrayList<>();
         addHack(new ThunderDeath());
         addHack(new POC());
         addHack(new ClickGui());
@@ -53,7 +54,7 @@ public class ModuleManager {
         addHack(new Sprint());
         addHack(new KillAura());
         addHack(new Disabler());
-        addHack(new GrimNoXZVelocity());
+        addHack(new Velocity());
         addHack(new Xray());
         addHack(new HUD());
         addHack(new Teams());
@@ -120,7 +121,6 @@ public class ModuleManager {
         addHack(new AutoFish());
         addHack(new LegitAura());
         addHack(new SelfDestruct());
-        addHack(new Speed());
         //addHack(new Projectiles()); todo:fix
         addHack(new Protocol());
         addHack(new IRC());
@@ -139,7 +139,10 @@ public class ModuleManager {
         addHack(new BlockHitResultChanger());
         addHack(new AutoScaffold());
         addHack(new AntiCrash());
+        addHack(new NoFall());
 
+        //排序，改了死妈的
+        Collections.sort(modules, Comparator.comparing(Module::getName));
     }
     public Module getModule(String name){
         for (Module m : ModuleManager.modules) {

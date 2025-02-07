@@ -1,4 +1,4 @@
-package net.java.main.modules.render;
+package net.java.main.modules.misc;
 
 import net.java.main.command.ChatManager;
 import net.java.main.event.annotations.EventTarget;
@@ -22,34 +22,16 @@ import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 
 public class NameProtect extends Module {
     public NameProtect(){super("NameProtect","bzd",Category.MISC);}
-    String name = null;
+    public static String name = null;
     @EventTarget
     public void onText(TextEvent event){
+        if (name == null) return;
         event.setText(StringUtils.replace(event.getText(),name,ColorUtils.makeColour("Hidden")));
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
        if (name == null && mc.player != null){
-            name = mc.player.getDisplayName().getString().replaceAll(" ","");
-           ChatManager.sendChat("玩家名字："+ name);
+           name = StringUtils.replace(mc.player.getDisplayName().getString()," ","");
        }
-       if (name != null){
-           mc.getConnection().getPlayerInfo(mc.player.getUUID()).setTabListDisplayName(new TextComponent(StringUtils.replace(mc.getConnection().getPlayerInfo(mc.player.getUUID()).getTabListDisplayName().getString(),name, ColorUtils.makeColour("Hidden"))));
-
-       }
-    }
-    @EventTarget
-    public void onPacket(PacketEvent event){
-        if (name == null) return;
-        if (event.getPacket() instanceof ClientboundChatPacket packet){
-            if (event.isCancelled) return;
-            ClientboundChatPacketAcesser packet1 = (ClientboundChatPacketAcesser) packet;
-            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getMessage().getString(), name, ColorUtils.makeColour("Hidden"))));
-        }
-        if (event.getPacket() instanceof ClientboundSetScorePacket packet){
-            if (event.isCancelled) return;
-            ClientboundSetScorePacketAcesser packet1 = (ClientboundSetScorePacketAcesser) packet;
-            packet1.setObjectiveName(StringUtils.replace(packet.getObjectiveName(),name, ColorUtils.makeColour("Hidden")));
-        }
     }
 }

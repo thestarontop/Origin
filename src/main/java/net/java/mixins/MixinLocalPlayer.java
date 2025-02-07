@@ -244,7 +244,7 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
                 if (this.sprintTriggerTime <= 0 && !this.minecraft.options.keySprint.isDown()) {
                     this.sprintTriggerTime = 7;
                 } else {
-                    if (Sprint.canSprint() || madebystarontopandfml.getInstance().getModuleManager().getModule("safewalk").isEnabled()) {
+                    if (Sprint.canSprint() || madebystarontopandfml.getInstance().getModuleManager().getModule("safewalk").isEnabled() ) {
                         this.setSprinting(true);
                     }
                 }
@@ -258,7 +258,7 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
         }
 
         boolean flag7;
-            if (this.isSprinting() && !madebystarontopandfml.getInstance().getModuleManager().getModule("safewalk").isEnabled()) {
+            if (this.isSprinting() && (!madebystarontopandfml.getInstance().getModuleManager().getModule("safewalk").isEnabled())) {
                 flag7 = !this.input.hasForwardImpulse() || !flag4;
                 boolean flag6 = flag7 || this.horizontalCollision && !this.minorHorizontalCollision || this.isInWater() && !this.isUnderWater();
                 if (this.isSwimming()) {
