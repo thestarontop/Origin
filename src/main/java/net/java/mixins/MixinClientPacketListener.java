@@ -195,4 +195,34 @@ public class MixinClientPacketListener {
         Objective objective = s == null ? null : scoreboard.getOrCreateObjective(s);
         scoreboard.setDisplayObjective(arg.getSlot(), objective);
     }
+    /**
+     * @author starontop
+     * @reason bzd
+     */
+    @Overwrite
+    public void setTitleText(ClientboundSetTitleTextPacket arg) {
+        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
+        String s = arg.getText().getString();
+        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
+            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
+            this.minecraft.gui.setTitle(new TextComponent(s));
+            return;
+        }
+        this.minecraft.gui.setTitle(new TextComponent(s));
+    }
+    /**
+     * @author starontop
+     * @reason bzd
+     */
+    @Overwrite
+    public void setSubtitleText(ClientboundSetSubtitleTextPacket arg) {
+        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
+        String s = arg.getText().getString();
+        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
+            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
+            this.minecraft.gui.setSubtitle(new TextComponent(s));
+            return;
+        }
+        this.minecraft.gui.setSubtitle(arg.getText());
+    }
 }
