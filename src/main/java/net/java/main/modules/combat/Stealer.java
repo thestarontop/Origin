@@ -40,6 +40,7 @@ public class Stealer extends Module {
         super("Stealer", "bzd", Module.Category.COMBAT);
         addValues(delay);
     }
+    private List<Item> blackItemList = List.of(Items.DIAMOND_SHOVEL,Items.STONE_SHOVEL,Items.IRON_SHOVEL,Items.GOLDEN_SHOVEL,Items.NETHERITE_SHOVEL,Items.COBWEB,Items.EGG,Items.BOOK,Items.CHEST,Items.FISHING_ROD,Items.LAVA_BUCKET,Items.CROSSBOW,Items.EXPERIENCE_BOTTLE,Items.WATER_BUCKET,Items.SADDLE,Items.FLINT,Items.FLINT_AND_STEEL,Items.COMPASS,Items.SNOWBALL);
 
     private int tickCounter = 0;
     Int2ObjectMap<ItemStack> int2objectmap = new Int2ObjectOpenHashMap();
@@ -50,24 +51,23 @@ public class Stealer extends Module {
             tickCounter++;
             var hasItem = false;
             for (int i = 0; i < screen.getMenu().getContainer().getContainerSize(); i++) {
-                ItemStack stack = screen.getMenu().getSlot(i).getItem();
-                if (stack.isEmpty()) {
-                    continue;
-                }
-
-                hasItem = true;
-
-                // if (!ItemUtil.useful(stack)) continue;
+                if (!blackItemList.contains(screen.getMenu().getContainer().getItem(i).getItem())) {
+                    ItemStack stack = screen.getMenu().getSlot(i).getItem();
+                    if (stack.isEmpty()) {
+                        continue;
+                    }
+                    hasItem = true;
+                    // if (!ItemUtil.useful(stack)) continue;
                     if (tickCounter >= delay.getValue()) {
-                            mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE, screen.getMenu().getContainer().getItem(i), int2objectmap));
+                        mc.getConnection().send(new ServerboundContainerClickPacket(screen.getMenu().containerId, i, i, 1, ClickType.QUICK_MOVE, screen.getMenu().getContainer().getItem(i), int2objectmap));
                         tickCounter = 0;
                     }
+                }
             }
 
             if (!hasItem) {
                 screen.onClose();
                 mc.player.closeContainer();
-
             }
         }
     }
