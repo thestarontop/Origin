@@ -22,4 +22,5 @@ public class MixinChatScreen extends Screen {
         HUD.realMouseY = p_95597_;
     }
 
+
 }
