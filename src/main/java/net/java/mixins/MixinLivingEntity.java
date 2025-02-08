@@ -60,10 +60,12 @@ public abstract class MixinLivingEntity extends Entity{
         double d0 = (double)this.getJumpPower() + this.getJumpBoostPower();
         Vec3 vec3 = this.getDeltaMovement();
         this.setDeltaMovement(vec3.x, d0, vec3.z);
-        if (this.isSprinting()) {
-            float f = yaw * 0.017453292F;
-            this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2f, 0.0, Mth.cos(f) * 0.2f));
-        }
+
+            if (this.isSprinting()) {
+                float f = yaw * 0.017453292F;
+                this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2f, 0.0, Mth.cos(f) * 0.2f));
+            }
+
         this.hasImpulse = true;
         ForgeHooks.onLivingJump((LivingEntity) Minecraft.getInstance().level.getEntity(getId()));
     }

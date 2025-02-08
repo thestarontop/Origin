@@ -37,7 +37,7 @@ public class IRC extends Module {
         }
         try {
             socket = new Socket("n.rainplay.cn", 56690);
-            // 使用UTF-8编码读取和写入
+            running = true;
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
         } catch (IOException e) {

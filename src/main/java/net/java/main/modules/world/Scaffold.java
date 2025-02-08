@@ -7,6 +7,7 @@ import net.java.main.event.annotations.EventTarget;
 import net.java.main.modules.Module;
 import net.java.main.utils.*;
 import net.java.main.value.BooleanValue;
+import net.java.main.value.FloatValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -30,22 +31,31 @@ import static net.java.main.utils.BlockUtils.*;
 public class Scaffold extends Module {
     public Scaffold() {
         super("Scaffold","bzd", Category.WORLD);
-        addValues(silentrotation,silentautoblock,samey);
+        addValues(silentrotation,silentautoblock,samey,airtick);
     }
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public BooleanValue silentautoblock = new BooleanValue("SilentAutoBlock",false);
     public BooleanValue samey = new BooleanValue("SameY",false);
+    public FloatValue airtick = new FloatValue("AirTick",3f,0f,10f);
     BlockPos block = null;
     double starty;
+    int ticks = 0;
     @EventTarget
     public void onUpdate(UpdateEvent event) {
-
         mc.player.setSprinting(RotationUtils.targetRotation == null);
+        if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
+            ticks = 0;
+            return;
+        }else{
+            ticks ++;
+        }
+        if (ticks < airtick.getValue())
+            return;
         var BlockMap = BlockUtils.searchBlocks(3);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
         BlockMap.forEach((key, value) -> {
-            if (value != Blocks.AIR && value != Blocks.GLASS) {
+            if (value != Blocks.AIR && value != Blocks.GLASS && value != Blocks.WATER && value != Blocks.LAVA && value != Blocks.WATER_CAULDRON && value != Blocks.LAVA_CAULDRON) {
                 if (!samey.getValue()) {
                     var playerY = mc.player.getY() -1;
                     if (key.getY() <= playerY) {
@@ -74,9 +84,6 @@ public class Scaffold extends Module {
             }
         });
         block = closestBlockPos.get();
-        if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
-            return;
-        }
         if(block == null) return;
         Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
         if (silentrotation.getValue()) {
