@@ -17,6 +17,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 public class ArmorBreaker extends Module {
     public ArmorBreaker(){super("ArmorBreaker","bzd",Category.COMBAT);}
+    //1
     @EventTarget
     public void onPacket(PacketEvent event){
         if (event.getPacket() instanceof ServerboundInteractPacket){
