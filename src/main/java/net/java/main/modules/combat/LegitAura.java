@@ -13,11 +13,13 @@ import net.java.main.modules.misc.Teams;
 import net.java.main.utils.*;
 import net.java.main.value.BooleanValue;
 import net.java.main.value.FloatValue;
+import net.java.main.value.ListValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 
 import net.minecraft.world.entity.Entity;
@@ -39,113 +41,159 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.system.CallbackI;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class LegitAura extends Module {
     public LegitAura() {
         super("LegitAura", "LegitAura", Module.Category.COMBAT);
-        addValues(player,mob,animal,cps,range,Legit,silentrotation);
+        addValues(player,mob,animal,cps,range,silentrotation,keeplengh);
 
     }
     public FloatValue cps = new FloatValue("CPS", 7f, 0.0f, 20f);
     public FloatValue range = new FloatValue("Range", 3.2f, 0.0f, 6.0f);
-    public static BooleanValue Legit = new BooleanValue("Legit",false);
+    public FloatValue keeplengh = new FloatValue("KeepLengh", 0f, 0.0f, 10f);
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
-
     public static BooleanValue player = new BooleanValue("AttackPlayer",true);
     public static BooleanValue mob = new BooleanValue("AttackMob",true);
     public static BooleanValue animal = new BooleanValue("AttackAnimal",true);
-    public static LivingEntity target;
     private MSTimer timer = new MSTimer();
+    private LinkedList<Entity> CanReachEntities = new LinkedList<>();
     private LinkedList<Entity> AttackedEntities = new LinkedList<>();
+    public static LivingEntity target;
+    private int ticks = 0;
 
-    @EventTarget
+    /*@EventTarget
     public void onUpdate2(UpdateEvent event) {
-        if (Legit.getValue()) {
             if (mc.hitResult.getType() == HitResult.Type.ENTITY) {
                 var entity = ((EntityHitResult) mc.hitResult).getEntity();
                 if (entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) {
-                    if (mc.player.distanceTo(player) <= 3.000) {
-                        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
+                    if (mc.player.distanceTo(player) <=range.getValue() && shouldAttack()) {
+                        madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
+                        if (!sb.getValue()) {
+                            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, false));
+                        }else {
+                            mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, shouldchange));
+                            shouldchange = !shouldchange;
+                        }
                         mc.player.swing(InteractionHand.MAIN_HAND);
+                        timer.reset();
                     }
                 }
             }
-        }
-    }
-
-
-    @EventTarget
-    public void onUpdate(UpdateEvent event) {
-        if (mc.player.isUsingItem() && mc.player.getItemInHand(InteractionHand.OFF_HAND).getItem() == Items.GOLDEN_APPLE)
-            return;
-        if (Legit.getValue())
-            return;
-        Iterable<Entity> entitylist = mc.level.entitiesForRendering();
-        if (AttackedEntities.size() == 0) {
-            AttackedEntities.clear();
-            updatetarges();
-        }
-        if (AttackedEntities.isEmpty())
-            target = null;
-        Entity entity =  AttackedEntities.get(0);
-        AttackedEntities.remove(0);
-        for (Entity entity1 : entitylist) {
-            if (entity1 instanceof EndCrystal) {
-                if (mc.player.distanceTo(entity) <= range.getValue() && shouldAttack()) {
-                    mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
-                    mc.player.swing(InteractionHand.MAIN_HAND);
-                    timer.reset();
-                }
-            }
-        }
-        if (target!= null && mc.player.distanceTo(entity) <= range.getValue() && shouldAttack()) {
-                madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-                mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
-                mc.player.swing(InteractionHand.MAIN_HAND);
-                timer.reset();
-
-        }
-
-        if (target != null && mc.player.distanceTo(entity) <= range.getValue()) {
-            Rotation rotations = RotationUtils.getHVHRotation(entity);
-
-          //  Rotation rotation = new Rotation(MathUtil.interpolateFloat(RotationUtils.serverRotation.getYaw(), RotationUtils.targetRotation.getYaw(), 0.9), MathUtil.interpolateFloat(RotationUtils.serverRotation.getPitch(), RotationUtils.targetRotation.getPitch(), 0.9));
-            if (silentrotation.getValue()) {
-                RotationUtils.setTargetRotation(rotations);
-            }else {
-                rotations.toPlayer(mc.player);
-            }
-        }
-
-        if (AttackedEntities.isEmpty()){
-            target = null;
-        }
-
-    }
-
-
+        }*/
     private boolean shouldAttack() {
         return timer.hasTimePassed((long) (1000.0D / cps.getValue()));
     }
 
+    @EventTarget
+    public void onJump(JumpEvent event){
+        if (target != null && madebystarontopandfml.getInstance().getModuleManager().getModule("strafefix").isEnabled()) {
+            mc.player.setSprinting(false);
+        }
+    }
+    @EventTarget
+    public void onUpdate(UpdateEvent event) {
+        int delay = 4;
+        ticks += 1;
+        Iterable<Entity> entitylist = mc.level.entitiesForRendering();
+        for (Entity entity1 : entitylist) {
 
+            boolean canReach = mc.player.distanceTo(entity1) <= range.getValue();
 
-
-
-    public void updatetarges(){
-        for (Entity entity : mc.level.entitiesForRendering()){
-            if (isEnemy(entity) && entity.getId() != mc.player.getId() && mc.player.distanceTo(entity) <= range.getValue()) {
-                if (!AttackedEntities.contains(entity)) {
+            if (canReach && isEnemy(entity1) && entity1.getId() != mc.player.getId()) {
+                if (!CanReachEntities.contains(entity1)) {
+                    CanReachEntities.add(entity1);
+                }
+            } else {
+                if (CanReachEntities.contains(entity1)) {
+                    CanReachEntities.remove(entity1);
+                }
+            }
+            if (entity1.isRemoved()) {
+                if (CanReachEntities.contains(entity1)) {
+                    CanReachEntities.remove(entity1);
+                }
+            }
+        }
+        CanReachEntities.removeIf(entity -> !isInIterable(entity, entitylist));
+        if (!CanReachEntities.isEmpty()) {
+            CanReachEntities.sort((e1, e2) -> {
+                double dist1 = mc.player.distanceTo(e1);
+                double dist2 = mc.player.distanceTo(e2);
+                return Double.compare(dist1, dist2);
+            });
+        }
+        for (Entity entity : CanReachEntities) {
+            if (CanReachEntities.size() >= 2)
+                if (AttackedEntities.contains(entity))
+                    continue;
+            target = (LivingEntity) entity;
+            Rotation rotation = RotationUtils.getHVHRotation(target);
+            if (silentrotation.getValue()) {
+                RotationUtils.setTargetRotation(rotation, keeplengh.getValue().byteValue());
+            } else {
+                rotation.toPlayer(mc.player);
+            }
+            if (ticks >= delay) {
+                attackEntity(entity);
+                if (CanReachEntities.size() >= 2) {
                     AttackedEntities.add(entity);
                 }
-                target = (LivingEntity) entity;
+                ticks = 0;
+
             }
+            break;
+        }
+        if(AttackedEntities.size() >= CanReachEntities.size()){
+            AttackedEntities.clear();
+        }
+        if (CanReachEntities.isEmpty()) {
+            target = null;
         }
     }
 
 
+    @EventTarget
+    public void onRender3D(Render3DEvent event) {
+        if (target != null) {
+            RenderUtils.renderBoundingBox(event.getPoseStack(), target.getBoundingBox(), 0,0,255);
+        }
+    }
+    /**
+     * Attack [entity]
+     */
+    private static void attackEntity(Entity entity) {
+        madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
+        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, true));
+        mc.player.swing(InteractionHand.MAIN_HAND);
+
+
+
+    }
+    public static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
+        for (Entity entity : entityIterable) {
+            if (entity == targetEntity) {
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    public void onDisable(){
+        super.onDisable();
+        target = null;
+
+    }
+
+    public float distanceTo(AABB arg) {
+        float f = (float)(mc.player.getX() - arg.minX);
+        float f1 = (float)(mc.player.getY() - arg.minY);
+        float f2 = (float)(mc.player.getZ() - arg.minZ);
+        return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
+    }
 
 
     /**
@@ -158,10 +206,7 @@ public class LegitAura extends Module {
                 isliving = true;
             }
         }
-        return isliving && (
-                (mob.getValue() && isHostileMob(entity)) ||
-                        (player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player) ||
-                        (animal.getValue() && isPassiveMob(entity))
+        return isliving && ((mob.getValue() && isHostileMob(entity)) || (player.getValue() && entity instanceof AbstractClientPlayer player && !Teams.isTeammate(player)) && !AntiBot.isBot(player) && !MidClick.isFriend(player) || (animal.getValue() && isPassiveMob(entity))
         );
     }
 

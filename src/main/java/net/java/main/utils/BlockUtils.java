@@ -18,6 +18,25 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.Vec3;
 
 public class BlockUtils extends MinecraftInstance{
+    public static Map<BlockPos, Block> searchBlocks2(final int radius) {
+        final Map<BlockPos, Block> blocks = new HashMap<BlockPos, Block>();
+        LocalPlayer thePlayer = Minecraft.getInstance().player;
+
+        int playerPosX = (int) thePlayer.position().x;
+        int playerPosY = (int) thePlayer.position().y;
+        int playerPosZ = (int) thePlayer.position().z;
+
+        for (int x = radius; x > -radius; --x) {
+            for (int y = radius; y > -radius; --y) {
+                for (int z = radius; z > -radius; --z) {
+                    BlockPos blockPos = new BlockPos(playerPosX + x, playerPosY + y, playerPosZ + z);
+                    final Block block = getBlock(blockPos);
+                    blocks.put(blockPos, block);
+                }
+            }
+        }
+        return blocks;
+    }
     public static Map<BlockPos, Block> searchBlocks(int radius) {
         Map<BlockPos, Block> blocks = new HashMap<>();
 
