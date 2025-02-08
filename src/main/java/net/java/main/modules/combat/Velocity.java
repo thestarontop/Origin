@@ -28,6 +28,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 public class Velocity extends Module {
     public Velocity() {
         super("Velocity","bzd",Module.Category.COMBAT);
+        this.addValues(mode,packetDelay);
     }
     public ListValue mode = new ListValue("mode",new String[]{"noxz","cancel","both"},"noxz");
     public FloatValue packetDelay = new FloatValue("PacketDelay",0f,0.0f,200f);
