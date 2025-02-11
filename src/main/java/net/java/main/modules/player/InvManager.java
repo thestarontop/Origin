@@ -1,4 +1,4 @@
-package net.java.main.modules.combat;
+package net.java.main.modules.player;
 
 import net.java.main.madebystarontopandfml;
 import net.java.main.command.ChatManager;
@@ -118,12 +118,12 @@ public class InvManager extends Module {
         }
                 if (itemStack.getItem() instanceof SwordItem swordItem) {
                     if (i != 36) {
-                        Item item = mc.player.inventoryMenu.getSlot(36).getItem().getItem();
-                        if (!(item instanceof SwordItem currsword)) {
+                        ItemStack item = mc.player.inventoryMenu.getSlot(36).getItem();
+                        if (!(item.getItem() instanceof SwordItem)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, i, 0, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
-                            if (swordItem.getDamage() > currsword.getDamage()) {
+                            if (getDamge(itemStack) > getDamge(item)) {
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 36, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
