@@ -131,7 +131,7 @@ public class ModuleManager {
         addHack(new ForceSneak());
         addHack(new AutoL());
         addHack(new LightningDetect());
-        //addHack(new TargetHUD()); todo:fix
+        addHack(new TargetHUD()); //todo:fix
         addHack(new Fly());
         addHack(new PacketCanceller());
         addHack(new Damage());

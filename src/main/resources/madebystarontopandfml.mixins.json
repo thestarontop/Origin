@@ -25,6 +25,7 @@
     "MixinEntityRenderer",
     "MixinFont",
     "MixinGameRenderer",
+    "MixinGui",
     "MixinItemInHandRenderer",
     "MixinKeyboardHandler",
     "MixinKeyboardInput",

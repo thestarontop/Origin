@@ -126,7 +126,7 @@ public class MixinClientPacketListener {
         PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
         Component message = ForgeEventFactory.onClientChat(arg.getType(), arg.getMessage(), arg.getSender());
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("nameprotect").isEnabled() && message.getString().contains(NameProtect.name)){
-            message = new TextComponent(StringUtils.replace(message.getString(),NameProtect.name, ColorUtils.makeColour("Hidden")));
+            message = new TextComponent(StringUtils.replace(message.getString(),NameProtect.name, ColorUtils.makeColour("Hidden"))).setStyle(message.getStyle());
         }
         if (message != null) {
             this.minecraft.gui.handleChat(arg.getType(), message, arg.getSender());
@@ -205,10 +205,10 @@ public class MixinClientPacketListener {
         String s = arg.getText().getString();
         if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
             s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-            this.minecraft.gui.setTitle(new TextComponent(s));
+            this.minecraft.gui.setTitle(new TextComponent(s).setStyle(arg.getText().getStyle()));
             return;
         }
-        this.minecraft.gui.setTitle(new TextComponent(s));
+        this.minecraft.gui.setTitle(arg.getText());
     }
     /**
      * @author starontop
@@ -220,7 +220,7 @@ public class MixinClientPacketListener {
         String s = arg.getText().getString();
         if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
             s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-            this.minecraft.gui.setSubtitle(new TextComponent(s));
+            this.minecraft.gui.setTitle(new TextComponent(s).setStyle(arg.getText().getStyle()));
             return;
         }
         this.minecraft.gui.setSubtitle(arg.getText());

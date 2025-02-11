@@ -1,4 +1,4 @@
-package net.java.main.modules.combat;
+package net.java.main.modules.player;
 
 import net.java.main.madebystarontopandfml;
 import net.java.main.command.ChatManager;
@@ -47,15 +47,16 @@ public class InvManager extends Module {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 5, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
 
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }else{
                         mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                        mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     }
 
                 }
@@ -65,15 +66,15 @@ public class InvManager extends Module {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 6, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }else{
                         mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                        mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     }
 
                 }
@@ -83,15 +84,15 @@ public class InvManager extends Module {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 7, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }else{
                         mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                        mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     }
 
                 }
@@ -101,15 +102,15 @@ public class InvManager extends Module {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 8, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }else{
                         mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.QUICK_MOVE, itemStack, Int2ObjectMaps.emptyMap()));
-
+                        mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     }
 
                 }
@@ -120,14 +121,17 @@ public class InvManager extends Module {
                         Item item = mc.player.inventoryMenu.getSlot(36).getItem().getItem();
                         if (!(item instanceof SwordItem currsword)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, i, 0, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             if (swordItem.getDamage() > currsword.getDamage()) {
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i, 36, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 0, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                             } else {
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                             }
                         }
                     }
@@ -136,9 +140,11 @@ public class InvManager extends Module {
                     if (i != 37) {
                         if (!(mc.player.inventoryMenu.getSlot(37).getItem().getItem() instanceof BowItem)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 1, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 0, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }
 
@@ -148,9 +154,11 @@ public class InvManager extends Module {
                         if (!(mc.player.inventoryMenu.getSlot(38).getItem().getItem() instanceof BlockItem)) {
                             if (itemStack.getItem() == Items.OAK_PLANKS || itemStack.getItem() == Items.STONE) {
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 2, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                             }else{
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 1, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                             }
                         }
                     }
@@ -159,6 +167,7 @@ public class InvManager extends Module {
                     if (i != 40) {
                         if (!(mc.player.inventoryMenu.getSlot(40).getItem().getItem() == Items.ENDER_PEARL)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 4, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }
                 }
@@ -166,10 +175,12 @@ public class InvManager extends Module {
                     if (i != 43) {
                         if (!(mc.player.inventoryMenu.getSlot(43).getItem().getItem() instanceof AxeItem)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 7, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             if (item != Items.GOLDEN_AXE) {
                                 mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 1, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                                 mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                                mc.getConnection().send(new ServerboundContainerClosePacket(0));
                             }
                         }
                     }
@@ -178,9 +189,11 @@ public class InvManager extends Module {
                     if (i != 44) {
                         if (!(mc.player.inventoryMenu.getSlot(44).getItem().getItem() instanceof PickaxeItem)) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, i, 8, ClickType.SWAP, itemStack, Int2ObjectMaps.emptyMap()));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         } else {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 1, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                            mc.getConnection().send(new ServerboundContainerClosePacket(0));
                         }
                     }
                 }
@@ -188,11 +201,13 @@ public class InvManager extends Module {
                     if (i != 45) {
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i, i, 0, ClickType.PICKUP, itemStack, Int2ObjectMaps.emptyMap()));
                             mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 1, 45, 0, ClickType.PICKUP, itemStack, Int2ObjectMaps.emptyMap()));
+                        mc.getConnection().send(new ServerboundContainerClosePacket(0));
                     }
                 }
                 if (blackItemList.contains(itemStack.getItem())) {
                     mc.getConnection().send(new ServerboundContainerClickPacket(0, i + 2, i, 1, ClickType.THROW, itemStack, Int2ObjectMaps.emptyMap()));
                     mc.getConnection().send(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+                    mc.getConnection().send(new ServerboundContainerClosePacket(0));
                 }
                 if (i == 45) {
                     i = 4;

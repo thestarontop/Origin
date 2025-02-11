@@ -1,4 +1,4 @@
-package net.java.main.modules.combat;
+package net.java.main.modules.player;
 
 import com.google.common.collect.Lists;
 import net.java.main.event.events.UpdateEvent;

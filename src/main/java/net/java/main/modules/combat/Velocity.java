@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Not open src
  * LOL
  */
@@ -36,6 +36,7 @@ public class Velocity extends Module {
     int packetCount = 0;
     private boolean a = false;
     MSTimer packetTimer = new MSTimer();
+    MSTimer flagTimer = new MSTimer();
     @EventTarget
     public void onPacket(UpdateEvent event) {
         //if (mc.player == null) return;
@@ -62,7 +63,7 @@ public class Velocity extends Module {
                 } else {
                     PacketUtils.sendPacketNoEvent(new ServerboundPlayerActionPacket(
                             ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,
-                            playerPos, Direction.DOWN
+                            playerPos.above(1), Direction.DOWN
                     ));
                     grimVelocity = false;
                     packetCount = 0;
@@ -110,10 +111,15 @@ public class Velocity extends Module {
         }
         if (event.getPacket() instanceof ClientboundSetEntityMotionPacket packet && packet.getId() == mc.player.getId()){
             if (mode.getValue() == "both" || mode.getValue() == "cancel"){
+                if (!flagTimer.hasTimePassed(1000)) return;
                 event.cancelEvent();
                 grimVelocity = true;
             }
         }
+        if (event.getPacket() instanceof ClientboundPlayerPositionPacket){
+            flagTimer.reset();
+        }
+
     }
     public void reduce(Entity entity){
         for (int i = 0; i < 5; i++) {
