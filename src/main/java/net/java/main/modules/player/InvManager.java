@@ -1,4 +1,4 @@
-package net.java.main.modules.player;
+package net.java.main.modules.combat;
 
 import net.java.main.madebystarontopandfml;
 import net.java.main.command.ChatManager;
@@ -223,7 +223,17 @@ public class InvManager extends Module {
         }
         return -11111111;
     }
-
+    public static double getDamge(ItemStack itemStack) {
+        if (itemStack.getItem() instanceof SwordItem swordItemItem) {
+            return swordItemItem.getDamage() + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS,itemStack)*0.00000001;
+        }
+        return -11111111;
+    }
+    private float damage(final ItemStack stack) {
+        final SwordItem sword = (SwordItem) stack.getItem();
+        final int level = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS, stack);
+        return (float) (sword.getDamage() + level * 1.25);
+    }
     @Override
     public void onEnable(){
         i = 4;

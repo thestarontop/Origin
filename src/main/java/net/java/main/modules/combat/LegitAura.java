@@ -156,12 +156,7 @@ public class LegitAura extends Module {
     }
 
 
-    @EventTarget
-    public void onRender3D(Render3DEvent event) {
-        if (target != null) {
-            RenderUtils.renderBoundingBox(event.getPoseStack(), target.getBoundingBox(), 0,0,255);
-        }
-    }
+
     /**
      * Attack [entity]
      */
