@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Not open src
  * LOL
  */
@@ -119,7 +119,6 @@ public class Velocity extends Module {
         if (event.getPacket() instanceof ClientboundPlayerPositionPacket){
             flagTimer.reset();
         }
-
     }
     public void reduce(Entity entity){
         for (int i = 0; i < 5; i++) {
