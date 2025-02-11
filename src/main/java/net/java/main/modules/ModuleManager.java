@@ -140,6 +140,8 @@ public class ModuleManager {
         addHack(new AutoScaffold());
         addHack(new AntiCrash());
         addHack(new NoFall());
+        addHack(new AntiKb());
+        addHack(new NoHurtCam());
 
         //排序，改了死妈的
         Collections.sort(modules, Comparator.comparing(Module::getName));

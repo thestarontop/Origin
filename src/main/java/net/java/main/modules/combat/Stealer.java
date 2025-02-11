@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Stealer extends Module {
     public Stealer() {
-        super("Stealer", "bzd", Module.Category.COMBAT);
+        super("Stealer", "bzd", Module.Category.PLAYER);
         addValues(delay);
     }
     private List<Item> blackItemList = List.of(Items.DIAMOND_SHOVEL,Items.STONE_SHOVEL,Items.IRON_SHOVEL,Items.GOLDEN_SHOVEL,Items.NETHERITE_SHOVEL,Items.COBWEB,Items.EGG,Items.BOOK,Items.CHEST,Items.FISHING_ROD,Items.LAVA_BUCKET,Items.CROSSBOW,Items.EXPERIENCE_BOTTLE,Items.WATER_BUCKET,Items.SADDLE,Items.FLINT,Items.FLINT_AND_STEEL,Items.COMPASS,Items.SNOWBALL);

@@ -88,12 +88,7 @@ public class LegitAura extends Module {
         return timer.hasTimePassed((long) (1000.0D / cps.getValue()));
     }
 
-    @EventTarget
-    public void onJump(JumpEvent event){
-        if (target != null && madebystarontopandfml.getInstance().getModuleManager().getModule("strafefix").isEnabled()) {
-            mc.player.setSprinting(false);
-        }
-    }
+
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         int delay = 4;
@@ -131,7 +126,17 @@ public class LegitAura extends Module {
                 if (AttackedEntities.contains(entity))
                     continue;
             target = (LivingEntity) entity;
-            Rotation rotation = RotationUtils.getHVHRotation(target);
+            var boundingBox = entity.getBoundingBox();
+            boundingBox = boundingBox.expandTowards(0.0, 2.14, 0.0);
+
+            if (mc.player.getY() - entity.getY() <= 0.25)
+                boundingBox = boundingBox.expandTowards(0.0, -3.0, 0.0);
+            if (mc.player.getY() - entity.getY() >= 0.25)
+                boundingBox = boundingBox.expandTowards(0.0, 0.1, 0.0);
+
+            Rotation.VecRotation prevrotation = RotationUtils.lockView(boundingBox, false, false, true, false, 4F);
+            if (prevrotation == null) return;
+            Rotation rotation = prevrotation.getRotation();
             if (silentrotation.getValue()) {
                 RotationUtils.setTargetRotation(rotation, keeplengh.getValue().byteValue());
             } else {
@@ -162,11 +167,8 @@ public class LegitAura extends Module {
      */
     private static void attackEntity(Entity entity) {
         madebystarontopandfml.getInstance().getEventManager().call(new AttackEvent(entity));
-        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, true));
+        mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(entity, mc.player.isShiftKeyDown()));
         mc.player.swing(InteractionHand.MAIN_HAND);
-
-
-
     }
     public static boolean isInIterable(Entity targetEntity, Iterable<Entity> entityIterable) {
         for (Entity entity : entityIterable) {
@@ -182,12 +184,9 @@ public class LegitAura extends Module {
         target = null;
 
     }
-
-    public float distanceTo(AABB arg) {
-        float f = (float)(mc.player.getX() - arg.minX);
-        float f1 = (float)(mc.player.getY() - arg.minY);
-        float f2 = (float)(mc.player.getZ() - arg.minZ);
-        return Mth.sqrt(f * f + f1 * f1 + f2 * f2);
+    @Override
+    public void onEnable(){
+        super.onEnable();
     }
 
 

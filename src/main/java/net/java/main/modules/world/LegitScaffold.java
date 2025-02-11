@@ -9,6 +9,9 @@ import net.java.main.modules.Module;
 import net.java.main.utils.*;
 import net.java.main.value.BooleanValue;
 import net.java.main.value.FloatValue;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -39,6 +42,8 @@ public class LegitScaffold extends  Module {
         super("LegitScaffold","bzd", Module.Category.WORLD);
         addValues(keeplength,eagle);
     }
+    public FloatValue airtick = new FloatValue("AirTick",3f,0f,10f);
+
     public FloatValue keeplength = new FloatValue("KeepLength", 0f, 0.0f, 20f);
     public BooleanValue eagle = new BooleanValue("Eagle",false);
 
@@ -75,6 +80,7 @@ public class LegitScaffold extends  Module {
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+
         if(mc.level.getBlockState(new BlockPos(mc.player.position().x, mc.player.position().y - 1, mc.player.position().z)).getBlock() != Blocks.AIR) return;
         if (!mc.options.keyJump.isDown()){
             canTellyPlace = true;
@@ -89,12 +95,13 @@ public class LegitScaffold extends  Module {
             mc.options.keyShift.setDown(isAir);
         }
         if (mc.options.keyJump.isDown()) {
-            canTellyPlace = offGroundTicks >= 3;
+            canTellyPlace = offGroundTicks >= airtick.getValue();
         }
         if (!canTellyPlace) return;
-        serach();
+        search();
+
         if(block == null) return;
-        Rotation rotation = RotationUtils.getBlockPlacementRotation(block);
+        Rotation rotation = RotationUtils.getRotationBlock(block,2f);
         RotationUtils.setTargetRotation(rotation,keeplength.getValue().byteValue());
 
         int maxstack = 0;
@@ -114,7 +121,6 @@ public class LegitScaffold extends  Module {
         }
         if (currentslot == -1) return;
         mc.player.getInventory().selected = currentslot;
-
         InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, InteractionHand.MAIN_HAND, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
         if ((result == InteractionResult.SUCCESS)) {
             mc.player.swing(InteractionHand.MAIN_HAND);
@@ -129,19 +135,43 @@ public class LegitScaffold extends  Module {
         }
     }
 
-    public void serach(){
-        var BlockMap = BlockUtils.searchBlocks2(3);
+
+    public void search() {
+        Map<BlockPos, Block> blockMap = findBlock(3);
+        Vec3 playerPos = Minecraft.getInstance().player.getEyePosition(4);
+        findClosestBlock(blockMap, playerPos);
+    }
+
+    private Map<BlockPos, Block> findBlock(int radius) {
+        Map<BlockPos, Block> blocks = new HashMap<>();
+        int playerX = (int) Minecraft.getInstance().player.getX();
+        int playerY = (int) Minecraft.getInstance().player.getY();
+        int playerZ = (int) Minecraft.getInstance().player.getZ();
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos blockPos = new BlockPos(playerX + x, playerY + y, playerZ + z);
+                    blocks.put(blockPos, getBlock(blockPos));
+                }
+            }
+        }
+        return blocks;
+    }
+
+    private void findClosestBlock(Map<BlockPos, Block> blockMap, Vec3 playerPos) {
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
-        AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
-        BlockMap.forEach((key, value) -> {
-            if (value != Blocks.AIR && value != Blocks.GLASS) {
-                var playerY = mc.player.getY() - 1;
+        AtomicReference<Double> closestDistance = new AtomicReference<>(Double.MAX_VALUE);
+
+        blockMap.forEach((key, value) -> {
+            if (value != Blocks.AIR) {
+                int playerY = (int) Minecraft.getInstance().player.getY() - 1;
                 if (key.getY() <= playerY) {
-                    double blockCenterX = key.getX() ;
-                    double blockCenterY = key.getY();
-                    double blockCenterZ = key.getZ();
+                    double blockCenterX = key.getX() + 0.5;
+                    double blockCenterY = key.getY() + 0.5;
+                    double blockCenterZ = key.getZ() + 0.5;
                     Vec3 blockCenter = new Vec3(blockCenterX, blockCenterY, blockCenterZ);
-                    double currentDistance = mc.player.position().distanceTo(blockCenter);
+                    double currentDistance = playerPos.distanceTo(blockCenter);
                     if (currentDistance < closestDistance.get()) {
                         closestDistance.set(currentDistance);
                         closestBlockPos.set(key);
@@ -149,8 +179,16 @@ public class LegitScaffold extends  Module {
                 }
             }
         });
-        block = closestBlockPos.get();
+
+        BlockPos block = closestBlockPos.get();
+        // Assuming there's a variable 'block' to store the result
+        this.block = block;
     }
+
+    public static Block getBlock(final BlockPos blockPos) {
+        return mc.level.getBlockState(blockPos).getBlock();
+    }
+
 
     @EventTarget
     public void onRender3D(Render3DEvent event){
