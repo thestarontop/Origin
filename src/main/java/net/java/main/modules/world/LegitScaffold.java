@@ -40,7 +40,7 @@ import static org.openjdk.nashorn.internal.objects.Global.getArrayBuffer;
 public class LegitScaffold extends  Module {
     public LegitScaffold() {
         super("LegitScaffold","bzd", Module.Category.WORLD);
-        addValues(keeplength,eagle);
+        addValues(keeplength,eagle,airtick);
     }
     public FloatValue airtick = new FloatValue("AirTick",3f,0f,10f);
 
@@ -101,7 +101,7 @@ public class LegitScaffold extends  Module {
         search();
 
         if(block == null) return;
-        Rotation rotation = RotationUtils.getRotationBlock(block,2f);
+        Rotation rotation = RotationUtils.getRotationBlock(block,0f);
         RotationUtils.setTargetRotation(rotation,keeplength.getValue().byteValue());
 
         int maxstack = 0;

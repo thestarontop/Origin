@@ -2,6 +2,7 @@ package net.java.mixins;
 
 import net.java.main.event.events.*;
 import net.java.main.madebystarontopandfml;
+import net.java.main.modules.exploit.Disabler;
 import net.java.main.modules.movement.NoSlow;
 import net.java.main.modules.movement.Sprint;
 import net.java.main.utils.RotationUtils;
@@ -20,6 +21,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.Pose;
@@ -36,6 +38,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+
+import static net.java.main.utils.MinecraftInstance.mc;
 
 @Mixin(LocalPlayer.class)
 public abstract class MixinLocalPlayer extends AbstractClientPlayer {
@@ -167,7 +171,9 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
                 this.connection.send(new ServerboundMovePlayerPacket.StatusOnly(event.getGround()));
             }
 
-
+            if (hasVehicle()) {
+                Disabler.processPackets();
+            }
 
             if (flag1) {
                 this.xLast = event.getX();
@@ -364,6 +370,9 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
     }
 
 
+    public boolean hasVehicle() {
+        return this.getVehicle() != null;
+    }
     /**
      * @author starontop
      * @reason bzd
