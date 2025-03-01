@@ -3,6 +3,8 @@ package net.java.mixins;
 import net.java.main.madebystarontopandfml;
 import net.java.main.modules.Module;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TridentItem;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.spongepowered.asm.mixin.Mixin;

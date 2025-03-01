@@ -135,11 +135,11 @@ public class ModuleManager {
         addHack(new Fly());
         addHack(new PacketCanceller());
         addHack(new Damage());
-        //addHack(new Velocity2());
         addHack(new BlockHitResultChanger());
         addHack(new AutoScaffold());
         addHack(new AntiCrash());
         addHack(new NoFall());
+        addHack(new MurderDetector());
 
         //排序，改了死妈的
         Collections.sort(modules, Comparator.comparing(Module::getName));

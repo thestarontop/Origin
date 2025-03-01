@@ -49,6 +49,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'junit:junit:4.13.1'
+
     // to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 

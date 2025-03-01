@@ -122,21 +122,6 @@ public class MixinClientPacketListener {
      * @reason bzd
      */
     @Overwrite
-    public void handleChat(ClientboundChatPacket arg) {
-        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
-        Component message = ForgeEventFactory.onClientChat(arg.getType(), arg.getMessage(), arg.getSender());
-        if (madebystarontopandfml.getInstance().getModuleManager().getModule("nameprotect").isEnabled() && message.getString().contains(NameProtect.name)){
-            message = new TextComponent(StringUtils.replace(message.getString(),NameProtect.name, ColorUtils.makeColour("Hidden"))).setStyle(message.getStyle());
-        }
-        if (message != null) {
-            this.minecraft.gui.handleChat(arg.getType(), message, arg.getSender());
-        }
-    }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
     public void handleAddObjective(ClientboundSetObjectivePacket arg) {
         PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
         Scoreboard scoreboard = this.level.getScoreboard();
@@ -156,73 +141,5 @@ public class MixinClientPacketListener {
             }
         }
 
-    }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    public void handleSetScore(ClientboundSetScorePacket arg) {
-        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
-        Scoreboard scoreboard = this.level.getScoreboard();
-        String s = arg.getObjectiveName();
-        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
-            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-        }
-        switch (arg.getMethod()) {
-            case CHANGE:
-                Objective objective = scoreboard.getOrCreateObjective(s);
-                Score score = scoreboard.getOrCreatePlayerScore(arg.getOwner(), objective);
-                score.setScore(arg.getScore());
-                break;
-            case REMOVE:
-                scoreboard.resetPlayerScore(arg.getOwner(), scoreboard.getObjective(s));
-        }
-
-    }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    public void handleSetDisplayObjective(ClientboundSetDisplayObjectivePacket arg) {
-        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
-        Scoreboard scoreboard = this.level.getScoreboard();
-        String s = arg.getObjectiveName();
-        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
-            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-        }
-        Objective objective = s == null ? null : scoreboard.getOrCreateObjective(s);
-        scoreboard.setDisplayObjective(arg.getSlot(), objective);
-    }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    public void setTitleText(ClientboundSetTitleTextPacket arg) {
-        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
-        String s = arg.getText().getString();
-        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
-            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-            this.minecraft.gui.setTitle(new TextComponent(s).setStyle(arg.getText().getStyle()));
-            return;
-        }
-        this.minecraft.gui.setTitle(arg.getText());
-    }
-    /**
-     * @author starontop
-     * @reason bzd
-     */
-    @Overwrite
-    public void setSubtitleText(ClientboundSetSubtitleTextPacket arg) {
-        PacketUtils.ensureRunningOnSameThread(arg, (ClientPacketListener)(Object)this, this.minecraft);
-        String s = arg.getText().getString();
-        if(madebystarontopandfml.getInstance().getModuleManager().getModule("NameProtect").isEnabled() && s.contains(NameProtect.name)){
-            s = StringUtils.replace(s,NameProtect.name,ColorUtils.makeColour("Hidden"));
-            this.minecraft.gui.setTitle(new TextComponent(s).setStyle(arg.getText().getStyle()));
-            return;
-        }
-        this.minecraft.gui.setSubtitle(arg.getText());
     }
 }

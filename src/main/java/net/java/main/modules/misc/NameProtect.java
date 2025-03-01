@@ -11,13 +11,11 @@ import net.java.main.utils.RenderUtils;
 import net.java.main.utils.StringUtils;
 import net.java.mixins.acesser.ClientboundChatPacketAcesser;
 import net.java.mixins.acesser.ClientboundSetScorePacketAcesser;
+import net.java.mixins.acesser.ClientboundSetSubtitleTextPacketAcesser;
 import net.java.mixins.acesser.ClientboundSetTitleTextPacketAcesser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
-import net.minecraft.network.protocol.game.ClientboundSetScorePacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.network.protocol.game.*;
 
 
 public class NameProtect extends Module {
@@ -26,12 +24,28 @@ public class NameProtect extends Module {
     @EventTarget
     public void onText(TextEvent event){
         if (name == null) return;
-        event.setText(StringUtils.replace(event.getText(),name,ColorUtils.makeColour("Hidden")));
+        event.setText(StringUtils.replace(event.getText(),name,ColorUtils.makeColour("Hidden")+"§f"));
+    }
+    @EventTarget
+    public void onPacket(PacketEvent event){
+        if (event.getPacket() instanceof ClientboundChatPacket packet){
+            ClientboundChatPacketAcesser packet1 = (ClientboundChatPacketAcesser) packet;
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getMessage().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+        }
+        if (event.getPacket() instanceof ClientboundSetTitleTextPacket packet){
+            ClientboundSetTitleTextPacketAcesser packet1 = (ClientboundSetTitleTextPacketAcesser) packet;
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+        }
+        if (event.getPacket() instanceof ClientboundSetSubtitleTextPacket packet){
+            ClientboundSetSubtitleTextPacketAcesser packet1 = (ClientboundSetSubtitleTextPacketAcesser) packet;
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+        }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
        if (name == null && mc.player != null){
            name = StringUtils.replace(mc.player.getDisplayName().getString()," ","");
        }
+
     }
 }

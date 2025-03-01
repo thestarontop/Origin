@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinKeyboardHandler {
 
 
-    @Inject(method = "keyPress",at=@At("HEAD"), cancellable = true)
+    @Inject(method = "keyPress",at=@At("HEAD"))
     public void onKey(long window, int key, int scancode, int action, int mods, CallbackInfo ci) {
         KeyPressEvent event = new KeyPressEvent(key);
         if(action == GLFW.GLFW_PRESS && key != GLFW.GLFW_KEY_UNKNOWN) {

@@ -17,9 +17,8 @@ public class Damage extends Module {
         double x = mc.player.getX();
         double y = mc.player.getY();
         double z = mc.player.getZ();
-        for (int i = 0;i<10;i++) {
-            PacketUtils.sendPacketNoEvent(new ServerboundMovePlayerPacket.Pos(x, y + 1, z, false));
+            PacketUtils.sendPacketNoEvent(new ServerboundMovePlayerPacket.Pos(x, y + 10, z, false));
+            PacketUtils.sendPacketNoEvent(new ServerboundMovePlayerPacket.Pos(x, y + 10, z, false));
             PacketUtils.sendPacketNoEvent(new ServerboundMovePlayerPacket.Pos(x, y, z, true));
-        }
     }
 }

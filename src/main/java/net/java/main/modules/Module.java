@@ -8,6 +8,7 @@ import net.java.main.modules.client.HUD;
 import net.java.main.utils.MinecraftInstance;
 import net.java.main.value.Value;
 import net.minecraft.ChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -44,11 +45,13 @@ public class Module extends MinecraftInstance {
 
     public void onEnable() {
         madebystarontopandfml.getInstance().getEventManager().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         ChatManager.sendHotBarChat(ChatFormatting.GREEN + this.getName() + " Was Enabled");
     }
 
     public void onDisable() {
         madebystarontopandfml.getInstance().getEventManager().unregister(this);
+        MinecraftForge.EVENT_BUS.unregister(this);
         ChatManager.sendHotBarChat(ChatFormatting.RED + this.getName() + " Was Disabled");
     }
 

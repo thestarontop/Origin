@@ -23,7 +23,6 @@ public class DelayVelocity extends Module {
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
     public BooleanValue explode = new BooleanValue("VelocityBeforeExplode",false);
     public static Entity target = null;
@@ -55,12 +54,9 @@ public class DelayVelocity extends Module {
             event.cancelEvent();
             packets4.add(packet);
         }
-        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player){
-            event.cancelEvent();
-            packets5.add(packet1);
-        }
         if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundPlayerLookAtPacket){
             packets6.add(packet);
+            this.setEnable(false);
         }
 
     }
@@ -85,9 +81,6 @@ public class DelayVelocity extends Module {
                 while (!packets2.isEmpty()) {
                     PacketUtils.sendPacketNoEvent(packets2.take());
                 }
-            }
-            while (!packets5.isEmpty()){
-                PacketUtils.sendPacketNoEvent(packets5.take());
             }
             while (!packets4.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets4.take());
