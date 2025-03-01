@@ -1,22 +1,25 @@
 package net.java.mixins;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.java.main.event.events.*;
 import net.java.main.madebystarontopandfml;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
+import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.Option;
 import net.minecraft.client.gui.font.FontManager;
-import net.minecraft.client.gui.screens.DeathScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.VirtualScreen;
@@ -34,6 +37,7 @@ import net.minecraft.util.ModCheck;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,6 +45,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(value = Minecraft.class, priority = 2000)
 public abstract class MixinMinecraft {
@@ -110,6 +115,9 @@ public abstract class MixinMinecraft {
         TickEvent event = new TickEvent();
         madebystarontopandfml.getInstance().getEventManager().call(event);
     }
+
+
+
     @Inject(method = "updateLevelInEngines", at = @At("HEAD"))
     private void updateLevelInEngines(@Nullable  ClientLevel arg, CallbackInfo ci) {
         WorldChangeEvent event = new WorldChangeEvent();
@@ -175,11 +183,13 @@ public abstract class MixinMinecraft {
     @Inject(method="<init>",at=@At("TAIL"))
     public void onInit(CallbackInfo ci){
         madebystarontopandfml.getInstance().getEventManager().call(new ClientStartEvent());
+        new madebystarontopandfml();
     }
 
     @Inject(method = "updateTitle",at=@At("HEAD"), cancellable = true)
     public void updateTitle(CallbackInfo ci) {
-        this.window.setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
+
+      //  this.window.setTitle(madebystarontopandfml.NAME+"-"+ madebystarontopandfml.VERSION+"-布吉岛");
         ci.cancel();
     }
 }

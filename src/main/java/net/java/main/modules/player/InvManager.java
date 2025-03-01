@@ -9,6 +9,7 @@ import net.java.main.modules.Module;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.java.main.utils.MovementUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,7 +22,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class InvManager extends Module {
-    public InvManager(){super("InvManager","bzd",Category.COMBAT);}
+    public InvManager(){super("InvManager","bzd",Category.PLAYER);}
     private int i = 4;
 
 
@@ -30,11 +31,13 @@ public class InvManager extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
         if(MovementUtils.isMoving()) return;
+        boolean b = (mc.screen instanceof InventoryScreen);
+        if (!b) return;
         i++;
         if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i != 45){
             i++;
         }
-            ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
+        ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();
         if (i > 8) {
             if (itemStack.getItem() instanceof ArmorItem armorItem) {
                 ItemStack headarmor = mc.player.inventoryMenu.getSlot(5).getItem();

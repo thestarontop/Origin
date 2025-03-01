@@ -29,8 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-import static java.lang.Math.atan2;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 import static net.minecraft.util.Mth.wrapDegrees;
 
 public class RotationUtils extends MinecraftInstance{
@@ -765,7 +764,5 @@ public class RotationUtils extends MinecraftInstance{
 
         return new Rotation(yaw, pitch);
     }
-
-
 }
 

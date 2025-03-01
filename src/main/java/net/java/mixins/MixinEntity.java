@@ -1,5 +1,6 @@
 package net.java.mixins;
 
+import net.java.main.event.events.UpdateEvent;
 import net.java.main.madebystarontopandfml;
 import net.java.main.event.events.StrafeEvent;
 import net.java.main.modules.render.ESP;
@@ -31,6 +32,7 @@ public abstract class MixinEntity {
     }
 
     @Shadow public abstract int getId();
+
 
 
 

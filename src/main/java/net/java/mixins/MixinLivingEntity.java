@@ -40,9 +40,9 @@ public abstract class MixinLivingEntity extends Entity{
 
     @Inject(method = "push",at=@At("HEAD"), cancellable = true)
     public void push(Entity arg, CallbackInfo ci){
-            if (madebystarontopandfml.getInstance().getModuleManager().getModule("nopush").isEnabled()) {
+        if (madebystarontopandfml.getInstance().getModuleManager().getModule("nopush").isEnabled()) {
                 ci.cancel();
-            }
+        }
     }
 
     /**
@@ -60,7 +60,6 @@ public abstract class MixinLivingEntity extends Entity{
         double d0 = (double)this.getJumpPower() + this.getJumpBoostPower();
         Vec3 vec3 = this.getDeltaMovement();
         this.setDeltaMovement(vec3.x, d0, vec3.z);
-
             if (this.isSprinting()) {
                 float f = yaw * 0.017453292F;
                 this.setDeltaMovement(this.getDeltaMovement().add(-Mth.sin(f) * 0.2f, 0.0, Mth.cos(f) * 0.2f));
