@@ -38,11 +38,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Blink extends Module {
     public Blink(){
     super("Blink","bzd", Module.Category.MOVEMENT);
-    this.addValues(antiaim,slowrelease,counttorelease);
+    this.addValues(antiaim,slowrelease,counttorelease,antiaimbjd);
     }
     private int tick;
     LinkedBlockingQueue<Packet<?>> packets = new LinkedBlockingQueue<>();
     BooleanValue antiaim = new BooleanValue("AntiAim",false);
+    BooleanValue antiaimbjd = new BooleanValue("AntiAim-bjd",false);
     BooleanValue slowrelease = new BooleanValue("SlowRelease",false);
     IntValue counttorelease = new IntValue("CountToRealse",50,1,100);
     private int c03count = 0;
@@ -95,8 +96,10 @@ public class Blink extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event){
         if (antiaim.getValue()) {
-            if (distanceTo(mc.player,box) >= 5) {
-                blink();
+            if (antiaimbjd.getValue()) {
+                if (distanceTo(mc.player, box) >= 5) {
+                    blink();
+                }
             }
             for (Entity entity : mc.level.entitiesForRendering()){
                 if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 5){

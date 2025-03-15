@@ -56,31 +56,20 @@ public class Scaffold extends Module {
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
         BlockMap.forEach((key, value) -> {
             if (value != Blocks.AIR && value != Blocks.GLASS && value != Blocks.WATER && value != Blocks.LAVA && value != Blocks.WATER_CAULDRON && value != Blocks.LAVA_CAULDRON) {
-                if (!samey.getValue()) {
+
                     var playerY = mc.player.getY() -1;
-                    if (key.getY() <= playerY) {
-                        double blockCenterX = key.getX() + 0.5;
-                        double blockCenterY = key.getY() + 0.5;
-                        double blockCenterZ = key.getZ() + 0.5;
-                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
-                        if (currentDistance < closestDistance.get()) {
-                            closestDistance.set(currentDistance);
-                            closestBlockPos.set(key);
+                    if (!samey.getValue() || key.getY() == starty-1) {
+                        if (key.getY() <= playerY) {
+                            double blockCenterX = key.getX() + 0.5;
+                            double blockCenterY = key.getY() + 0.5;
+                            double blockCenterZ = key.getZ() + 0.5;
+                            double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
+                            if (currentDistance < closestDistance.get()) {
+                                closestDistance.set(currentDistance);
+                                closestBlockPos.set(key);
+                            }
                         }
                     }
-                }else{
-                    var playerY = starty -1;
-                    if (key.getY()+0.5 <= playerY) {
-                        double blockCenterX = key.getX() + 0.5;
-                        double blockCenterY = key.getY() + 0.5;
-                        double blockCenterZ = key.getZ() + 0.5;
-                        double currentDistance = mc.player.position().distanceToSqr(new Vec3(blockCenterX, blockCenterY, blockCenterZ));
-                        if (currentDistance < closestDistance.get()) {
-                            closestDistance.set(currentDistance);
-                            closestBlockPos.set(key);
-                        }
-                    }
-                }
             }
         });
         block = closestBlockPos.get();

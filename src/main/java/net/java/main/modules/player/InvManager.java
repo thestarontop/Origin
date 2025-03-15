@@ -30,11 +30,8 @@ public class InvManager extends Module {
     private boolean haswindow = false;
     @EventTarget
     public void onUpdate(UpdateEvent event){
-        if(MovementUtils.isMoving()) return;
-        boolean b = (mc.screen instanceof InventoryScreen);
-        if (!b) return;
         i++;
-        if (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i != 45){
+        while (mc.player.inventoryMenu.getSlot(i).getItem().getItem() == Items.AIR && i < 45){
             i++;
         }
         ItemStack itemStack = mc.player.inventoryMenu.getSlot(i).getItem();

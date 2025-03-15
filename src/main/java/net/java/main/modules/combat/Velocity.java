@@ -39,15 +39,7 @@ public class Velocity extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         if (madebystarontopandfml.getInstance().getModuleManager().getModule("delayvelocity").isEnabled()) return;
-        if (mode.getValue() == "cancel"){
-            updates++;
-            if (updates >= 10) {
-                updates = 0;
-                if (grimTCancel > 0){
-                    grimTCancel--;
-                }
-            }
-        }
+
 
         if((!NoSlow.shouldnoslow && mc.player.isUsingItem())){
             return;
@@ -91,14 +83,6 @@ public class Velocity extends Module {
         }
         if (event.getPacket() instanceof ServerboundPlayerCommandPacket packet && packet.getAction().equals(ServerboundPlayerCommandPacket.Action.STOP_SPRINTING)) {
             a = false;
-        }
-        if (event.getPacket() instanceof ClientboundSetEntityMotionPacket packet && packet.getId() == mc.player.getId()){
-            event.cancelEvent();
-            grimTCancel = 6;
-        }
-        if (event.getPacket() instanceof ClientboundPingPacket && grimTCancel >0){
-            event.cancelEvent();
-            grimTCancel--;
         }
 
     }
