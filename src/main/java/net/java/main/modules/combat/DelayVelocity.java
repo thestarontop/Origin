@@ -19,10 +19,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DelayVelocity extends Module {
     public DelayVelocity(){super("DelayVelocity","bzd",Category.COMBAT);addValues(explode);}
-    private LinkedBlockingQueue<ServerboundPongPacket> packets = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<Packet> packets = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundSetEntityMotionPacket> packets2 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<ClientboundExplodePacket> packets3 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets4 = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<ClientboundEntityEventPacket> packets5 = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<Packet> packets6 = new LinkedBlockingQueue<>();
     public BooleanValue explode = new BooleanValue("VelocityBeforeExplode",false);
     public static Entity target = null;
@@ -30,9 +31,9 @@ public class DelayVelocity extends Module {
     @EventTarget
     public void onPacket(PacketEvent event){
         Packet<?> packet = event.getPacket();
-        if (packet instanceof ServerboundPongPacket packet1){
+        if (packet instanceof ServerboundPongPacket){
             event.cancelEvent();
-            packets.add(packet1);
+            packets.add(packet);
         }
         if (packet instanceof ServerboundInteractPacket && target == null){
             event.cancelEvent();
@@ -54,9 +55,42 @@ public class DelayVelocity extends Module {
             event.cancelEvent();
             packets4.add(packet);
         }
+        if (packet instanceof ClientboundEntityEventPacket packet1 && packet1.getEntity(mc.level) == mc.player){
+            packets5.add(packet1);
+        }
         if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundPlayerLookAtPacket){
+            event.cancelEvent();
             packets6.add(packet);
-            this.setEnable(false);
+            try {
+                if (explode.getValue()) {
+                    while (!packets2.isEmpty()) {
+                        PacketUtils.sendPacketNoEvent(packets2.take());
+                    }
+                }
+                while (!packets3.isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(packets3.take());
+                }
+                if (!explode.getValue()){
+                    while (!packets2.isEmpty()) {
+                        PacketUtils.sendPacketNoEvent(packets2.take());
+                    }
+                }
+                while (!packets5.isEmpty()){
+                    PacketUtils.sendPacketNoEvent(packets5.take());
+                }
+                while (!packets4.isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(packets4.take());
+                }
+                while (!packets.isEmpty()){
+                    PacketUtils.sendPacketNoEvent(packets.take());
+                }
+                while (!packets6.isEmpty()){
+                    PacketUtils.sendPacketNoEvent(packets6.take());
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            target = null;
         }
 
     }
@@ -68,6 +102,10 @@ public class DelayVelocity extends Module {
         RenderUtils.renderBoundingBox(event.getPoseStack(), box, 1F, 0.7529F, 0.7961F);
     }
     public void onDisable() {
+        blink();
+        super.onDisable();
+    }
+    private void blink(){
         try {
             if (explode.getValue()) {
                 while (!packets2.isEmpty()) {
@@ -82,6 +120,9 @@ public class DelayVelocity extends Module {
                     PacketUtils.sendPacketNoEvent(packets2.take());
                 }
             }
+            while (!packets5.isEmpty()){
+                PacketUtils.sendPacketNoEvent(packets5.take());
+            }
             while (!packets4.isEmpty()) {
                 PacketUtils.sendPacketNoEvent(packets4.take());
             }
@@ -95,7 +136,6 @@ public class DelayVelocity extends Module {
             throw new RuntimeException(e);
         }
         target = null;
-        super.onDisable();
     }
     public void onEnable() {
         super.onEnable();

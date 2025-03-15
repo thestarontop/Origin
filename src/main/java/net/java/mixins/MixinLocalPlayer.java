@@ -171,10 +171,6 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
                 this.connection.send(new ServerboundMovePlayerPacket.StatusOnly(event.getGround()));
             }
 
-            if (hasVehicle()) {
-                Disabler.processPackets();
-            }
-
             if (flag1) {
                 this.xLast = event.getX();
                 this.yLast1 = event.getY();
@@ -370,9 +366,6 @@ public abstract class MixinLocalPlayer extends AbstractClientPlayer {
     }
 
 
-    public boolean hasVehicle() {
-        return this.getVehicle() != null;
-    }
     /**
      * @author starontop
      * @reason bzd

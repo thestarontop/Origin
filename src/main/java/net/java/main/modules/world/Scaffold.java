@@ -36,21 +36,21 @@ public class Scaffold extends Module {
     public BooleanValue silentrotation = new BooleanValue("SilentRotation",true);
     public BooleanValue silentautoblock = new BooleanValue("SilentAutoBlock",false);
     public BooleanValue samey = new BooleanValue("SameY",false);
-    public FloatValue airtick = new FloatValue("AirTick",3f,0f,10f);
+    public FloatValue airtick = new FloatValue("AirDelay",200f,0f,1000f);
     BlockPos block = null;
     double starty;
     int ticks = 0;
+    MSTimer mstimer = new MSTimer();
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         mc.player.setSprinting(RotationUtils.targetRotation == null);
         if (mc.level.getBlockState(new BlockPos(mc.player.getX(),mc.player.getY()-1,mc.player.getZ())).getBlock() != Blocks.AIR){
-            ticks = 0;
+            mstimer.reset();
             return;
-        }else{
-            ticks ++;
         }
-        if (ticks < airtick.getValue())
+        if (!mstimer.hasTimePassed((long) Math.floor(airtick.getValue()))) {
             return;
+        }
         var BlockMap = BlockUtils.searchBlocks(3);
         AtomicReference<BlockPos> closestBlockPos = new AtomicReference<>(null);
         AtomicReference<Double> closestDistance = new AtomicReference<>(100.0);
@@ -93,8 +93,7 @@ public class Scaffold extends Module {
         }
         int maxstack = 0;
         int currentslot = -1;
-        ItemStack currentstack = mc.player.getMainHandItem();
-        ItemStack blockstack = null;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemstack = mc.player.inventoryMenu.getSlot(i + 36).getItem();
             Item item =itemstack.getItem();
@@ -102,7 +101,6 @@ public class Scaffold extends Module {
                 if (itemstack.getCount() > maxstack){
                     maxstack = itemstack.getCount();
                     currentslot = i;
-                    blockstack = itemstack;
                 }
             }
         }
@@ -115,7 +113,6 @@ public class Scaffold extends Module {
         if (silentautoblock.getValue()) {
             if (currentslot !=45) {
                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(currentslot));
-                mc.player.setItemInHand(InteractionHand.MAIN_HAND, blockstack);
             }
         }else {
             if (currentslot != 45) {
@@ -126,11 +123,17 @@ public class Scaffold extends Module {
         InteractionResult result = mc.gameMode.useItemOn(mc.player, mc.level, hand, new BlockHitResult(new Vec3(block.getX(),block.getY(),block.getZ()), RotationUtils.getBlockPlacementDirection(block), block, true));
         if ((result == InteractionResult.SUCCESS)) {
             mc.player.swing(hand);
+            int a = currentslot;
+            if (currentslot != 45)
+                a = currentslot +36;
+            if (silentautoblock.getValue()) {
+                block.relative(RotationUtils.getBlockPlacementDirection(block));
+                mc.level.setKnownState(block, ((BlockItem) mc.player.getInventory().getItem(a).getItem()).getBlock().defaultBlockState());
+            }
         }
         if (silentautoblock.getValue()) {
             if (currentslot != 45) {
                 mc.getConnection().send(new ServerboundSetCarriedItemPacket(mc.player.getInventory().selected));
-                mc.player.setItemInHand(InteractionHand.MAIN_HAND, currentstack);
             }
         }
         mc.player.setSprinting(RotationUtils.targetRotation == null);

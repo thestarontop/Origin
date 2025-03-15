@@ -13,6 +13,8 @@ import net.java.main.utils.PacketUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.java.main.utils.RenderUtils;
 import net.java.main.value.BooleanValue;
+import net.java.main.value.FloatValue;
+import net.java.main.value.IntValue;
 import net.java.main.value.ListValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -23,6 +25,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.status.ServerboundPingRequestPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Snowball;
@@ -35,11 +38,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Blink extends Module {
     public Blink(){
     super("Blink","bzd", Module.Category.MOVEMENT);
-    this.addValues(antiaim);
+    this.addValues(antiaim,slowrelease,counttorelease);
     }
     private int tick;
     LinkedBlockingQueue<Packet<?>> packets = new LinkedBlockingQueue<>();
     BooleanValue antiaim = new BooleanValue("AntiAim",false);
+    BooleanValue slowrelease = new BooleanValue("SlowRelease",false);
+    IntValue counttorelease = new IntValue("CountToRealse",50,1,100);
+    private int c03count = 0;
     private boolean disablelogger = true;
     AABB box = null;
 
@@ -54,7 +60,7 @@ public class Blink extends Module {
                 packet instanceof ServerboundPlayerActionPacket ||
                 packet instanceof ServerboundUseItemOnPacket ||
                 packet instanceof ServerboundMovePlayerPacket ||
-                packet instanceof ServerboundPongPacket ||
+                (packet instanceof ServerboundPongPacket && !madebystarontopandfml.getInstance().getModuleManager().getModule("DelayVelocity").isEnabled()) ||
                 packet instanceof ServerboundPingRequestPacket ||
                 packet instanceof ServerboundSetCarriedItemPacket ||
                 packet instanceof ServerboundCustomPayloadPacket ||
@@ -65,11 +71,14 @@ public class Blink extends Module {
             event.cancelEvent();
             packets.add(packet);
         }
+        if (packet instanceof ServerboundMovePlayerPacket){
+            c03count++;
+        }
         if (packet instanceof ServerboundUseItemPacket){
             if (antiaim.getValue()) {
                 event.cancelEvent();
+                packets.add(packet);
                 blink();
-                PacketUtils.sendPacketNoEvent(packet);
             }else{
                 event.cancelEvent();
                 packets.add(packet);
@@ -90,9 +99,34 @@ public class Blink extends Module {
                 blink();
             }
             for (Entity entity : mc.level.entitiesForRendering()){
-                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 4){
+                if (((entity instanceof Arrow || entity instanceof Snowball || entity instanceof Player) && entity.getId() != mc.player.getId()) && distanceTo(entity,box) <= 5){
                     blink();
                     break;
+                }
+            }
+        }
+        if (c03count == 0 ) return;
+        if (slowrelease.getValue()){
+            if (c03count > counttorelease.getValue()){
+                try {
+                    Packet packet = packets.take();
+                    while (!(packet instanceof ServerboundMovePlayerPacket)){
+                        PacketUtils.sendPacketNoEvent(packet);
+                        packet = packets.take();
+                    }
+                    double x = ((ServerboundMovePlayerPacket) packet).getX(0);
+                    double y = ((ServerboundMovePlayerPacket) packet).getY(0);
+                    double z = ((ServerboundMovePlayerPacket) packet).getZ(0);
+
+                    AABB newbox = new AABB(
+                            x - 0.3, y, z - 0.3,
+                            x + 0.3, y + 1.8, z + 0.3
+                    );
+                    box = newbox;
+                    PacketUtils.sendPacketNoEvent(packet);
+                    c03count --;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -122,6 +156,7 @@ public class Blink extends Module {
             }
             box = mc.player.getBoundingBox();
             disablelogger = false;
+            c03count = 0;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -142,6 +177,7 @@ public class Blink extends Module {
         box = mc.player.getBoundingBox();
         tick=0;
         disablelogger = false;
+        c03count = 0;
         super.onEnable();
     }
 }

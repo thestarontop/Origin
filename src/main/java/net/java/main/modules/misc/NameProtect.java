@@ -30,21 +30,21 @@ public class NameProtect extends Module {
     public void onPacket(PacketEvent event){
         if (event.getPacket() instanceof ClientboundChatPacket packet){
             ClientboundChatPacketAcesser packet1 = (ClientboundChatPacketAcesser) packet;
-            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getMessage().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getMessage().getString(),name,ColorUtils.makeColour("Hidden")+"§f")).withStyle(packet.getMessage().getStyle()));
         }
         if (event.getPacket() instanceof ClientboundSetTitleTextPacket packet){
             ClientboundSetTitleTextPacketAcesser packet1 = (ClientboundSetTitleTextPacketAcesser) packet;
-            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")).withStyle(packet.getText().getStyle()));
         }
         if (event.getPacket() instanceof ClientboundSetSubtitleTextPacket packet){
             ClientboundSetSubtitleTextPacketAcesser packet1 = (ClientboundSetSubtitleTextPacketAcesser) packet;
-            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")));
+            packet1.setmessage(new TextComponent(StringUtils.replace(packet.getText().getString(),name,ColorUtils.makeColour("Hidden")+"§f")).withStyle(packet.getText().getStyle()));
         }
     }
     @EventTarget
     public void onUpdate(UpdateEvent event){
        if (name == null && mc.player != null){
-           name = StringUtils.replace(mc.player.getDisplayName().getString()," ","");
+           name = StringUtils.replace(mc.getUser().getName(), " ","");
        }
 
     }

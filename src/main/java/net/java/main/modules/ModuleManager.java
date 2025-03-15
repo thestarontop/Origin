@@ -140,6 +140,10 @@ public class ModuleManager {
         addHack(new AntiCrash());
         addHack(new NoFall());
         addHack(new MurderDetector());
+        addHack(new NoHurtCam());
+        addHack(new FastAnchor());
+        addHack(new PingSpoof());
+        addHack(new AutoParkour());
 
         //排序，改了死妈的
         Collections.sort(modules, Comparator.comparing(Module::getName));

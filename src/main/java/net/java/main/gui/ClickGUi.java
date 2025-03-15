@@ -8,10 +8,7 @@ import net.java.main.modules.ModuleManager;
 import net.java.main.utils.ColorUtils;
 import net.java.main.utils.Pair;
 import net.java.main.utils.RenderUtils;
-import net.java.main.value.BooleanValue;
-import net.java.main.value.FloatValue;
-import net.java.main.value.ListValue;
-import net.java.main.value.Value;
+import net.java.main.value.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -57,6 +54,10 @@ public class ClickGUi extends Screen {
                     ((FloatValue) v).dragging = false;
                     ((FloatValue) v).barAnim = 0;
                     ((FloatValue) v).xAnim = 0;
+                }else if (v instanceof IntValue) {
+                    ((IntValue) v).dragging = false;
+                    ((IntValue) v).barAnim = 0;
+                    ((IntValue) v).xAnim = 0;
                 }
             }
         }
@@ -147,6 +148,8 @@ public class ClickGUi extends Screen {
                                 vY += mc.font.lineHeight + 2;
                             }
                         }
+                    } else if (v instanceof IntValue){
+                        vY += mc.font.lineHeight + 13;
                     }
                 }
 
@@ -164,6 +167,14 @@ public class ClickGUi extends Screen {
                         if (k < 0) k = 0;
                         if (k > 1) k = 1;
                         f.setValue(f.getMaximum() * k);
+                    }
+                }
+                if (v instanceof IntValue) {
+                    if (((IntValue) v).dragging) {
+                        IntValue i = (IntValue) v;
+                        float k = ((float) (mouseX - x - settingsBaseX)) / (width - 10 - settingsBaseX);
+                        k = Math.max(0, Math.min(1, k));
+                        i.setValue(i.getMinimum() + (int)(k * (i.getMaximum() - i.getMinimum())));
                     }
                 }
             }
@@ -275,6 +286,8 @@ public class ClickGUi extends Screen {
             for (Value<?> v : currModule.getValues()) {
                 if (v instanceof FloatValue) {
                     ((FloatValue) v).dragging = false;
+                } else if (v instanceof IntValue) {
+                    ((IntValue) v).dragging = false;
                 }
             }
         }
@@ -432,6 +445,56 @@ public class ClickGUi extends Screen {
 
                     }
                 }
+            }    else if (v instanceof IntValue) {
+                IntValue i = (IntValue) v;
+                mc.font.draw(poseStack, i.getName() + ": ", x, y + vY, Color.white.getRGB());
+
+                float x2 = (width - 10 - settingsBaseX) * ((i.getValue() - i.getMinimum()) / (float)(i.getMaximum() - i.getMinimum()));
+                i.xAnim = (float) i.xAnimUtils.animate(x2, i.xAnim, 0.4f);
+
+                float x1 = x + i.xAnim;
+
+                // 限制数值显示位置
+                if (x1 < x + mc.font.width(i.getName() + ": ")) {
+                    x1 = x + mc.font.width(i.getName() + ": ");
+                } else if (x1 > x + width - 10 - mc.font.width(i.getValue().toString())) {
+                    x1 = x + width - 10 - mc.font.width(i.getValue().toString());
+                }
+
+                int alpha = (int) (55 * ((i.getValue() - i.getMinimum()) / (float)(i.getMaximum() - i.getMinimum())));
+                mc.font.draw(poseStack, i.getValue().toString(), x1, y + vY, new Color(255, 255, 255, alpha + 200).getRGB());
+
+                // 绘制滑动条
+                boolean isHovered = mouseX >= x && mouseX <= x + width - 10 &&
+                        mouseY >= y + vY + 10 && mouseY <= y + vY + 19;
+                i.barAnim = (float) (isHovered || i.dragging ?
+                        i.barAnimUtils.animate(2f, i.barAnim, 0.4f) :
+                        i.barAnimUtils.animate(0f, i.barAnim, 0.4f));
+
+                // 滑轨
+                RenderUtils.drawRect(poseStack,
+                        x, y + vY + 13 - i.barAnim,
+                        x + width - 10, y + vY + 15 + i.barAnim,
+                        new Color(255, 255, 255, 100).getRGB()
+                );
+
+                // 滑动进度
+                RenderUtils.drawRect(poseStack,
+                        x, y + vY + 13 - i.barAnim,
+                        x + i.xAnim, y + vY + 15 + i.barAnim,
+                        new Color(50, 50, 255, 255).getRGB()
+                );
+
+                // 滑块
+                if (isHovered || i.dragging) {
+                    RenderUtils.drawRect(poseStack,
+                            x + i.xAnim - 1.5f - i.barAnim, y + vY + 13 - i.barAnim,
+                            x + i.xAnim + 1.5f + i.barAnim, y + vY + 15 + i.barAnim,
+                            Color.WHITE.getRGB()
+                    );
+                }
+
+                vY += mc.font.lineHeight + 13;
             }
         }
     }
@@ -490,6 +553,17 @@ public class ClickGUi extends Screen {
                         vY += mc.font.lineHeight + 2;
                     }
                 }
+            }else if (v instanceof IntValue) {
+                IntValue i = (IntValue) v;
+                if (mouseX >= x && mouseX <= x + width - 10 &&
+                        mouseY >= y + vY + 11 && mouseY <= y + vY + 15)
+                {
+                    i.dragging = true;
+                    float k = (mouseX - x - settingsBaseX) / (float)(width - 10 - settingsBaseX);
+                    k = Math.max(0, Math.min(1, k));
+                    i.setValue(i.getMinimum() + (int)(k * (i.getMaximum() - i.getMinimum())));
+                }
+                vY += mc.font.lineHeight + 13;
             }
         }
     }

@@ -36,29 +36,10 @@ public abstract class MixinGameRenderer {
     public void onRender(float g, long l, boolean bl, CallbackInfo ci){
         madebystarontopandfml.getInstance().getEventManager().call(new Render2DEvent(g));
     }
-    @Overwrite
-    private void bobHurt(PoseStack arg, float g) {
-        if (madebystarontopandfml.moduleManager.getModule("NoHurtCam").isEnabled())
-            return;
-        if (Minecraft.getInstance().getCameraEntity() instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity)Minecraft.getInstance().getCameraEntity();
-            float f = (float)livingentity.hurtTime - g;
-            float f2;
-            if (livingentity.isDeadOrDying()) {
-                f2 = Math.min((float)livingentity.deathTime + g, 20.0F);
-                arg.mulPose(Vector3f.ZP.rotationDegrees(40.0F - 8000.0F / (f2 + 200.0F)));
-            }
-
-            if (f < 0.0F) {
-                return;
-            }
-
-            f /= (float)livingentity.hurtDuration;
-            f = Mth.sin(f * f * f * f * 3.1415927F);
-            f2 = livingentity.hurtDir;
-            arg.mulPose(Vector3f.YP.rotationDegrees(-f2));
-            arg.mulPose(Vector3f.ZP.rotationDegrees(-f * 14.0F));
-            arg.mulPose(Vector3f.YP.rotationDegrees(f2));
+    @Inject(method = "bobHurt",at=@At("HEAD"),cancellable = true)
+    private void bobHurt(PoseStack arg, float g,CallbackInfo ci) {
+        if (madebystarontopandfml.getInstance().getModuleManager().getModule("nohurtcam").isEnabled()){
+            ci.cancel();
         }
 
     }

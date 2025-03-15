@@ -40,7 +40,6 @@
     "MixinPlayerTabOverlay",
     "MixinScreenEffectRenderer",
     "MixinWindow",
-    "MixinBoundPacket",
     "acesser.MinecraftAcesser"
   ],
   "injectors": {
