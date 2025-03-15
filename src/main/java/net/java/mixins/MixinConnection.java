@@ -40,4 +40,11 @@ public class MixinConnection {
             ci.cancel();
         }
     }
+    @Inject(method = "genericsFtw", at = @At("HEAD"), cancellable = true)
+    private static <T extends PacketListener> void genericsFtw(Packet<T> arg, PacketListener arg2, CallbackInfo info) {
+        if (Disabler.getGrimPost() && Disabler.grimPostDelay(arg)) {
+            mc.execute(() -> {Disabler.storedPackets.add((Packet<PacketListener>) arg2);
+            });
+        }
+    }
 }
