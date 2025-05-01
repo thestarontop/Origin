@@ -2,7 +2,8 @@
 
 # Origin
 
-#### Minecraft 1.18.1 Hacked Client for DickIsland
+#### Minecraft 1.18.1 Hacked Client for Grim
+#### and it uses forge
 </div>
 
 
