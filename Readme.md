@@ -2,8 +2,8 @@
 
 # Origin
 
-#### Minecraft 1.18.1 Hacked Client for Grim
-#### and it uses forge
+#### Minecraft 1.18.1 Hacked Client for Grim and it uses forge
+#### Some of the names(Such as "madebystarontopandfml") may be strange because I was trying to bypass the some server's scan class check
 </div>
 
 
